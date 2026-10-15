@@ -7,6 +7,7 @@
 **Integrantes:**
 
 * Natália Leal - 221021581
+* Pedro de Paula - 231036050
 * Nome do Colega 1 - Matrícula 1
 * Nome do Colega 2 - Matrícula 2
 
@@ -29,9 +30,9 @@
 * **Regras de Negócio:** O estudante deve poder recarregar via PIX ou Cartão de Crédito. Valores negativos ou nulos são inválidos. Cartões sem limite devem ter a transação recusada.
 
 ### Funcionalidade: Autenticação do Funcionário
-* **Responsável:** [Nome do Colega]
+* **Responsável:** Pedro de Paula
 * **Story Points:**
-* **Regras de Negócio:** [Colega preenche]
+* **Regras de Negócio:** O funcionário que estiver cadastrado no sistema deve poder se autenticar com usuário (matrícula de 7 dígitos) e senha, sendo redirecionado para a página de Gestão de Restaurantes e Catracas. Tentativas de autenticação com credenciais inválidas (incorretas ou não cadastradas) devem falhar, exibindo mensagem de erro e se mantendo na página de autenticação.
 
 ### Funcionalidade: Validação de entrada
 * **Responsável:** [Nome do Colega]
