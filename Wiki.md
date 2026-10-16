@@ -33,11 +33,14 @@
 * **Responsável:** Pedro de Paula
 * **Story Points:**
 * **Regras de Negócio:** O funcionário que estiver cadastrado no sistema deve poder se autenticar com usuário (matrícula de 7 dígitos) e senha, sendo redirecionado para a página de Gestão de Restaurantes e Catracas. Tentativas de autenticação com credenciais inválidas (incorretas ou não cadastradas) devem falhar, exibindo mensagem de erro e se mantendo na página de autenticação.
-
+* 
 ### Funcionalidade: Validação de entrada
-* **Responsável:** [Nome do Colega]
-* **Story Points:**
-* **Regras de Negócio:** [Colega preenche]
+
+**Responsável:** Isabela de Souza Clímaco 
+
+**Story Points:** 3
+
+**Regras de Negócio:** A matrícula do estudante deve ter exatamente 9 dígitos numéricos, a catraca aceita apenas estudantes (servidores estão fora do escopo desta história), não há senha: a catraca lê apenas a matrícula, o preço da refeição é R$ 4,50; a entrada só é liberada se o saldo for maior ou igual a R$ 4,50, com matrícula válida, cadastrada e saldo suficiente, a catraca é liberada e R$ 4,50 são debitados do saldo, matrícula com formato inválido, não cadastrada ou com
 
 ### Funcionalidade: Gestão de restaurantes e catracas
 * **Responsável:** [Nome do Colega]
