@@ -20,9 +20,9 @@
 ## 2. Funcionalidades e Regras de Negócio
 
 ### Funcionalidade: Cadastro de Usuário
-* **Responsável:** [Nome do Colega]
+* **Responsável:** Adriano Lopes
 * **Story Points:** 
-* **Regras de Negócio:** [Colega preenche]
+* **Regras de Negócio:** O cadastro é exclusivo para estudantes com matrícula ativa na UnB. A matrícula deve ser informada em formato válido, possuir exatamente 9 dígitos numéricos e ainda não estar associada a outra conta. O estudante deve informar nome, matrícula, senha. O sistema deve impedir o cadastro quando a matrícula for inválida ou já estiver cadastrada, ou quando houver dados obrigatórios ausentes. Com todos os dados válidos, a conta deve ser criada e o estudante deve ser encaminhado para a página de autenticação.
 
 ### Funcionalidade: Recarga de Saldo
 * **Responsável:** Natália Leal
