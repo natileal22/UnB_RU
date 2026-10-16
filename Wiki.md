@@ -8,7 +8,7 @@
 
 * Natália Leal - 221021581
 * Pedro de Paula - 231036050
-* Nome do Colega 1 - Matrícula 1
+* Kassio Gandara de Souza - 180140540
 * Nome do Colega 2 - Matrícula 2
 
 ---
@@ -43,9 +43,21 @@
 **Regras de Negócio:** A matrícula do estudante deve ter exatamente 9 dígitos numéricos, a catraca aceita apenas estudantes (servidores estão fora do escopo desta história), não há senha: a catraca lê apenas a matrícula, o preço da refeição é R$ 4,50; a entrada só é liberada se o saldo for maior ou igual a R$ 4,50, com matrícula válida, cadastrada e saldo suficiente, a catraca é liberada e R$ 4,50 são debitados do saldo, matrícula com formato inválido, não cadastrada ou com
 
 ### Funcionalidade: Gestão de restaurantes e catracas
-* **Responsável:** [Nome do Colega]
-* **Story Points:**
-* **Regras de Negócio:** [Colega preenche]
+* **Responsável:** Kassio Gandara de Souza
+* **Story Points:** 10
+* **Regras de Negócio:**
+  * RN01: Apenas o administrador pode cadastrar, editar, remover ou alterar o status de restaurantes e catracas.
+  * RN02: Toda catraca deve estar vinculada a um único restaurante cadastrado.
+  * RN03: O restaurante deve possuir nome único, localização, horário válido (abertura anterior ao fechamento) e capacidade entre 1 e 5000 lugares.
+  * RN04: O código identificador da catraca é obrigatório e único dentro de um mesmo restaurante.
+  * RN05: Uma catraca só pode ser ativada se o restaurante vinculado estiver "Ativo"; ao inativar um restaurante, suas catracas ativas passam para "Inativa".
+  * RN06: Não é permitido remover um restaurante que possua catracas vinculadas nem remover uma catraca que esteja "Ativa".
+* **Histórias de Usuário:**
+  * H1 (3 pontos): Como administrador, eu quero cadastrar e listar os restaurantes universitários, para que as unidades do RU fiquem disponíveis no sistema.
+  * H2 (2 pontos): Como administrador, eu quero editar os dados e alterar o status de funcionamento de um restaurante (Ativo/Inativo), para que as informações da unidade estejam sempre atualizadas.
+  * H3 (3 pontos): Como administrador, eu quero cadastrar e listar catracas vinculadas a um restaurante, para que os pontos de acesso de cada unidade sejam controlados.
+  * H4 (2 pontos): Como administrador, eu quero editar e alterar o status de uma catraca (Ativa, Inativa ou Em Manutenção), para que apenas catracas operacionais fiquem liberadas para uso.
+* **Declaração de Uso de IA:** Foi utilizada IA generativa, Claude (Sonnet 5.5, da Anthropic), na elaboração de rascunhos das histórias, das regras de negócio, dos cenários BDD e desta seção da Wiki referentes à issue #8. As decisões de domínio foram tomadas pelo aluno, que revisou e aprovou cada etapa, e a sintaxe dos cenários foi verificada com o parser oficial do Gherkin.
 ---
 
 ## 3. Padrões Adotados pelo Grupo
