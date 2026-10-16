@@ -38,7 +38,7 @@
 
 **Responsável:** Isabela de Souza Clímaco 
 
-**Story Points:** 3
+**Story Points:** 
 
 **Regras de Negócio:** A matrícula do estudante deve ter exatamente 9 dígitos numéricos, a catraca aceita apenas estudantes (servidores estão fora do escopo desta história), não há senha: a catraca lê apenas a matrícula, o preço da refeição é R$ 4,50; a entrada só é liberada se o saldo for maior ou igual a R$ 4,50, com matrícula válida, cadastrada e saldo suficiente, a catraca é liberada e R$ 4,50 são debitados do saldo, matrícula com formato inválido, não cadastrada ou com
 
