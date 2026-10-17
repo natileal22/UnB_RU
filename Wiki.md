@@ -9,13 +9,14 @@
 * Natália Leal - 221021581
 * Pedro de Paula - 231036050
 * Kassio Gandara de Souza - 180140540
-* Nome do Colega 2 - Matrícula 2
+* Isabela de Souza - 190088931
+* Adriano Lopes - 170097960
 
 ---
 
 ## 1. Papéis da Equipe
-* **Scrum Master:** 
-* **Product Owner (PO):** 
+* **Scrum Master: Isabela de Souza** 
+* **Product Owner (PO): Adriano Lopes** 
 
 ## 2. Funcionalidades e Regras de Negócio
 
