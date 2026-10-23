@@ -1,0 +1,110 @@
+<mxfile host="Electron">
+  <diagram name="Page-1" id="0VctzBdXmr4IgiC-VF5v">
+    <mxGraphModel dx="645" dy="737" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="5wl995jJWVG-hqwpQTKu-1" parent="1" style="swimlane;html=1;fontStyle=1;fontSize=13;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#ffffff;horizontal=1;collapsible=0;" value="RELATORIO_GLOBAL_ACESSO" vertex="1">
+          <mxGeometry height="220" width="360" x="570" y="323" as="geometry" />
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-2" parent="5wl995jJWVG-hqwpQTKu-1" style="text;html=1;align=left;verticalAlign=top;fontSize=11;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;" value="&lt;font face=&quot;Courier New&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;b&gt;id&lt;/b&gt;&amp;nbsp;INTEGER&lt;/font&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;&lt;b&gt;FK,UK&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;b&gt;acesso_id&lt;/b&gt;&amp;nbsp;INTEGER NOT NULL&lt;/font&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;b&gt;usuario_id&lt;/b&gt; INTEGER NOT NULL&lt;/font&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;b&gt;restaurante_id&lt;/b&gt; INTEGER NOT NULL&lt;/font&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;b&gt;catraca_id&lt;/b&gt; INTEGER NOT NULL&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp; &amp;nbsp;codigo VARCHAR(20) NOT NULL&lt;/font&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp; &amp;nbsp;nome_usuario VARCHAR(120) NOT NULL&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp; &amp;nbsp;nome_restaurante VARCHAR(120) NOT NULL&lt;/font&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp; &amp;nbsp;matricula VARCHAR(20) NOT NULL UNIQUE&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp; &amp;nbsp;valor_cobrado DECIMAL(2,2) NOT NULL&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp; &amp;nbsp;resultado ENUM(LIBERADO, NEGADO) NOT NULL&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp; &amp;nbsp;created_at&amp;nbsp;TIMESTAMP NOT NULL&lt;/font&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="188" width="360" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-4" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=16;fontStyle=1;whiteSpace=wrap;" value="MER UnB RU — Issue #9 Relatório Global de Acessos" vertex="1">
+          <mxGeometry height="30" width="1350" x="30" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-7" parent="1" style="swimlane;html=1;fontStyle=3;fontSize=12;startSize=30;fillColor=#f5f5f5;strokeColor=#999999;fontColor=#666666;dashed=1;swimlaneFillColor=#ffffff;collapsible=0;" value="&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(102, 102, 102), rgb(149, 149, 149));&quot;&gt;usuario (DEPENDÊNCIA)&lt;/span&gt;" vertex="1">
+          <mxGeometry height="112" width="310" x="170" y="377" as="geometry" />
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-8" parent="5wl995jJWVG-hqwpQTKu-7" style="text;html=1;align=left;verticalAlign=top;fontSize=11;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;" value="&lt;font face=&quot;Courier New&quot; color=&quot;#666666&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;id&amp;nbsp;INTEGER&lt;/font&gt;&lt;br&gt;&lt;div&gt;&lt;font color=&quot;#666666&quot; face=&quot;Courier New&quot;&gt;nome VARCHAR(120) NOT NULL&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font color=&quot;#666666&quot; face=&quot;Courier New&quot;&gt;matricula VARCHAR(20) NOT NULL UNIQUE&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font color=&quot;#666666&quot; face=&quot;Courier New&quot;&gt;...&lt;/font&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="76" width="310" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-10" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;rounded=0;entryX=0;entryY=0.43;entryDx=0;entryDy=0;entryPerimeter=0;" target="5wl995jJWVG-hqwpQTKu-2" value="">
+          <mxGeometry height="100" relative="1" width="100" as="geometry">
+            <Array as="points">
+              <mxPoint x="480" y="435.84" />
+            </Array>
+            <mxPoint x="480" y="435.84" as="sourcePoint" />
+            <mxPoint x="580" y="323" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-11" connectable="0" parent="5wl995jJWVG-hqwpQTKu-10" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;span style=&quot;color: rgb(102, 102, 102); font-size: 10px; background-color: rgb(236, 236, 236);&quot;&gt;(0,N)&lt;/span&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.9185" y="1" as="geometry">
+            <mxPoint x="6" y="-15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-12" connectable="0" parent="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;span style=&quot;color: rgb(102, 102, 102); font-size: 10px; background-color: rgb(236, 236, 236);&quot;&gt;(1,N)&lt;/span&gt;" vertex="1">
+          <mxGeometry x="560" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-13" parent="1" style="swimlane;html=1;fontStyle=3;fontSize=12;startSize=30;fillColor=#f5f5f5;strokeColor=#999999;fontColor=#666666;dashed=1;swimlaneFillColor=#ffffff;collapsible=0;" value="restaurantes&amp;nbsp; (DEPENDÊNCIA)" vertex="1">
+          <mxGeometry height="95" width="280" x="290" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-14" parent="5wl995jJWVG-hqwpQTKu-13" style="text;html=1;align=left;verticalAlign=top;fontSize=11;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;" value="&lt;font face=&quot;Courier New&quot; color=&quot;#666666&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;id&amp;nbsp;INTEGER&lt;/font&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot; color=&quot;#666666&quot;&gt;nome VARCHAR(120) NOT NULL&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot; color=&quot;#666666&quot;&gt;...&lt;/font&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="59" width="430" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-15" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;rounded=0;entryX=0.228;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="5wl995jJWVG-hqwpQTKu-1" value="">
+          <mxGeometry height="100" relative="1" width="100" as="geometry">
+            <Array as="points">
+              <mxPoint x="652.1" y="233.59" />
+            </Array>
+            <mxPoint x="570" y="233.58" as="sourcePoint" />
+            <mxPoint x="650" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-16" connectable="0" parent="5wl995jJWVG-hqwpQTKu-15" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;span style=&quot;color: rgb(102, 102, 102); font-size: 10px; background-color: rgb(236, 236, 236);&quot;&gt;(0,N)&lt;/span&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.9185" y="1" as="geometry">
+            <mxPoint x="6" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-17" connectable="0" parent="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;span style=&quot;color: rgb(102, 102, 102); font-size: 10px; background-color: rgb(236, 236, 236);&quot;&gt;(1,N)&lt;/span&gt;" vertex="1">
+          <mxGeometry x="660" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-18" parent="1" style="swimlane;html=1;fontStyle=3;fontSize=12;startSize=30;fillColor=#f5f5f5;strokeColor=#999999;fontColor=#666666;dashed=1;swimlaneFillColor=#ffffff;collapsible=0;" value="catracas&amp;nbsp; (DEPENDÊNCIA)" vertex="1">
+          <mxGeometry height="95" width="280" x="910" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-19" parent="5wl995jJWVG-hqwpQTKu-18" style="text;html=1;align=left;verticalAlign=top;fontSize=11;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;" value="&lt;font face=&quot;Courier New&quot; color=&quot;#666666&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;id&amp;nbsp;INTEGER&lt;/font&gt;&lt;div&gt;&lt;font color=&quot;#666666&quot; face=&quot;Courier New&quot;&gt;codigo VARCHAR(20) NOT NULL&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(102, 102, 102); font-family: &amp;quot;Courier New&amp;quot;; background-color: transparent;&quot;&gt;...&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="59" width="280" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-20" edge="1" parent="1" source="5wl995jJWVG-hqwpQTKu-19" style="edgeStyle=orthogonalEdgeStyle;fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;rounded=0;entryX=0.698;entryY=-0.001;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="5wl995jJWVG-hqwpQTKu-1" value="">
+          <mxGeometry height="100" relative="1" width="100" as="geometry">
+            <Array as="points">
+              <mxPoint x="910" y="240" />
+              <mxPoint x="821.3" y="240" />
+            </Array>
+            <mxPoint x="740" y="220" as="sourcePoint" />
+            <mxPoint x="822" y="309.41999999999996" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-21" connectable="0" parent="5wl995jJWVG-hqwpQTKu-20" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;span style=&quot;color: rgb(102, 102, 102); font-size: 10px; background-color: rgb(236, 236, 236);&quot;&gt;(0,N)&lt;/span&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.9185" y="1" as="geometry">
+            <mxPoint x="-14" y="-13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-22" connectable="0" parent="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;span style=&quot;color: rgb(102, 102, 102); font-size: 10px; background-color: rgb(236, 236, 236);&quot;&gt;(1,N)&lt;/span&gt;" vertex="1">
+          <mxGeometry x="840" y="309.99999999999994" as="geometry" />
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-23" parent="1" style="swimlane;html=1;fontStyle=3;fontSize=12;startSize=30;fillColor=#f5f5f5;strokeColor=#999999;fontColor=#666666;dashed=1;swimlaneFillColor=#ffffff;collapsible=0;" value="acesso&amp;nbsp; (DEPENDÊNCIA)" vertex="1">
+          <mxGeometry height="127" width="280" x="290" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-24" parent="5wl995jJWVG-hqwpQTKu-23" style="text;html=1;align=left;verticalAlign=top;fontSize=11;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;" value="&lt;font face=&quot;Courier New&quot; color=&quot;#666666&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;id&amp;nbsp;INTEGER&lt;/font&gt;&lt;div&gt;&lt;font color=&quot;#666666&quot; face=&quot;Courier New&quot;&gt;codigo VARCHAR(20) NOT NULL&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font color=&quot;#666666&quot; face=&quot;Courier New&quot;&gt;&lt;div style=&quot;&quot;&gt;valor_cobrado DECIMAL(2,2) NOT NULL&lt;/div&gt;&lt;div style=&quot;color: rgb(102, 102, 102);&quot;&gt;&lt;div style=&quot;color: rgb(102, 102, 102);&quot;&gt;resultado ENUM(LIBERADO, NEGADO) NOT NULL&lt;/div&gt;&lt;/div&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(102, 102, 102); font-family: &amp;quot;Courier New&amp;quot;; background-color: transparent;&quot;&gt;...&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="95" width="280" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-25" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;fontSize=12;html=1;endArrow=ERmandOne;startArrow=ERmandOne;rounded=0;entryX=0.28;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" target="5wl995jJWVG-hqwpQTKu-2" value="">
+          <mxGeometry height="100" relative="1" width="100" as="geometry">
+            <Array as="points">
+              <mxPoint x="670.83" y="650" />
+            </Array>
+            <mxPoint x="570" y="650" as="sourcePoint" />
+            <mxPoint x="670" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-26" connectable="0" parent="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;span style=&quot;color: rgb(102, 102, 102); font-size: 10px; background-color: rgb(236, 236, 236);&quot;&gt;(1,1)&lt;/span&gt;" vertex="1">
+          <mxGeometry x="585" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="5wl995jJWVG-hqwpQTKu-27" connectable="0" parent="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;span style=&quot;color: rgb(102, 102, 102); font-size: 10px; background-color: rgb(236, 236, 236);&quot;&gt;(1,1)&lt;/span&gt;" vertex="1">
+          <mxGeometry x="690" y="560" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
