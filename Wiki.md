@@ -59,6 +59,19 @@
   * H3 (3 pontos): Como administrador, eu quero cadastrar e listar catracas vinculadas a um restaurante, para que os pontos de acesso de cada unidade sejam controlados.
   * H4 (2 pontos): Como administrador, eu quero editar e alterar o status de uma catraca (Ativa, Inativa ou Em Manutenção), para que apenas catracas operacionais fiquem liberadas para uso.
 * **Declaração de Uso de IA:** Foi utilizada IA generativa, Claude (Sonnet 5.5, da Anthropic), na elaboração de rascunhos das histórias, das regras de negócio, dos cenários BDD e desta seção da Wiki referentes à issue #8. As decisões de domínio foram tomadas pelo aluno, que revisou e aprovou cada etapa, e a sintaxe dos cenários foi verificada com o parser oficial do Gherkin.
+
+### Funcionalidade: Relatório global de acessos
+* **Responsável:** Adriano
+* **Story Points:** 
+* **User Story:** Como administrador, eu quero visualizar o histórico completo de todos os acessos do campus, podendo filtrar e agrupar os dados por restaurante e por catraca específica, para ter uma visão gerencial de toda a operação.
+* **Regras de Negócio:**
+  * RN01: Apenas o administrador pode visualizar o relatório global de acessos.
+  * RN02: O relatório deve registrar e exibir todas as tentativas de entrada, tanto as liberadas quanto as negadas.
+  * RN03: Cada registro deve apresentar, quando disponível, a matrícula e o nome do estudante, o restaurante, a catraca, o resultado, o valor cobrado e a data e hora do acesso.
+  * RN04: O administrador deve poder filtrar os registros por restaurante, catraca específica, período e resultado.
+  * RN05: O administrador deve poder agrupar os registros por restaurante e, dentro de cada restaurante, por catraca.
+  * RN06: O relatório deve exibir uma mensagem informativa quando não houver registros para os filtros selecionados.
+  * RN07: Os registros devem ser preservados para consulta histórica e auditoria, sem alteração ou exclusão pelo relatório.
 ---
 
 ## 3. Padrões Adotados pelo Grupo
