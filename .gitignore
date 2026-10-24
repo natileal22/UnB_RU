@@ -1,0 +1,32 @@
+# Arquivos gerados em tempo de execução
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+/tmp/pids/*
+!/tmp/pids/.keep
+/tmp/storage/*
+!/tmp/storage/.keep
+
+# Banco SQLite local e uploads
+/storage/*
+!/storage/.keep
+/db/*.sqlite3
+/db/*.sqlite3-*
+
+# Assets compilados
+/public/assets
+
+# Variáveis de ambiente e chaves
+/config/*.key
+/config/credentials/*.key
+.env*
+
+# Dependências
+/vendor/bundle
+/.bundle
+
+# Cucumber
+/features/reports
+/tmp/capybara
+/rerun.txt
