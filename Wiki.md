@@ -1,16 +1,16 @@
 # Wiki - Sprint 1
 
-**Grupo:**
+**Grupo:**8
 
 **Sprint Entregue:** Sprint 1
 
 **Integrantes:**
 
+* Adriano Lopes - 170097960
+* Isabela de Souza - 190088931
+* Kassio Gandara de Souza - 180140540
 * Natália Leal - 221021581
 * Pedro de Paula - 231036050
-* Kassio Gandara de Souza - 180140540
-* Isabela de Souza - 190088931
-* Adriano Lopes - 170097960
 
 ---
 
@@ -36,7 +36,6 @@
 * **Regras de Negócio:** O funcionário que estiver cadastrado no sistema deve poder se autenticar com usuário (matrícula de 7 dígitos) e senha, sendo redirecionado para a página de Gestão de Restaurantes e Catracas. Tentativas de autenticação com credenciais inválidas (incorretas ou não cadastradas) devem falhar, exibindo mensagem de erro e se mantendo na página de autenticação.
 * 
 ### Funcionalidade: Validação de entrada
-
 **Responsável:** Isabela de Souza Clímaco 
 
 **Story Points:** 
@@ -60,6 +59,12 @@
   * H4 (2 pontos): Como administrador, eu quero editar e alterar o status de uma catraca (Ativa, Inativa ou Em Manutenção), para que apenas catracas operacionais fiquem liberadas para uso.
 * **Declaração de Uso de IA:** Foi utilizada IA generativa, Claude (Sonnet 5.5, da Anthropic), na elaboração de rascunhos das histórias, das regras de negócio, dos cenários BDD e desta seção da Wiki referentes à issue #8. As decisões de domínio foram tomadas pelo aluno, que revisou e aprovou cada etapa, e a sintaxe dos cenários foi verificada com o parser oficial do Gherkin.
 ---
+
+### Funcionalidade: Cardápio da Refeição Atual
+* **Responsável:** Natália Leal
+* **Story Points:** 
+* **Regras de Negócio:**O sistema deve exibir o cardápio correspondente à refeição que está sendo servida no horário atual do sistema. A visualização deve incluir obrigatoriamente as três opções alimentares: Padrão, Ovolactovegetariano e Vegetariano Estrito. Se o acesso ocorrer num horário em que o RU não está a servir refeições, o sistema deve bloquear a visualização de cardápios antigos e informar o horário da próxima refeição disponível. Caso ocorra uma refeição no horário previsto, mas o cardápio não tenha sido previamente registado na base de dados, o sistema deve exibir uma mensagem indicando que o cardápio ainda não foi disponibilizado.
+  
 
 ## 3. Padrões Adotados pelo Grupo
 * **Padrão de Commits:** Utilização do Conventional Commits, como uso de prefixos  `feat:`, `fix:` para organizar o histórico e depois não se perder.
