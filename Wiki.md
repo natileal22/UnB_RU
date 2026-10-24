@@ -61,7 +61,7 @@
     * Toda catraca pertence a um único restaurante, escolhido pelo administrador no cadastro. Não existe catraca sem restaurante.
     * O administrador também escolhe o funcionário responsável pela catraca, que precisa ter o perfil de funcionário. Cada catraca tem no máximo um responsável, e um funcionário pode responder por mais de uma catraca. O funcionário não escolhe a catraca.
     * Os status possíveis são ativa, inativa e em manutenção. Não se cadastra nem se ativa catraca em restaurante inativo.
-    * A catraca recusa a entrada fora do horário cadastrado do restaurante e quando está indisponível, isto é, inativa, em manutenção ou em restaurante inativo.
+    * A catraca recusa a entrada fora do horário cadastrado do restaurante e quando está indisponível, isto é, inativa, em manutenção ou em restaurante inativo (essa regra depende da feature de Validação de Entrada, da Isabela, e ainda não tem cenário aqui).
     * Catraca ativa não pode ser removida. Catraca inativa ou em manutenção pode ser removida, depois de confirmar a ação, desde que não tenha registros de acesso nem responsável. Se tiver, ela não é apagada e só pode ser inativada (a confirmar com o grupo).
     * Só o administrador gerencia catracas e define os responsáveis. O funcionário vê a lista apenas para leitura, e na Aplicação de Controle aparecem só as catracas vinculadas a ele que estejam ativas em restaurantes ativos. Qualquer ação administrativa do funcionário é negada com mensagem de erro.
 * **Histórias de Usuário:**
