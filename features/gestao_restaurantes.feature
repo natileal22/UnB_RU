@@ -149,7 +149,7 @@ Funcionalidade: Gestão de Restaurantes
     Então o elemento "#flash-alert" deve ter o texto "Não é possível remover um restaurante com catracas vinculadas. Remova as catracas antes ou apenas inative o restaurante"
     E o restaurante "RU Darcy Ribeiro" deve continuar existindo
 
-  @triste @autorizacao @rack_test @decisao-pendente
+  @triste @autorizacao @rack_test
   Esquema do Cenário: Funcionário não pode executar ações administrativas
     Dado que existe o restaurante "RU Darcy Ribeiro"
     E estou autenticado como "Funcionário"
@@ -167,3 +167,9 @@ Funcionalidade: Gestão de Restaurantes
       | DELETE | remover  |
       | PATCH  | inativar |
       | PATCH  | ativar   |
+
+  @triste @autorizacao @sessao
+  Cenário: Sessão expirada redireciona para a autenticação
+    Dado que minha sessão expirou
+    Quando acesso a página "Gestão de Restaurantes e Catracas"
+    Então devo ser redirecionado para a página "Autenticação"

@@ -2,7 +2,7 @@
 @mvp @issue-8 @catracas
 Funcionalidade: Gestão de Catracas
   Como administrador
-  Eu quero cadastrar, editar, alterar o status, integrar e remover catracas vinculadas a um restaurante
+  Eu quero cadastrar, editar, alterar o status e remover catracas vinculadas a um restaurante
   Para que cada unidade tenha as catracas físicas que os funcionários poderão selecionar
 
   Contexto:
@@ -57,6 +57,23 @@ Funcionalidade: Gestão de Catracas
       | CAT 01 |
       | CAT#01 |
       | CAT/01 |
+
+  @triste @cadastro @validacao
+  Esquema do Cenário: Rejeitar código de catraca vazio ou acima do tamanho máximo
+    Dado que estou autenticado como "Administrador"
+    E estou na página "Gestão de Restaurantes e Catracas"
+    Quando clico no botão "+ Associar Nova Catraca"
+    E dentro de "#new_turnstile" preencho o campo "Código" com "<codigo>"
+    E dentro de "#new_turnstile" seleciono "RU Darcy Ribeiro" no campo "Restaurante"
+    E dentro de "#new_turnstile" seleciono "Inativa" no campo "Status"
+    E dentro de "#new_turnstile" clico no botão "Salvar"
+    Então o elemento "#flash-alert" deve ter o texto "<mensagem>"
+    E não deve existir nenhuma catraca no restaurante "RU Darcy Ribeiro"
+
+    Exemplos:
+      | codigo                | mensagem                                           |
+      |                       | Código da catraca é obrigatório                    |
+      | ABCDEFGHIJKLMNOPQRSTU | Código da catraca deve ter no máximo 20 caracteres |
 
   @triste @cadastro @unicidade
   Esquema do Cenário: Rejeitar código de catraca já existente no mesmo restaurante
@@ -167,10 +184,10 @@ Funcionalidade: Gestão de Catracas
       | responsavel | Carlos Mendes |
     E estou na página "Gestão de Restaurantes e Catracas"
     Quando clico em "#remover-catraca-ru-darcy-ribeiro--cat-01"
-    Então o elemento "#flash-alert" deve ter o texto "Não é possível remover uma catraca com responsável ou registros de acesso. Inative a catraca"
+    Então o elemento "#flash-alert" deve ter o texto "Não é possível remover uma catraca com responsável ou registros de acesso. Ela só pode ficar inativa"
     E o elemento "#catraca-ru-darcy-ribeiro--cat-01" deve existir na página
 
-  @triste @autorizacao @rack_test @decisao-pendente
+  @triste @autorizacao @rack_test
   Esquema do Cenário: Funcionário não gerencia catracas
     Dado que existe a catraca "CAT-01" no restaurante "RU Darcy Ribeiro" com:
       | status | Inativa |
