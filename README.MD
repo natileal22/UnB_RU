@@ -12,7 +12,7 @@ O projeto usa PostgreSQL. Em produção e no desenvolvimento compartilhado ele r
 
 1. Instale o PostgreSQL e rode `bundle install`.
 2. Copie `.env.example` para `.env`. Sem nenhuma conexão remota configurada, o app usa o PostgreSQL local (`localhost:5432`, usuário `postgres`).
-3. Crie os bancos com `bin/rails db:create` e rode os testes com `bundle exec cucumber`.
+3. Crie os bancos com `bin/rails db:create` e confira o ambiente com `bundle exec cucumber -p fumaca`. O comando `bundle exec cucumber` sem perfil roda todas as features e sai com código 1 enquanto houver passos ainda não implementados.
 
 ### Usar o Supabase
 
@@ -22,11 +22,11 @@ Descomente `DATABASE_URL` no `.env` e preencha com a string de conexão do proje
 
 O modo transação (porta 6543) não serve para migrações. Para rodar `bin/rails db:migrate`:
 
-1. Troque a `DATABASE_URL` do `.env` pela conexão direta, da porta 5432 (o valor de `DIRECT_URL` do `.env.example`).
+1. Troque a `DATABASE_URL` do `.env` pela conexão da porta 5432 (pooler em modo sessão ou conexão direta; o `DIRECT_URL` do `.env.example` mostra o formato).
 2. Rode `bin/rails db:migrate`.
 3. Volte a `DATABASE_URL` para a porta 6543.
 
-Tarefas que apagam o banco (`db:drop`, `db:reset`, `db:setup`, `db:schema:load`, `db:purge`, `db:migrate:reset`) recusam rodar contra servidor remoto. Se for isso mesmo que você quer, rode com `PERMITIR_BANCO_REMOTO=sim`.
+Estas tarefas recusam rodar contra servidor remoto: `db:drop`, `db:drop:_unsafe`, `db:reset`, `db:setup`, `db:schema:load`, `db:purge`, `db:purge:all`, `db:migrate:reset`, `db:truncate_all` e `db:seed:replant`. Outras tarefas que alterem o banco não têm essa trava. Se for isso mesmo que você quer, rode com `PERMITIR_BANCO_REMOTO=sim`.
 
 ### Chave das credenciais
 

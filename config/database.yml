@@ -8,8 +8,9 @@
 # Regras que o arquivo aplica sozinho:
 #   - porta 6543 (Supavisor, modo transação): prepared_statements e advisory_locks desligados;
 #   - host que não é local: sslmode=require;
-#   - parâmetros "pgbouncer=true" e "sslmode" soltos na DATABASE_URL: o primeiro só existe no Prisma e o libpq o recusa,
-#     então é removido; o sslmode vem do host.
+#   - parâmetros "pgbouncer" e "sslmode" na DATABASE_URL são removidos: o primeiro só existe no Prisma e o libpq o recusa;
+#     o segundo não pode enfraquecer a decisão do projeto, então o sslmode vem sempre do host (remoto = require).
+#   - senha com caracteres especiais (#, @, /, :) precisa estar codificada na URL (%23, %40, %2F, %3A).
 #   - ambiente de teste: ignora DATABASE_URL de propósito e usa só TEST_DB_* (padrão localhost), para um teste nunca
 #     apagar dados do Supabase.
 <%
@@ -19,7 +20,7 @@
   ENV.delete("DATABASE_URL") if ambiente == "test"
 
   url_crua = ENV["DATABASE_URL"].to_s.strip
-  ENV["DATABASE_URL"] = url_crua.sub(/([?&])pgbouncer=[^&]*&?/, '\1').sub(/[?&]\z/, "") unless url_crua.empty?
+  ENV["DATABASE_URL"] = url_crua.sub(/([?&])(pgbouncer|sslmode)=[^&]*&?/, '\1').sub(/([?&])(pgbouncer|sslmode)=[^&]*&?/, '\1').sub(/[?&]\z/, "") unless url_crua.empty?
   url = ENV["DATABASE_URL"].to_s
   uri = url.empty? ? nil : (URI.parse(url) rescue nil)
 

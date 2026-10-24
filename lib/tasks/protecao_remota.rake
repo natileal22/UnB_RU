@@ -16,7 +16,11 @@ task protecao_remota: :environment do
 end
 
 # A trava entra na FRENTE dos pré-requisitos: o Rails confere o ambiente protegido (e abre conexão) antes das ações da tarefa.
-%w[db:drop db:reset db:setup db:schema:load db:purge db:migrate:reset].each do |nome|
+TAREFAS_DESTRUTIVAS = %w[
+  db:drop db:drop:_unsafe db:reset db:setup db:schema:load db:purge db:purge:all db:migrate:reset db:truncate_all db:seed:replant
+].freeze
+
+TAREFAS_DESTRUTIVAS.each do |nome|
   next unless Rake::Task.task_defined?(nome)
 
   Rake::Task[nome].prerequisites.unshift("protecao_remota")
