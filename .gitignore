@@ -20,7 +20,9 @@
 # Variáveis de ambiente e chaves
 /config/*.key
 /config/credentials/*.key
-.env*
+.env
+.env.*
+!.env.example
 
 # Dependências
 /vendor/bundle
