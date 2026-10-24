@@ -1,21 +1,24 @@
 # language: pt
+@mvp @issue-8 @restaurantes
 Funcionalidade: Gestão de Restaurantes
   Como administrador
-  Eu quero cadastrar, editar, remover e alterar o status de restaurantes universitários
-  Para que os funcionários possam selecioná-los na Aplicação de Controle
+  Eu quero cadastrar, listar, editar, ativar/inativar e remover restaurantes universitários
+  Para que as catracas e os funcionários da Aplicação de Controle saibam quais unidades existem e em que estado estão
 
-  Contexto:
-    Dado que estou logado como "Administrador"
-    E estou na página de Gestão de Restaurantes e Catracas
-
-  @mvp @feliz
-  Esquema do Cenário: Cadastrar restaurante com dados válidos (Caminho Feliz)
-    Quando clico no botão "Novo restaurante"
-    E preencho o nome "RU Darcy Ribeiro", a localização "Campus Darcy Ribeiro" e a capacidade "<capacidade>"
-    E preencho o horário de abertura "11:00" e o horário de fechamento "14:00"
-    E clico no botão "Salvar"
-    Então o sistema deve exibir a mensagem "Restaurante cadastrado com sucesso"
-    E o restaurante "RU Darcy Ribeiro" deve aparecer na lista com o status "Ativo"
+  @feliz @cadastro
+  Esquema do Cenário: Cadastrar restaurante com dados válidos
+    Dado que estou autenticado como "Administrador"
+    E estou na página "Gestão de Restaurantes e Catracas"
+    E a validação nativa do navegador está desativada no formulário "#new_restaurant"
+    Quando clico no botão "+ Cadastrar Restaurante"
+    E dentro de "#new_restaurant" preencho o campo "Nome" com "RU Darcy Ribeiro"
+    E dentro de "#new_restaurant" preencho o campo "Localização" com "Campus Darcy Ribeiro"
+    E dentro de "#new_restaurant" preencho o campo "Capacidade" com "<capacidade>"
+    E dentro de "#new_restaurant" preencho o campo "Abertura" com "11:00"
+    E dentro de "#new_restaurant" preencho o campo "Fechamento" com "14:00"
+    E dentro de "#new_restaurant" clico no botão "Salvar"
+    Então o elemento "#flash-notice" deve ter o texto "Restaurante cadastrado com sucesso"
+    E o elemento "#status-restaurante-ru-darcy-ribeiro" deve ter o texto exato "Ativo"
 
     Exemplos:
       | capacidade |
@@ -23,65 +26,144 @@ Funcionalidade: Gestão de Restaurantes
       | 500        |
       | 5000       |
 
-  @mvp @triste
-  Esquema do Cenário: Cadastrar restaurante com dados inválidos (Caminho Triste)
-    Quando clico no botão "Novo restaurante"
-    E preencho o nome "<nome>", a localização "Campus Darcy Ribeiro" e a capacidade "<capacidade>"
-    E preencho o horário de abertura "<abertura>" e o horário de fechamento "<fechamento>"
-    E clico no botão "Salvar"
-    Então o sistema deve exibir a mensagem de erro "<mensagem>"
-    E nenhum restaurante deve ser cadastrado
+  @triste @cadastro @validacao
+  Esquema do Cenário: Rejeitar cadastro com dados inválidos
+    Dado que estou autenticado como "Administrador"
+    E estou na página "Gestão de Restaurantes e Catracas"
+    E a validação nativa do navegador está desativada no formulário "#new_restaurant"
+    Quando clico no botão "+ Cadastrar Restaurante"
+    E dentro de "#new_restaurant" preencho o campo "Nome" com "<nome>"
+    E dentro de "#new_restaurant" preencho o campo "Localização" com "<localizacao>"
+    E dentro de "#new_restaurant" preencho o campo "Capacidade" com "<capacidade>"
+    E dentro de "#new_restaurant" preencho o campo "Abertura" com "<abertura>"
+    E dentro de "#new_restaurant" preencho o campo "Fechamento" com "<fechamento>"
+    E dentro de "#new_restaurant" clico no botão "Salvar"
+    Então o elemento "#flash-alert" deve ter o texto "<mensagem>"
+    E nenhum restaurante deve estar cadastrado
+    E dentro de "#new_restaurant" o campo "Nome" deve continuar preenchido com "<nome>"
 
     Exemplos:
-      | nome             | capacidade | abertura | fechamento | mensagem                                                          |
-      | RU Darcy Ribeiro | 0          | 11:00    | 14:00      | Capacidade inválida: informe um número inteiro entre 1 e 5000     |
-      | RU Darcy Ribeiro | 5001       | 11:00    | 14:00      | Capacidade inválida: informe um número inteiro entre 1 e 5000     |
-      | RU Darcy Ribeiro | abc        | 11:00    | 14:00      | Capacidade inválida: informe um número inteiro entre 1 e 5000     |
-      |                  | 500        | 11:00    | 14:00      | Nome do restaurante é obrigatório                                 |
-      | RU Darcy Ribeiro | 500        | 14:00    | 11:00      | O horário de abertura deve ser anterior ao horário de fechamento  |
+      | nome             | localizacao          | capacidade | abertura | fechamento | mensagem                                                         |
+      | RU Darcy Ribeiro | Campus Darcy Ribeiro | 0          | 11:00    | 14:00      | Capacidade inválida: informe um número inteiro entre 1 e 5000    |
+      | RU Darcy Ribeiro | Campus Darcy Ribeiro | 5001       | 11:00    | 14:00      | Capacidade inválida: informe um número inteiro entre 1 e 5000    |
+      | RU Darcy Ribeiro | Campus Darcy Ribeiro | -1         | 11:00    | 14:00      | Capacidade inválida: informe um número inteiro entre 1 e 5000    |
+      | RU Darcy Ribeiro | Campus Darcy Ribeiro | 10,5       | 11:00    | 14:00      | Capacidade inválida: informe um número inteiro entre 1 e 5000    |
+      | RU Darcy Ribeiro | Campus Darcy Ribeiro | abc        | 11:00    | 14:00      | Capacidade inválida: informe um número inteiro entre 1 e 5000    |
+      | RU Darcy Ribeiro | Campus Darcy Ribeiro |            | 11:00    | 14:00      | Capacidade inválida: informe um número inteiro entre 1 e 5000    |
+      |                  | Campus Darcy Ribeiro | 500        | 11:00    | 14:00      | Nome do restaurante é obrigatório                                |
+      | RU Darcy Ribeiro |                      | 500        | 11:00    | 14:00      | Localização do restaurante é obrigatória                         |
+      | RU Darcy Ribeiro | Campus Darcy Ribeiro | 500        | 14:00    | 11:00      | O horário de abertura deve ser anterior ao horário de fechamento |
+      | RU Darcy Ribeiro | Campus Darcy Ribeiro | 500        | 11:00    | 11:00      | O horário de abertura deve ser anterior ao horário de fechamento |
+      | RU Darcy Ribeiro | Campus Darcy Ribeiro | 500        |          | 14:00      | Horário de abertura é obrigatório                                |
+      | RU Darcy Ribeiro | Campus Darcy Ribeiro | 500        | 11:00    |            | Horário de fechamento é obrigatório                              |
+      | RU Darcy Ribeiro | Campus Darcy Ribeiro | 500        | 25:99    | 14:00      | Horário de abertura é inválido                                   |
 
-  @mvp @triste
-  Cenário: Cadastrar restaurante com nome já existente (Caminho Triste)
-    Dado que existe o restaurante "RU Darcy Ribeiro"
-    Quando clico no botão "Novo restaurante"
-    E preencho o nome "RU Darcy Ribeiro", a localização "Campus Gama" e a capacidade "300"
-    E preencho o horário de abertura "11:00" e o horário de fechamento "14:00"
-    E clico no botão "Salvar"
-    Então o sistema deve exibir a mensagem de erro "Já existe um restaurante com este nome"
-    E deve existir apenas 1 restaurante com o nome "RU Darcy Ribeiro"
+  @triste @cadastro @unicidade
+  Esquema do Cenário: Rejeitar nome de restaurante já existente variando a caixa
+    Dado que estou autenticado como "Administrador"
+    E existe o restaurante "RU Darcy Ribeiro"
+    E estou na página "Gestão de Restaurantes e Catracas"
+    E a validação nativa do navegador está desativada no formulário "#new_restaurant"
+    Quando clico no botão "+ Cadastrar Restaurante"
+    E dentro de "#new_restaurant" preencho o campo "Nome" com "<nome>"
+    E dentro de "#new_restaurant" preencho o campo "Localização" com "Campus Gama"
+    E dentro de "#new_restaurant" preencho o campo "Capacidade" com "300"
+    E dentro de "#new_restaurant" preencho o campo "Abertura" com "11:00"
+    E dentro de "#new_restaurant" preencho o campo "Fechamento" com "14:00"
+    E dentro de "#new_restaurant" clico no botão "Salvar"
+    Então o elemento "#flash-alert" deve ter o texto "Já existe um restaurante com este nome"
+    E deve existir exatamente 1 restaurante no banco
 
-  @mvp @feliz
-  Cenário: Editar os dados de um restaurante (Caminho Feliz)
-    Dado que existe o restaurante "RU Darcy Ribeiro"
-    Quando clico no botão "Editar" do restaurante "RU Darcy Ribeiro"
-    E preencho a capacidade "800" e o horário de abertura "10:30"
-    E clico no botão "Salvar"
-    Então o sistema deve exibir a mensagem "Restaurante atualizado com sucesso"
-    E o restaurante "RU Darcy Ribeiro" deve aparecer na lista com capacidade "800" e abertura às "10:30"
+    Exemplos:
+      | nome             |
+      | RU Darcy Ribeiro |
+      | ru darcy ribeiro |
+      | RU DARCY RIBEIRO |
 
-  @mvp @feliz
-  Cenário: Inativar restaurante inativa as catracas Ativas e mantém as Em Manutenção (Caminho Feliz)
-    Dado que existe o restaurante "RU Darcy Ribeiro" com status "Ativo"
-    E existe a catraca "CAT-01" com status "Ativa" no restaurante "RU Darcy Ribeiro"
-    E existe a catraca "CAT-02" com status "Em Manutenção" no restaurante "RU Darcy Ribeiro"
-    Quando clico no botão "Inativar" do restaurante "RU Darcy Ribeiro"
-    Então o sistema deve exibir a mensagem "Restaurante e suas catracas ativas foram inativados"
-    E o restaurante "RU Darcy Ribeiro" deve ter o status "Inativo"
-    E a catraca "CAT-01" deve ter o status "Inativa"
-    E a catraca "CAT-02" deve continuar com o status "Em Manutenção"
+  @feliz @listagem
+  Cenário: Listar restaurantes em ordem alfabética
+    Dado que estou autenticado como "Administrador"
+    E existem os restaurantes:
+      | nome             |
+      | RU Gama          |
+      | RU Darcy Ribeiro |
+    Quando acesso a página "Gestão de Restaurantes e Catracas"
+    Então a lista "#restaurantes" deve exibir "RU Darcy Ribeiro" antes de "RU Gama"
 
-  @mvp @triste
-  Cenário: Remover restaurante que possui catracas vinculadas (Caminho Triste)
-    Dado que existe o restaurante "RU Darcy Ribeiro"
-    E existe a catraca "CAT-01" com status "Inativa" no restaurante "RU Darcy Ribeiro"
-    Quando clico no botão "Remover" do restaurante "RU Darcy Ribeiro"
-    Então o sistema deve exibir a mensagem de erro "Não é possível remover um restaurante com catracas vinculadas. Remova as catracas antes ou apenas inative o restaurante"
+  @feliz @edicao
+  Esquema do Cenário: Editar cada campo de um restaurante
+    Dado que estou autenticado como "Administrador"
+    E existe o restaurante "RU Darcy Ribeiro" com:
+      | localizacao | Campus Darcy Ribeiro |
+      | capacidade  | 500                  |
+      | abertura    | 11:00                |
+      | fechamento  | 14:00                |
+    E estou na página "Gestão de Restaurantes e Catracas"
+    E a validação nativa do navegador está desativada no formulário de edição do restaurante "RU Darcy Ribeiro"
+    Quando clico em "#editar-restaurante-ru-darcy-ribeiro"
+    E dentro do formulário de edição do restaurante "RU Darcy Ribeiro" preencho o campo "<campo>" com "<valor>"
+    E dentro do formulário de edição do restaurante "RU Darcy Ribeiro" clico no botão "Salvar"
+    Então o elemento "#flash-notice" deve ter o texto "Restaurante atualizado com sucesso"
+    E o elemento "<linha>" deve ter o texto "<valor>"
+
+    Exemplos:
+      | campo       | valor        | linha                         |
+      | Nome        | RU Asa Norte | #restaurante-ru-asa-norte     |
+      | Localização | Campus Gama  | #restaurante-ru-darcy-ribeiro |
+      | Capacidade  | 800          | #restaurante-ru-darcy-ribeiro |
+      | Abertura    | 10:30        | #restaurante-ru-darcy-ribeiro |
+      | Fechamento  | 15:00        | #restaurante-ru-darcy-ribeiro |
+
+  @feliz @status @cascata
+  Cenário: Inativar restaurante inativa as catracas Ativas e mantém as Em Manutenção
+    Dado que estou autenticado como "Administrador"
+    E existe o restaurante "RU Darcy Ribeiro"
+    E existem as catracas no restaurante "RU Darcy Ribeiro":
+      | codigo | status        |
+      | CAT-01 | Ativa         |
+      | CAT-02 | Em Manutenção |
+    E estou na página "Gestão de Restaurantes e Catracas"
+    Quando clico em "#inativar-restaurante-ru-darcy-ribeiro"
+    Então o elemento "#flash-notice" deve ter o texto "Restaurante e suas catracas ativas foram inativados"
+    E o elemento "#status-restaurante-ru-darcy-ribeiro" deve ter o texto exato "Inativo"
+    E o elemento "#status-catraca-ru-darcy-ribeiro--cat-01" deve ter o texto exato "Inativa"
+    E o elemento "#status-catraca-ru-darcy-ribeiro--cat-02" deve ter o texto exato "Em Manutenção"
+
+  @feliz @remocao
+  Cenário: Remover restaurante sem catracas após aceitar a confirmação
+    Dado que estou autenticado como "Administrador"
+    E existe o restaurante "RU Darcy Ribeiro"
+    E estou na página "Gestão de Restaurantes e Catracas"
+    Quando clico em "#remover-restaurante-ru-darcy-ribeiro" e aceito a confirmação "Deseja realmente remover o restaurante?"
+    Então o elemento "#flash-notice" deve ter o texto "Restaurante removido com sucesso"
+    E o restaurante "RU Darcy Ribeiro" não deve existir
+
+  @triste @remocao
+  Cenário: Não remover restaurante que possui catracas vinculadas
+    Dado que estou autenticado como "Administrador"
+    E existe o restaurante "RU Darcy Ribeiro"
+    E existe a catraca "CAT-01" no restaurante "RU Darcy Ribeiro" com:
+      | status | Inativa |
+    E estou na página "Gestão de Restaurantes e Catracas"
+    Quando clico em "#remover-restaurante-ru-darcy-ribeiro"
+    Então o elemento "#flash-alert" deve ter o texto "Não é possível remover um restaurante com catracas vinculadas. Remova as catracas antes ou apenas inative o restaurante"
     E o restaurante "RU Darcy Ribeiro" deve continuar existindo
 
-  @mvp @triste
-  Cenário: Funcionário sem permissão para gerenciar restaurantes (Caminho Triste)
+  @triste @autorizacao @rack_test @decisao-pendente
+  Esquema do Cenário: Funcionário não pode executar ações administrativas
     Dado que existe o restaurante "RU Darcy Ribeiro"
-    Mas estou logado como "Funcionário" e não como "Administrador"
-    Quando tento acessar diretamente o endereço de cadastro de restaurante
-    Então o sistema deve exibir a mensagem de erro "Acesso negado: apenas o Administrador pode realizar esta ação"
-    E nenhum restaurante deve ser cadastrado
+    E estou autenticado como "Funcionário"
+    Quando envio uma requisição "<metodo>" para a rota "<rota>" do restaurante "RU Darcy Ribeiro"
+    Então a resposta deve ter status 403
+    E o elemento "#flash-alert" deve ter o texto "Acesso negado: apenas o Administrador pode realizar esta ação"
+    E o restaurante "RU Darcy Ribeiro" deve permanecer inalterado
+
+    Exemplos:
+      | metodo | rota     |
+      | GET    | novo     |
+      | POST   | criar    |
+      | GET    | editar   |
+      | PATCH  | editar   |
+      | DELETE | remover  |
+      | PATCH  | inativar |
+      | PATCH  | ativar   |
