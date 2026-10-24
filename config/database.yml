@@ -34,6 +34,7 @@
   teste_host  = ENV.fetch("TEST_DB_HOST", "localhost")
   teste_porta = ENV.fetch("TEST_DB_PORT", "5432").to_i
   teste_local = %w[localhost 127.0.0.1 ::1].include?(teste_host)
+  raise "TEST_DB_HOST precisa ser local (localhost, 127.0.0.1 ou ::1). O banco de teste nunca usa servidor remoto." unless teste_local
 %>
 default: &default
   adapter: postgresql

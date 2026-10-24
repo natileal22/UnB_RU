@@ -8,11 +8,9 @@
 /tmp/storage/*
 !/tmp/storage/.keep
 
-# Banco SQLite local e uploads
+# Uploads locais
 /storage/*
 !/storage/.keep
-/db/*.sqlite3
-/db/*.sqlite3-*
 
 # Assets compilados
 /public/assets
