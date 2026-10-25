@@ -125,6 +125,18 @@
 
 **Total de Story Points do Kassio na Sprint 1:** 15 (Gestão de restaurantes e catracas: 6; Extrato e Histórico: 4; Histórico Local da Catraca: 2; Exportação em PDF do Relatório de Operação: 3)
 
+### Funcionalidade: Relatório global de acessos
+* **Responsável:** Adriano
+* **Story Points:** 
+* **User Story:** Como administrador, eu quero visualizar o histórico completo de todos os acessos do campus, podendo filtrar e agrupar os dados por restaurante e por catraca específica, para ter uma visão gerencial de toda a operação.
+* **Regras de Negócio:**
+  * RN01: Apenas o administrador pode visualizar o relatório global de acessos.
+  * RN02: O relatório deve registrar e exibir todas as tentativas de entrada, tanto as liberadas quanto as negadas.
+  * RN03: Cada registro deve apresentar, quando disponível, a matrícula e o nome do estudante, o restaurante, a catraca, o resultado, o valor cobrado e a data e hora do acesso.
+  * RN04: O administrador deve poder filtrar os registros por restaurante, catraca específica, período e resultado.
+  * RN05: O administrador deve poder agrupar os registros por restaurante e, dentro de cada restaurante, por catraca.
+  * RN06: O relatório deve exibir uma mensagem informativa quando não houver registros para os filtros selecionados.
+  * RN07: Os registros devem ser preservados para consulta histórica e auditoria, sem alteração ou exclusão pelo relatório.
 ---
 
 ## 3. Padrões Adotados pelo Grupo
