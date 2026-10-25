@@ -1,0 +1,36 @@
+# Arquivos gerados em tempo de execução
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+/tmp/pids/*
+!/tmp/pids/.keep
+/tmp/storage/*
+!/tmp/storage/.keep
+
+# Uploads locais
+/storage/*
+!/storage/.keep
+
+# Assets compilados
+/public/assets
+
+# Variáveis de ambiente e chaves
+/config/*.key
+/config/credentials/*.key
+.env
+.env.*
+!.env.example
+
+# Dependências
+/vendor/bundle
+/.bundle
+/.trail
+# Cucumber
+/features/reports
+/tmp/capybara
+/rerun.txt
+
+# Pastas de trabalho de agentes (não versionar)
+/.agents
+/.trail

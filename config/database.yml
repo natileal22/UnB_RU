@@ -1,0 +1,75 @@
+# PostgreSQL. Em produção e no desenvolvimento aponta para o Supabase; nos testes usa sempre um PostgreSQL local.
+#
+# Conexão do desenvolvimento e da produção (a primeira que existir):
+#   1. DATABASE_URL (use a URL do Supavisor, porta 6543, ou a direta, porta 5432)
+#   2. SUPABASE_DB_HOST, SUPABASE_DB_PORT, SUPABASE_DB_NAME, SUPABASE_DB_USER, SUPABASE_DB_PASSWORD
+#   3. sem nada: PostgreSQL em localhost:5432, usuário postgres
+#
+# Regras que o arquivo aplica sozinho:
+#   - porta 6543 (Supavisor, modo transação): prepared_statements e advisory_locks desligados;
+#   - host que não é local: sslmode=require;
+#   - parâmetros "pgbouncer" e "sslmode" na DATABASE_URL são removidos: o primeiro só existe no Prisma e o libpq o recusa;
+#     o segundo não pode enfraquecer a decisão do projeto, então o sslmode vem sempre do host (remoto = require).
+#   - senha com caracteres especiais (#, @, /, :) precisa estar codificada na URL (%23, %40, %2F, %3A).
+#   - ambiente de teste: ignora DATABASE_URL de propósito e usa só TEST_DB_* (padrão localhost), para um teste nunca
+#     apagar dados do Supabase.
+<%
+  require "uri"
+  ambiente = ENV.fetch("RAILS_ENV") { ENV.fetch("RACK_ENV", "development") }
+  # No teste a DATABASE_URL some de vez: o Rails a aplicaria ao ambiente atual e um teste poderia apagar dados do Supabase.
+  ENV.delete("DATABASE_URL") if ambiente == "test"
+
+  url_crua = ENV["DATABASE_URL"].to_s.strip
+  ENV["DATABASE_URL"] = url_crua.sub(/([?&])(pgbouncer|sslmode)=[^&]*&?/, '\1').sub(/([?&])(pgbouncer|sslmode)=[^&]*&?/, '\1').sub(/[?&]\z/, "") unless url_crua.empty?
+  url = ENV["DATABASE_URL"].to_s
+  uri = url.empty? ? nil : (URI.parse(url) rescue nil)
+
+  # Desenvolvimento e produção: Supabase (ou o PostgreSQL local, se nada estiver configurado)
+  host  = uri&.host || ENV.fetch("SUPABASE_DB_HOST", ENV.fetch("DB_HOST", "localhost"))
+  porta = (uri&.port || ENV.fetch("SUPABASE_DB_PORT", ENV.fetch("DB_PORT", "5432"))).to_i
+  local  = %w[localhost 127.0.0.1 ::1].include?(host)
+  pooler = porta == 6543
+
+  # Teste: sempre local, em qualquer ambiente. `rails db:create` e `db:drop` rodados em desenvolvimento também tocam o
+  # banco de teste, então este bloco nunca herda o host do Supabase.
+  teste_host  = ENV.fetch("TEST_DB_HOST", "localhost")
+  teste_porta = ENV.fetch("TEST_DB_PORT", "5432").to_i
+  teste_local = %w[localhost 127.0.0.1 ::1].include?(teste_host)
+  raise "TEST_DB_HOST precisa ser local (localhost, 127.0.0.1 ou ::1). O banco de teste nunca usa servidor remoto." unless teste_local
+%>
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+# Cuidado: não rode db:drop, db:reset nem db:schema:load com a DATABASE_URL apontando para o Supabase.
+development:
+  <<: *default
+  host: <%= host %>
+  port: <%= porta %>
+  database: <%= ENV.fetch("SUPABASE_DB_NAME", "unb_ru_development") %>
+  username: <%= ENV.fetch("SUPABASE_DB_USER", "postgres") %>
+  password: <%= ENV["SUPABASE_DB_PASSWORD"] %>
+  sslmode: <%= local ? "prefer" : "require" %>
+  prepared_statements: <%= !pooler %>
+  advisory_locks: <%= !pooler %>
+
+test:
+  <<: *default
+  host: <%= teste_host %>
+  port: <%= teste_porta %>
+  database: <%= ENV.fetch("TEST_DB_NAME", "unb_ru_test") %>
+  username: <%= ENV.fetch("TEST_DB_USER", "postgres") %>
+  password: <%= ENV["TEST_DB_PASSWORD"] %>
+  sslmode: <%= teste_local ? "prefer" : "require" %>
+
+production:
+  <<: *default
+  host: <%= host %>
+  port: <%= porta %>
+  database: <%= ENV.fetch("SUPABASE_DB_NAME", "postgres") %>
+  username: <%= ENV["SUPABASE_DB_USER"] %>
+  password: <%= ENV["SUPABASE_DB_PASSWORD"] %>
+  sslmode: <%= local ? "prefer" : "require" %>
+  prepared_statements: <%= !pooler %>
+  advisory_locks: <%= !pooler %>

@@ -1,0 +1,12 @@
+<%
+rerun = File.file?('rerun.txt') ? IO.read('rerun.txt') : ""
+rerun = rerun.strip.gsub /\s/, ' '
+rerun_opts = rerun.empty? ? "--format #{ENV['CUCUMBER_FORMAT'] || 'progress'} features" : "--format #{ENV['CUCUMBER_FORMAT'] || 'pretty'} #{rerun}"
+# cadastro-usuario.feature e recarga_saldo.feature (de outros integrantes) nao tem '# language: pt' e o
+# parser os le como ingles. Ficam fora do perfil padrao ate o dono de cada um corrigir o cabecalho.
+excluir_sem_idioma = "--exclude cadastro-usuario.feature --exclude recarga_saldo.feature"
+std_opts = "--format #{ENV['CUCUMBER_FORMAT'] || 'pretty'} --strict --publish-quiet --tags 'not @wip' #{excluir_sem_idioma}"
+%>
+default: <%= std_opts %> features
+rerun: <%= rerun_opts %> --format rerun --out rerun.txt --strict --publish-quiet --tags 'not @wip'
+fumaca: --format <%= ENV['CUCUMBER_FORMAT'] || 'pretty' %> --strict --publish-quiet features/saude.feature

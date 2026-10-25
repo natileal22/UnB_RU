@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# No Windows o Cucumber le o codigo de pagina do console e quebra se ele tiver acento (chcp 850).
+# Fixar a saida em UTF-8 aqui evita depender de variavel de ambiente do usuario.
+ENV['CUCUMBER_OUTPUT_ENCODING'] ||= 'UTF-8'
+
+vendored_cucumber_bin = Dir["#{File.dirname(__FILE__)}/../vendor/{gems,plugins}/cucumber*/bin/cucumber"].first
+if vendored_cucumber_bin
+  load File.expand_path(vendored_cucumber_bin)
+else
+  require 'rubygems' unless ENV['NO_RUBYGEMS']
+  require 'cucumber'
+  load Cucumber::BINARY
+end
