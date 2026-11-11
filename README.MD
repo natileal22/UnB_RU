@@ -51,34 +51,53 @@ aos filtros, a tela exibe uma mensagem de lista vazia.
 
 ### Testes
 
-Os testes das duas issues devem ser executados em suas respectivas branches e com
-bancos de teste separados, porque cada branch possui migrations próprias.
+Na branch consolidada `feat/adriano-issue_1_9`, as duas issues e todas as migrations
+estão disponíveis no mesmo checkout. Use um único banco de teste para executar a
+suíte completa.
 
-#### Issue #1: cadastro de usuário
+#### Preparação da branch e do banco
 
 ```bash
-git switch feat/issue-1-cadastro-usuario
+git switch feat/adriano-issue_1_9
 
-TEST_DB_NAME=unb_ru_test_users \
+TEST_DB_NAME=unb_ru_test \
 RAILS_ENV=test \
 bin/rails db:create db:migrate
-
-TEST_DB_NAME=unb_ru_test_users \
-RAILS_ENV=test \
-bundle exec rspec \
-  spec/models/user_spec.rb \
-  spec/requests/users_spec.rb
 ```
 
 O resultado esperado é:
 
 ```text
-8 examples, 0 failures
+16 examples, 0 failures
 ```
 
-Os specs verificam o model `User`, o cadastro válido, campos vazios, matrícula
-inválida, matrícula duplicada, persistência no banco e redirecionamento para
-`/login`.
+#### RSpec completo
+
+```bash
+TEST_DB_NAME=unb_ru_test \
+RAILS_ENV=test \
+bundle exec rspec \
+  spec/models/user_spec.rb \
+  spec/requests/users_spec.rb \
+  spec/models/access_spec.rb \
+  spec/models/restaurant_spec.rb \
+  spec/requests/admin/relatorios_spec.rb
+```
+
+Os specs verificam o cadastro de usuário, os models `Access` e `Restaurant`,
+listagem de acessos, filtros, período, agrupamento, resultado vazio e bloqueio
+de funcionário.
+
+Para executar apenas uma feature:
+
+```bash
+TEST_DB_NAME=unb_ru_test RAILS_ENV=test \
+bundle exec rspec spec/models/user_spec.rb spec/requests/users_spec.rb
+
+TEST_DB_NAME=unb_ru_test RAILS_ENV=test \
+bundle exec rspec spec/models/access_spec.rb spec/models/restaurant_spec.rb \
+  spec/requests/admin/relatorios_spec.rb
+```
 
 Para testar a funcionalidade no navegador:
 
@@ -107,39 +126,16 @@ user.matricula
 user.password
 ```
 
-#### Issue #9: relatório global de operação
+#### Teste funcional no navegador
 
-```bash
-git switch feat/issue-9-relatorio-global
-
-TEST_DB_NAME=unb_ru_test_report \
-RAILS_ENV=test \
-bin/rails db:create db:migrate
-
-TEST_DB_NAME=unb_ru_test_report \
-RAILS_ENV=test \
-bundle exec rspec \
-  spec/models/access_spec.rb \
-  spec/models/restaurant_spec.rb \
-  spec/requests/admin/relatorios_spec.rb
-```
-
-O resultado esperado é:
-
-```text
-8 examples, 0 failures
-```
-
-Os specs verificam os models `Access` e `Restaurant`, listagem de acessos,
-filtros, período, agrupamento, resultado vazio e bloqueio de funcionário.
-
-Para testar a funcionalidade no navegador:
+Inicie o servidor na branch consolidada:
 
 ```bash
 bin/rails server
 ```
 
-Acesse <http://localhost:3000/admin/relatorio>. Para inserir dados de teste,
+Acesse <http://localhost:3000/cadastro/new> para testar o cadastro. Para testar o
+relatório, acesse <http://localhost:3000/admin/relatorio>. Para inserir dados de teste,
 abra o console Rails:
 
 ```bash
@@ -188,7 +184,7 @@ Teste a listagem sem filtros e depois:
 O último endereço deve exibir `Nenhum acesso encontrado para os filtros
 informados`.
 
-#### Cucumber e RuboCop
+#### Cucumber, RuboCop e CI
 
 Os arquivos `.feature` são a especificação BDD das issues:
 
@@ -204,5 +200,5 @@ bundle exec cucumber features/saude.feature
 bundle exec rubocop --fail-level E
 ```
 
-O workflow de CI em `.github/workflows/ci.yml` executa os testes da branch,
+O workflow de CI em `.github/workflows/ci.yml` executa os 16 exemplos RSpec,
 o smoke test do Cucumber e o RuboCop em cada push e pull request.
