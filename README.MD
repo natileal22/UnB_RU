@@ -49,6 +49,21 @@ permite filtrar por restaurante, catraca, resultado e período. A opção de agr
 consolida a quantidade por restaurante e catraca. Quando nenhum registro corresponde
 aos filtros, a tela exibe uma mensagem de lista vazia.
 
+### Dados de exemplo
+
+Na branch consolidada, a seed popula usuários, restaurantes e acessos das duas
+features. Ela é idempotente e pode ser executada novamente sem duplicar os dados:
+
+```bash
+git switch feat/adriano-issue_1_9
+bin/rails db:seed
+```
+
+Após executar a seed, use `ana.silva@unb.br` ou a matrícula `123456789` como
+referência do cadastro. Para testar o relatório, os dados incluem os restaurantes
+`RU Darcy Ribeiro` e `RU Gama`, as catracas `CAT-01` e `CAT-02` e os resultados
+`LIBERADO` e `NEGADO`.
+
 ### Testes
 
 Na branch consolidada `feat/adriano-issue_1_9`, as duas issues e todas as migrations
