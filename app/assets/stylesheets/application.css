@@ -8,3 +8,172 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #fcf9f8;
+  color: #222;
+  font-family: Arial, sans-serif;
+  margin: 0;
+}
+
+.report-page {
+  margin: 0 auto;
+  max-width: 76rem;
+  padding: 2rem;
+}
+
+.report-header h1 {
+  color: #1351b4;
+  margin: 0.25rem 0;
+}
+
+.eyebrow {
+  color: #1351b4;
+  font-size: 0.75rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.report-subtitle {
+  color: #555;
+}
+
+.report-filters,
+.report-table-card {
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.15rem 0.75rem rgb(0 0 0 / 8%);
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+}
+
+.report-filters form {
+  align-items: end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.filter-field {
+  display: flex;
+  flex: 1 1 10rem;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.filter-field label,
+.group-filter {
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.filter-field input,
+.filter-field select {
+  border: 1px solid #aaa;
+  border-radius: 0.25rem;
+  padding: 0.6rem;
+}
+
+.group-filter {
+  align-items: center;
+  display: flex;
+  gap: 0.4rem;
+  min-height: 2.4rem;
+}
+
+.primary-button {
+  background: #1351b4;
+  border: 0;
+  border-radius: 0.25rem;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0.7rem 1rem;
+}
+
+.report-summary {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 1.5rem;
+}
+
+.report-summary article {
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.15rem 0.75rem rgb(0 0 0 / 8%);
+  padding: 1.1rem;
+}
+
+.report-summary span {
+  color: #555;
+  display: block;
+  font-size: 0.85rem;
+}
+
+.report-summary strong {
+  display: block;
+  font-size: 1.8rem;
+  margin-top: 0.5rem;
+}
+
+.status-released,
+.result-liberado {
+  color: #16803c;
+}
+
+.status-denied,
+.result-negado {
+  color: #b42318;
+}
+
+.report-table-card {
+  overflow-x: auto;
+}
+
+.report-table-card h2 {
+  font-size: 1.15rem;
+  margin-top: 0;
+}
+
+table {
+  border-collapse: collapse;
+  min-width: 42rem;
+  width: 100%;
+}
+
+th,
+td {
+  border-bottom: 1px solid #eee;
+  padding: 0.8rem;
+  text-align: left;
+}
+
+th {
+  background: #f5f3f2;
+  color: #444;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.result {
+  font-weight: bold;
+}
+
+.empty-state {
+  background: #f5f3f2;
+  padding: 1rem;
+}
+
+@media (max-width: 700px) {
+  .report-page {
+    padding: 1rem;
+  }
+
+  .report-summary {
+    grid-template-columns: 1fr;
+  }
+}
