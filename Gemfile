@@ -39,6 +39,7 @@ group :development, :test do
   gem "database_cleaner-active_record"
   gem "capybara"
   gem "selenium-webdriver"
+  gem "rubocop-rails"
 
   # Lê o .env local (credenciais do Supabase); o .env real nunca entra no Git
   gem "dotenv-rails"
