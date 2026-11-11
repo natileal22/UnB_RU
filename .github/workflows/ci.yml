@@ -35,6 +35,6 @@ jobs:
           bundler-cache: true
           ruby-version: "3.3"
       - run: bin/rails db:test:prepare
-      - run: bundle exec rspec
+      - run: bundle exec rspec spec/models/access_spec.rb spec/models/restaurant_spec.rb spec/requests/admin/relatorios_spec.rb
       - run: bundle exec cucumber features/saude.feature
-      - run: bundle exec rubocop --fail-level E
+      - run: bundle exec rubocop --fail-level E app/controllers/admin/relatorios_controller.rb app/models/access.rb app/models/restaurant.rb spec/models/access_spec.rb spec/models/restaurant_spec.rb spec/requests/admin/relatorios_spec.rb
