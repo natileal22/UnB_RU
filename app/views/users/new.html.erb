@@ -11,7 +11,7 @@
       <p class="flash flash-alert" role="alert"><%= flash[:alert] %></p>
     <% end %>
 
-    <%= form_with model: @user, url: cadastro_index_path do |form| %>
+    <%= form_with model: @user, url: users_path do |form| %>
       <div class="field">
         <%= form.label :name, "Nome completo" %>
         <%= form.text_field :name, required: true, autocomplete: "name" %>
