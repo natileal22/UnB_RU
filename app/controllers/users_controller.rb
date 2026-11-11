@@ -25,9 +25,4 @@ class UsersController < ApplicationController
   def user_params
     params.expect(user: %i[name matricula password])
   end
-  def new
-  end
-
-  def create
-  end
 end

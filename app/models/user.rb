@@ -1,7 +1,5 @@
 class User < ApplicationRecord
-  has_secure_password
-
-  validates :name, presence: true
+  validates :name, :password, presence: true
   validates :matricula, presence: true, uniqueness: { message: "já cadastrada" },
                         format: { with: /\A\d{9}\z/, message: "inválida" }
   validate :matricula_must_not_be_repeated_digit

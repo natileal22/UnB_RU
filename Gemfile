@@ -11,7 +11,6 @@ gem "rails", "~> 8.1.4"
 gem "propshaft"
 # Banco de dados: PostgreSQL (hospedado no Supabase em produção; PostgreSQL local em desenvolvimento e testes)
 gem "pg", "~> 1.5"
-gem "bcrypt", "~> 3.1"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
