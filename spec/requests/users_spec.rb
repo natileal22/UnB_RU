@@ -6,7 +6,7 @@ RSpec.describe "User registration", type: :request do
   end
 
   it "creates a user and redirects to authentication" do
-    post cadastro_index_path, params: valid_params
+    post users_path, params: valid_params
 
     expect(response).to redirect_to(login_path)
     expect(flash[:notice]).to eq("Cadastro realizado com sucesso")
@@ -14,7 +14,7 @@ RSpec.describe "User registration", type: :request do
   end
 
   it "keeps the form and reports missing required fields" do
-    post cadastro_index_path, params: { user: {} }
+    post users_path, params: { user: {} }
 
     expect(response).to have_http_status(:unprocessable_entity)
     expect(response.body).to include("Preencha todos os campos obrigatórios")
@@ -22,7 +22,7 @@ RSpec.describe "User registration", type: :request do
   end
 
   it "reports an invalid matrícula" do
-    post cadastro_index_path, params: {
+    post users_path, params: {
       user: { name: "Ana Silva", matricula: "123", password: "SenhaForte123" }
     }
 
@@ -34,7 +34,7 @@ RSpec.describe "User registration", type: :request do
   it "reports a duplicate matrícula" do
     User.create!(name: "Ana Silva", matricula: "123456789", password: "SenhaForte123")
 
-    post cadastro_index_path, params: valid_params
+    post users_path, params: valid_params
 
     expect(response).to have_http_status(:unprocessable_entity)
     expect(response.body).to include("Matrícula já cadastrada")
