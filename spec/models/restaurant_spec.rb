@@ -6,6 +6,6 @@ RSpec.describe Restaurant, type: :model do
     duplicate = described_class.new(name: "RU Darcy Ribeiro")
 
     expect(duplicate).not_to be_valid
-    expect(duplicate.errors[:name]).to include("já está em uso")
+    expect(duplicate.errors.details[:name]).to include(a_hash_including(error: :taken))
   end
 end

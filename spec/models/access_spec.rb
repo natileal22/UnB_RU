@@ -17,6 +17,6 @@ RSpec.describe Access, type: :model do
     access.resultado = "PENDENTE"
 
     expect(access).not_to be_valid
-    expect(access.errors[:resultado]).to include("não está incluído na lista")
+    expect(access.errors.details[:resultado]).to include(a_hash_including(error: :inclusion))
   end
 end

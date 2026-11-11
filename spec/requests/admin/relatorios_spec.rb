@@ -44,7 +44,9 @@ RSpec.describe "Admin global report", type: :request do
   end
 
   it "denies a non-administrator session" do
-    get admin_relatorio_path, session: { role: "Funcionário" }
+    allow_any_instance_of(Admin::RelatoriosController).to receive(:session).and_return(role: "Funcionário")
+
+    get admin_relatorio_path
 
     expect(response).to have_http_status(:forbidden)
     expect(response.body).to include("Acesso negado: apenas o Administrador pode realizar esta ação")
