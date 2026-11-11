@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   root "saude#index"
   resources :users, only: %i[new create], path: "cadastro"
   get "login", to: "sessions#new", as: :login
+  namespace :admin do
+    get "relatorio", to: "relatorios#show", as: :relatorio
+  end
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
