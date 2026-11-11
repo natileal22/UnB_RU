@@ -32,3 +32,32 @@ Estas tarefas recusam rodar contra servidor remoto: `db:drop`, `db:drop:_unsafe`
 
 O `config/credentials.yml.enc` vem no repositório, mas a `config/master.key` não. Peça a chave a quem mantém o projeto.
 
+## Funcionalidades da Sprint 2
+
+### Cadastro de usuário
+
+Acesse `GET /cadastro/new` para cadastrar um estudante com nome, matrícula e senha.
+A matrícula deve ter nove dígitos e não pode estar cadastrada anteriormente. O cadastro
+persiste o registro em `users` e redireciona para `/login` com a mensagem de sucesso.
+Não há autenticação real nesta entrega e a senha é persistida conforme a especificação
+da sprint, sem criptografia.
+
+### Relatório global de operação
+
+Administradores acessam `GET /admin/relatorio`. A tela lista os acessos registrados e
+permite filtrar por restaurante, catraca, resultado e período. A opção de agrupamento
+consolida a quantidade por restaurante e catraca. Quando nenhum registro corresponde
+aos filtros, a tela exibe uma mensagem de lista vazia.
+
+### Testes
+
+Com PostgreSQL local disponível, prepare o banco de testes e execute:
+
+```bash
+bin/rails db:test:prepare
+bundle exec rspec
+bundle exec cucumber features/saude.feature
+bundle exec rubocop --fail-level E
+```
+
+O workflow de CI executa esses mesmos comandos em cada push e pull request.
