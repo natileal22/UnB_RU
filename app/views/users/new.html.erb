@@ -1,0 +1,30 @@
+<h1>Users#new</h1>
+<p>Find me in app/views/users/new.html.erb</p>
+<% content_for :title, "Cadastro de usuário" %>
+
+<main class="auth-page">
+  <section class="auth-card">
+    <h1>Cadastro de usuário</h1>
+    <p class="auth-intro">Crie sua conta para acessar o Restaurante Universitário.</p>
+
+    <% if flash[:alert] %>
+      <p class="flash flash-alert" role="alert"><%= flash[:alert] %></p>
+    <% end %>
+
+    <%= form_with model: @user, url: cadastro_index_path do |form| %>
+      <div class="field">
+        <%= form.label :name, "Nome completo" %>
+        <%= form.text_field :name, required: true, autocomplete: "name" %>
+      </div>
+      <div class="field">
+        <%= form.label :matricula, "Matrícula" %>
+        <%= form.text_field :matricula, required: true, inputmode: "numeric", maxlength: 9 %>
+      </div>
+      <div class="field">
+        <%= form.label :password, "Senha" %>
+        <%= form.password_field :password, required: true, autocomplete: "new-password" %>
+      </div>
+      <%= form.submit "Cadastrar", class: "primary-button" %>
+    <% end %>
+  </section>
+</main>
