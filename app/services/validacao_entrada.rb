@@ -67,7 +67,7 @@ class ValidacaoEntrada
   def usuario
     return @usuario if defined?(@usuario)
 
-    @usuario = User.find_by(matricula: matricula, perfil: "ALUNO")
+    @usuario = User.find_by(matricula: matricula, perfil: "estudante")
   end
 
   def negar(motivo)
