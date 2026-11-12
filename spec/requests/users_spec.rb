@@ -10,13 +10,13 @@ RSpec.describe "User registration", type: :request do
 
     expect(response).to redirect_to(login_path)
     expect(flash[:notice]).to eq("Cadastro realizado com sucesso")
-    expect(User.find_by(matricula: "123456789").password).to eq("SenhaForte123")
+    expect(User.find_by(matricula: "123456789").authenticate("SenhaForte123")).to be_truthy
   end
 
   it "keeps the form and reports missing required fields" do
     post users_path, params: { user: {} }
 
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     expect(response.body).to include("Preencha todos os campos obrigatórios")
     expect(User.count).to eq(0)
   end
@@ -26,7 +26,7 @@ RSpec.describe "User registration", type: :request do
       user: { name: "Ana Silva", matricula: "123", password: "SenhaForte123" }
     }
 
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     expect(response.body).to include("Matrícula inválida")
     expect(User.count).to eq(0)
   end
@@ -36,7 +36,7 @@ RSpec.describe "User registration", type: :request do
 
     post users_path, params: valid_params
 
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     expect(response.body).to include("Matrícula já cadastrada")
     expect(User.count).to eq(1)
   end
