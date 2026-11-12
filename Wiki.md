@@ -36,12 +36,41 @@
 * **Regras de Negócio:** O funcionário que estiver cadastrado no sistema deve poder se autenticar com usuário (matrícula de 7 dígitos) e senha, sendo redirecionado para a página de Gestão de Restaurantes e Catracas. Tentativas de autenticação com credenciais inválidas (incorretas ou não cadastradas) devem falhar, exibindo mensagem de erro e se mantendo na página de autenticação.
 * 
 ### Funcionalidade: Validação de entrada
+* **Responsável:** Isabela de Souza Clímaco (190088931)
+* **Story Points:** 3
+* **User Story:** Como estudante, eu quero ter minha matrícula validada ao passar na catraca do RU, para que eu possa fazer minha refeição usando o saldo da minha conta.
+* **Regras de Negócio:**
+  * RN01: A matrícula do estudante deve ter exatamente 9 dígitos numéricos; caso contrário, a entrada é negada com a mensagem "Matrícula com formato inválido".
+  * RN02: A catraca aceita apenas estudantes. Matrículas de funcionários (SIAPE, 7 dígitos) são recusadas por formato inválido.
+  * RN03: Não há senha na catraca: ela lê apenas a matrícula.
+  * RN04: A catraca precisa estar ativa e pertencer a um restaurante ativo; catraca inativa ou em manutenção nega a entrada com "Catraca indisponível".
+  * RN05: Se um funcionário configurou o ponto de acesso, a catraca precisa pertencer ao restaurante selecionado; senão, a entrada é negada com "Catraca não pertence ao restaurante selecionado".
+  * RN06: Matrícula não cadastrada é negada com "Usuário não cadastrado no sistema".
+  * RN07: O preço da refeição é R$ 4,50. A entrada só é liberada com saldo maior ou igual a R$ 4,50; senão, é negada com "Saldo insuficiente para a refeição" e o saldo não muda.
+  * RN08: Com tudo válido, a catraca é liberada e R$ 4,50 são debitados do saldo. O débito e o registro do acesso acontecem na mesma transação.
+  * RN09: Toda tentativa, liberada ou negada, é registrada em `accesses` com o resultado (LIBERADO/NEGADO), o motivo da negação e o valor cobrado. Esses registros alimentam o Relatório Global de Acessos.
+  * Ordem das verificações: formato → catraca → restaurante selecionado → cadastro → saldo.
+* **Hipóteses:** preço fixo de R$ 4,50 até existir uma tabela de preços; a validação de horário de refeição está fora do escopo desta história.
+* **Como testar:** `bundle exec cucumber features/validacao_entrada.feature` e `bundle exec rspec spec/services/validacao_entrada_spec.rb spec/requests/catracas_spec.rb`
 
-**Responsável:** Isabela de Souza Clímaco 
+Foi utilizada IA generativa, Claude (Opus 5.5 no chat do claude.ai e [confirmar] no Claude Code, da Anthropic), no planejamento e no plano de ação da sprint, nos rascunhos da história, das regras de negócio e dos cenários BDD, na modelagem da tabela `accesses` e nesta seção da Wiki referentes à issue #6. No chat, a IA ajudou a interpretar o roteiro da disciplina, a montar o passo a passo da implementação com a explicação de cada arquivo e a revisar os cenários e o código. Ao detectar que a branch de autenticação do funcionário (issue do Pedro) colidia com esta implementação (coluna `perfil` duplicada, senha com `has_secure_password` e step de mensagem de erro repetido), a IA simulou o merge e propôs a integração. Os testes foram executados e conferidos localmente (49 exemplos RSpec e 29 cenários Cucumber passando, RuboCop sem erros), e o CI os executa a cada push.  O texto ainda será revisado pela aluna antes da entrega.
 
-**Story Points:** 
+### Funcionalidade: Configuração do Ponto de Acesso
+* **Responsável:** Isabela de Souza Clímaco (190088931)
+* **Story Points:** 5
+* **User Story:** Como funcionário do restaurante, eu quero selecionar, logo após o login, em qual restaurante vou operar, para que o sistema direcione as regras corretamente e grave os logs com o restaurante correto.
+* **Regras de Negócio:**
+  * RN01: Somente funcionários e administradores podem configurar o ponto de acesso. Um estudante vê a mensagem "Acesso negado: apenas Funcionários e Administradores podem acessar esta página".
+  * RN02: É preciso estar autenticado; sem login, o usuário é redirecionado para a autenticação do operador.
+  * RN03: A lista de seleção exibe apenas restaurantes ativos. Se não houver nenhum, o sistema exibe "Nenhum restaurante disponível".
+  * RN04: Confirmar sem escolher um restaurante exibe "Selecione um restaurante para continuar".
+  * RN05: Um restaurante inativo enviado diretamente é recusado com "Restaurante indisponível para operação".
+  * RN06: Após a seleção, o restaurante fica guardado na sessão do funcionário e ele é direcionado para a tela de operação, que mostra o nome do restaurante e suas catracas.
+  * RN07: Com o ponto de acesso configurado, a Validação de Entrada só aceita catracas do restaurante selecionado.
+* **Hipóteses:** a seleção fica na sessão (sem tabela nova); trocar de restaurante sem sair do sistema está fora do escopo.
+* **Como testar:** `bundle exec cucumber features/configuracao_ponto_acesso.feature` e `bundle exec rspec spec/requests/pontos_acesso_spec.rb`
 
-**Regras de Negócio:** A matrícula do estudante deve ter exatamente 9 dígitos numéricos, a catraca aceita apenas estudantes (servidores estão fora do escopo desta história), não há senha: a catraca lê apenas a matrícula, o preço da refeição é R$ 4,50; a entrada só é liberada se o saldo for maior ou igual a R$ 4,50, com matrícula válida, cadastrada e saldo suficiente, a catraca é liberada e R$ 4,50 são debitados do saldo, matrícula com formato inválido, não cadastrada ou com
+Foi utilizada IA generativa, Claude (Opus 5.5 no chat do claude.ai e [confirmar] no Claude Code, da Anthropic), no plano de ação, nos rascunhos da história, das regras de negócio e dos cenários BDD e nesta seção da Wiki referentes à issue #5. A comparação com a issue de gestão de restaurantes e catracas, para separar o que já estava coberto pelo colega do que era exclusivo desta issue, também foi feita com apoio da IA. A implementação (controllers, telas, steps do Cucumber e specs do RSpec) foi gerada pelo Claude Code em etapas com aprovação da aluna, adaptada à autenticação do funcionário (perfis `estudante`, `funcionario` e `administrador` e login do operador). Para evitar conflito entre steps, os passos compartilhados foram reunidos em `features/step_definitions/comum_steps.rb`, e o step de mensagem de erro da feature de autenticação foi reaproveitado. Os cenários foram verificados com o Cucumber (todos passando) antes da entrega. O texto ainda será revisado pela aluna antes da entrega.
 
 ### Funcionalidade: Gestão de restaurantes e catracas
 * **Responsável:** Kassio Gandara de Souza
