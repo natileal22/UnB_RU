@@ -1,0 +1,196 @@
+<mxfile host="Electron">
+  <diagram id="mer-v2" name="MER UnB RU v2">
+    <mxGraphModel dx="1013" dy="884" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="c2" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=16;fontStyle=1;whiteSpace=wrap;" value="MER UnB RU — Issue #8 Gestão de Restaurantes e Catracas (v2; base de cenários: 10 features *_v2.feature)" vertex="1">
+          <mxGeometry height="30" width="1350" x="40" y="15" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;whiteSpace=wrap;fontColor=#555555;" value="Notação: pé-de-galinha, (min,max). Verde = MER principal. Cinza tracejado = Dependência de outra Issue (sem detalhe). PK/FK em negrito." vertex="1">
+          <mxGeometry height="22" width="1350" x="40" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" parent="1" style="swimlane;html=1;fontStyle=1;fontSize=13;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#ffffff;horizontal=1;collapsible=0;" value="restaurantes" vertex="1">
+          <mxGeometry height="280" width="430" x="40" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c5" parent="c4" style="text;html=1;align=left;verticalAlign=top;fontSize=11;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;" value="&lt;font face=&#39;Courier New&#39;&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;b&gt;id&lt;/b&gt;&amp;nbsp;INTEGER&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;nome&amp;nbsp;VARCHAR(120) NOT NULL&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;localizacao&amp;nbsp;VARCHAR(120) NOT NULL&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;capacidade_ref_hora&amp;nbsp;INTEGER NOT NULL  [HIPÓTESE]&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;horario_abertura&amp;nbsp;TIME NOT NULL  [PROVISÓRIO]&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;horario_fechamento&amp;nbsp;TIME NOT NULL  [PROVISÓRIO]&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;status&amp;nbsp;VARCHAR(7) NOT NULL DEFAULT &amp;#x27;ativo&amp;#x27;&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;created_at&amp;nbsp;TIMESTAMP NOT NULL&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;updated_at&amp;nbsp;TIMESTAMP NOT NULL&lt;/font&gt;" vertex="1">
+          <mxGeometry height="159" width="430" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="c6" parent="c4" style="text;html=1;align=left;verticalAlign=top;fontSize=10;fontColor=#444444;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;fillColor=#f5f5f5;strokeColor=#cccccc;" value="UNIQUE índice em lower(trim(nome))&lt;br&gt;CHECK length(trim(nome)) &amp;gt; 0 e length(trim(localizacao)) &amp;gt; 0&lt;br&gt;CHECK capacidade_ref_hora BETWEEN 1 AND 5000&lt;br&gt;CHECK horario_abertura &amp;lt; horario_fechamento&lt;br&gt;CHECK status IN (&amp;#x27;ativo&amp;#x27;,&amp;#x27;inativo&amp;#x27;)" vertex="1">
+          <mxGeometry height="85" width="430" y="193" as="geometry" />
+        </mxCell>
+        <mxCell id="c7" parent="1" style="swimlane;html=1;fontStyle=1;fontSize=13;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#ffffff;horizontal=1;collapsible=0;" value="catracas" vertex="1">
+          <mxGeometry height="263" width="470" x="920" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c8" parent="c7" style="text;html=1;align=left;verticalAlign=top;fontSize=11;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;" value="&lt;font face=&#39;Courier New&#39;&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;b&gt;id&lt;/b&gt;&amp;nbsp;INTEGER&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39;&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;b&gt;restaurante_id&lt;/b&gt;&amp;nbsp;INTEGER NOT NULL&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;codigo&amp;nbsp;VARCHAR(20) NOT NULL&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;piso&amp;nbsp;SMALLINT NULL  [HIPÓTESE; nulo = &amp;quot;Sem piso&amp;quot;]&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;corredor_fastpass&amp;nbsp;BOOLEAN NOT NULL DEFAULT false&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;status&amp;nbsp;VARCHAR(13) NOT NULL&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;created_at&amp;nbsp;TIMESTAMP NOT NULL&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;updated_at&amp;nbsp;TIMESTAMP NOT NULL&lt;/font&gt;" vertex="1">
+          <mxGeometry height="142" width="470" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="c9" parent="c7" style="text;html=1;align=left;verticalAlign=top;fontSize=10;fontColor=#444444;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;fillColor=#f5f5f5;strokeColor=#cccccc;" value="FK restaurante_id → restaurantes.id ON DELETE RESTRICT&lt;br&gt;UNIQUE (restaurante_id, lower(trim(codigo)))&lt;br&gt;CHECK codigo: só letras, dígitos e hífen&lt;br&gt;CHECK piso IS NULL OR piso &amp;gt;= 1&lt;br&gt;CHECK status IN (&amp;#x27;ativa&amp;#x27;,&amp;#x27;inativa&amp;#x27;,&amp;#x27;em_manutencao&amp;#x27;)" vertex="1">
+          <mxGeometry height="85" width="470" y="176" as="geometry" />
+        </mxCell>
+        <mxCell id="c10" parent="1" style="swimlane;html=1;fontStyle=1;fontSize=13;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#ffffff;horizontal=1;collapsible=0;" value="usuarios" vertex="1">
+          <mxGeometry height="186" width="330" x="520" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="c11" parent="c10" style="text;html=1;align=left;verticalAlign=top;fontSize=11;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;" value="&lt;font face=&quot;Courier New&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;b&gt;id&lt;/b&gt;&amp;nbsp;INTEGER&lt;/font&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;nome&amp;nbsp;VARCHAR(120) NOT NULL&lt;/font&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;matricula&amp;nbsp;VARCHAR(20) NOT NULL UNIQUE&lt;/font&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;senha_digest&amp;nbsp;VARCHAR(255) NOT NULL&lt;/font&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;perfil&amp;nbsp;ENUM NOT NULL&lt;/font&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;created_at&amp;nbsp;TIMESTAMP NOT NULL&lt;/font&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;updated_at&amp;nbsp;TIMESTAMP NOT NULL&lt;/font&gt;" vertex="1">
+          <mxGeometry height="125" width="330" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="c12" parent="c10" style="text;html=1;align=left;verticalAlign=top;fontSize=10;fontColor=#444444;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;fillColor=#f5f5f5;strokeColor=#cccccc;" value="CHECK perfil IN (&#39;ADMIN&#39;,&#39;FUNCIONARIO&#39;,&#39;ALUNO&#39;)" vertex="1">
+          <mxGeometry height="25" width="330" y="159" as="geometry" />
+        </mxCell>
+        <mxCell id="c13" parent="1" style="swimlane;html=1;fontStyle=3;fontSize=12;startSize=30;fillColor=#f5f5f5;strokeColor=#999999;fontColor=#666666;dashed=1;swimlaneFillColor=#ffffff;collapsible=0;" value="turnos  (DEPENDÊNCIA)" vertex="1">
+          <mxGeometry height="95" width="430" x="40" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="c14" parent="c13" style="text;html=1;align=left;verticalAlign=top;fontSize=11;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;" value="&lt;font face=&#39;Courier New&#39; color=&#39;#666666&#39;&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;id&amp;nbsp;INTEGER&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39; color=&#39;#666666&#39;&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;restaurante_id&amp;nbsp;INTEGER&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39; color=&#39;#666666&#39;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;…&amp;nbsp;demais atributos: Issue do US14&lt;/font&gt;" vertex="1">
+          <mxGeometry height="59" width="430" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="c15" parent="1" style="swimlane;html=1;fontStyle=3;fontSize=12;startSize=30;fillColor=#f5f5f5;strokeColor=#999999;fontColor=#666666;dashed=1;swimlaneFillColor=#ffffff;collapsible=0;" value="vinculos_operador_catraca  (DEPENDÊNCIA)" vertex="1">
+          <mxGeometry height="112" width="470" x="920" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="c16" parent="c15" style="text;html=1;align=left;verticalAlign=top;fontSize=11;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;" value="&lt;font face=&#39;Courier New&#39; color=&#39;#666666&#39;&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;id&amp;nbsp;INTEGER&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39; color=&#39;#666666&#39;&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;usuario_id&amp;nbsp;INTEGER&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39; color=&#39;#666666&#39;&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;catraca_id&amp;nbsp;INTEGER&lt;/font&gt;&lt;br&gt;&lt;font face=&#39;Courier New&#39; color=&#39;#666666&#39;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;…&amp;nbsp;demais atributos: Issue do US08&lt;/font&gt;" vertex="1">
+          <mxGeometry height="76" width="470" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="c17" edge="1" parent="1" source="c4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeWidth=2;strokeColor=#333333;exitX=1;exitY=0.2143;exitDx=0;exitDy=0;entryX=0;entryY=0.2281;entryDx=0;entryDy=0;fontSize=11;labelBackgroundColor=#ffffff;" target="c7" value="possui">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c18" parent="1" style="text;html=1;fontSize=11;fontStyle=1;align=center;" value="(0,N)" vertex="1">
+          <mxGeometry height="18" width="44" x="476" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="c19" parent="1" style="text;html=1;fontSize=11;fontStyle=1;align=center;" value="(1,1)" vertex="1">
+          <mxGeometry height="18" width="44" x="870" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="c20" edge="1" parent="1" source="c4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;fontSize=11;labelBackgroundColor=#ffffff;" target="c13" value="possui (dep.)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c21" edge="1" parent="1" source="c7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;fontSize=11;labelBackgroundColor=#ffffff;" target="c15" value="vinculada (dep.)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c22" edge="1" parent="1" source="c10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeWidth=2;dashed=1;strokeColor=#999999;exitX=1;exitY=0.2688;exitDx=0;exitDy=0;entryX=0;entryY=0.4464;entryDx=0;entryDy=0;fontSize=11;labelBackgroundColor=#ffffff;" target="c15" value="opera">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="16" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c23" parent="1" style="text;html=1;fontSize=10;align=center;fontColor=#666666;" value="(0,N)" vertex="1">
+          <mxGeometry height="16" width="44" x="99.5" y="362" as="geometry" />
+        </mxCell>
+        <mxCell id="c24" parent="1" style="text;html=1;fontSize=10;align=center;fontColor=#666666;" value="(1,1)" vertex="1">
+          <mxGeometry height="16" width="44" x="99.5" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="c25" parent="1" style="rounded=0;html=1;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=11;spacing=8;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;b&gt;Notas do DER&lt;/b&gt;&lt;br&gt;• Cardinalidade: restaurantes (0,N) — possui — catracas (1,1). Restaurante sem catraca é válido; toda catraca tem exatamente um restaurante (FK NOT NULL, ON DELETE RESTRICT). &quot;Associar Nova Catraca&quot; = criar catraca já vinculada, escolhendo o restaurante no formulário.&lt;br&gt;• Regras fora do SQL puro: RN05 (catraca ativa só em restaurante ativo) = validação de aplicação, sem trigger; inativar restaurante inativa catracas &#39;ativa&#39; na mesma transação; RN06 (não remover catraca ativa) = validação/trigger BEFORE DELETE.&lt;br&gt;• usuarios fica sem relacionamento no MER principal: dá suporte a RN01 (perfil) e ao login (US07).&lt;br&gt;• HIPÓTESES: capacidade_ref_hora (&quot;Total&quot; pode ser derivado da soma por catraca) e catracas.piso (agrupamento do Figma, nulo permitido). PROVISÓRIO: horario_* até existir turnos (US14), que passa a ser a fonte de verdade.&lt;br&gt;• Exibição (não são colunas): &#39;ativa&#39; = &quot;Online&quot;; &quot;Pronta/Pronto&quot; = NÃO VERIFICADO; &quot;Catraca NN&quot; só para código CAT-NN, senão mostra o código; localizacao guarda só &quot;Central / Gleba A&quot;.&lt;br&gt;• Fora do escopo (HIPÓTESE, Figma não mostra): registros_acesso_catraca, carteiras, transacoes_recarga, cardapios/refeicoes. Dependências cinza: apenas contexto de outras Issues." vertex="1">
+          <mxGeometry height="210" width="1350" x="40" y="696" as="geometry" />
+        </mxCell>
+        <mxCell id="c40" parent="1" style="text;html=1;fontSize=10;align=center;fontColor=#666666;" value="(0,N)" vertex="1">
+          <mxGeometry height="16" width="44" x="1224" y="345" as="geometry" />
+        </mxCell>
+        <mxCell id="c41" parent="1" style="text;html=1;fontSize=10;align=center;fontColor=#666666;" value="(1,1)" vertex="1">
+          <mxGeometry height="16" width="44" x="1224" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="c42" parent="1" style="text;html=1;fontSize=10;align=center;fontColor=#666666;" value="(0,N)" vertex="1">
+          <mxGeometry height="16" width="34" x="852" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="c43" parent="1" style="text;html=1;fontSize=10;align=center;fontColor=#666666;" value="(1,1)" vertex="1">
+          <mxGeometry height="16" width="34" x="886" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-6" parent="1" style="swimlane;html=1;fontStyle=1;fontSize=13;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#ffffff;horizontal=1;collapsible=0;" value="RELATORIO_GLOBAL_ACESSO" vertex="1">
+          <mxGeometry height="220" width="360" x="580" y="1283" as="geometry" />
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-7" parent="-6Cg13lMd9y6vX1icf-3-6" style="text;html=1;align=left;verticalAlign=top;fontSize=11;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;" value="&lt;font face=&quot;Courier New&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;b&gt;id&lt;/b&gt;&amp;nbsp;INTEGER&lt;/font&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;&lt;b&gt;FK,UK&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;b&gt;acesso_id&lt;/b&gt;&amp;nbsp;INTEGER NOT NULL&lt;/font&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;b&gt;usuario_id&lt;/b&gt; INTEGER NOT NULL&lt;/font&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;b&gt;restaurante_id&lt;/b&gt; INTEGER NOT NULL&lt;/font&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;b&gt;catraca_id&lt;/b&gt; INTEGER NOT NULL&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp; &amp;nbsp;codigo VARCHAR(20) NOT NULL&lt;/font&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp; &amp;nbsp;nome_usuario VARCHAR(120) NOT NULL&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp; &amp;nbsp;nome_restaurante VARCHAR(120) NOT NULL&lt;/font&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp; &amp;nbsp;matricula VARCHAR(20) NOT NULL UNIQUE&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp; &amp;nbsp;valor_cobrado DECIMAL(2,2) NOT NULL&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp; &amp;nbsp;resultado ENUM(LIBERADO, NEGADO) NOT NULL&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot;&gt;&amp;nbsp; &amp;nbsp;created_at&amp;nbsp;TIMESTAMP NOT NULL&lt;/font&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="188" width="360" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-8" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=16;fontStyle=1;whiteSpace=wrap;" value="MER UnB RU — Issue #9 Relatório Global de Acessos" vertex="1">
+          <mxGeometry height="30" width="1350" x="40" y="970" as="geometry" />
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-9" parent="1" style="swimlane;html=1;fontStyle=3;fontSize=12;startSize=30;fillColor=#f5f5f5;strokeColor=#999999;fontColor=#666666;dashed=1;swimlaneFillColor=#ffffff;collapsible=0;" value="&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(102, 102, 102), rgb(149, 149, 149));&quot;&gt;usuario (DEPENDÊNCIA)&lt;/span&gt;" vertex="1">
+          <mxGeometry height="112" width="310" x="180" y="1337" as="geometry" />
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-10" parent="-6Cg13lMd9y6vX1icf-3-9" style="text;html=1;align=left;verticalAlign=top;fontSize=11;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;" value="&lt;font face=&quot;Courier New&quot; color=&quot;#666666&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;id&amp;nbsp;INTEGER&lt;/font&gt;&lt;br&gt;&lt;div&gt;&lt;font color=&quot;#666666&quot; face=&quot;Courier New&quot;&gt;nome VARCHAR(120) NOT NULL&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font color=&quot;#666666&quot; face=&quot;Courier New&quot;&gt;matricula VARCHAR(20) NOT NULL UNIQUE&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font color=&quot;#666666&quot; face=&quot;Courier New&quot;&gt;...&lt;/font&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="76" width="310" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-11" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;rounded=0;entryX=0;entryY=0.43;entryDx=0;entryDy=0;entryPerimeter=0;" target="-6Cg13lMd9y6vX1icf-3-7" value="">
+          <mxGeometry height="100" relative="1" width="100" as="geometry">
+            <Array as="points">
+              <mxPoint x="490" y="1395.84" />
+            </Array>
+            <mxPoint x="490" y="1395.84" as="sourcePoint" />
+            <mxPoint x="590" y="1283" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-12" connectable="0" parent="-6Cg13lMd9y6vX1icf-3-11" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;span style=&quot;color: rgb(102, 102, 102); font-size: 10px; background-color: rgb(236, 236, 236);&quot;&gt;(0,N)&lt;/span&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.9185" y="1" as="geometry">
+            <mxPoint x="6" y="-15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-13" connectable="0" parent="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;span style=&quot;color: rgb(102, 102, 102); font-size: 10px; background-color: rgb(236, 236, 236);&quot;&gt;(1,N)&lt;/span&gt;" vertex="1">
+          <mxGeometry x="570" y="1380" as="geometry" />
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-14" parent="1" style="swimlane;html=1;fontStyle=3;fontSize=12;startSize=30;fillColor=#f5f5f5;strokeColor=#999999;fontColor=#666666;dashed=1;swimlaneFillColor=#ffffff;collapsible=0;" value="restaurantes&amp;nbsp; (DEPENDÊNCIA)" vertex="1">
+          <mxGeometry height="95" width="280" x="300" y="1140" as="geometry" />
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-15" parent="-6Cg13lMd9y6vX1icf-3-14" style="text;html=1;align=left;verticalAlign=top;fontSize=11;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;" value="&lt;font face=&quot;Courier New&quot; color=&quot;#666666&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;id&amp;nbsp;INTEGER&lt;/font&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot; color=&quot;#666666&quot;&gt;nome VARCHAR(120) NOT NULL&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Courier New&quot; color=&quot;#666666&quot;&gt;...&lt;/font&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="59" width="430" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-16" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;rounded=0;entryX=0.228;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="-6Cg13lMd9y6vX1icf-3-6" value="">
+          <mxGeometry height="100" relative="1" width="100" as="geometry">
+            <Array as="points">
+              <mxPoint x="662.1" y="1193.5900000000001" />
+            </Array>
+            <mxPoint x="580" y="1193.58" as="sourcePoint" />
+            <mxPoint x="660" y="1240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-17" connectable="0" parent="-6Cg13lMd9y6vX1icf-3-16" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;span style=&quot;color: rgb(102, 102, 102); font-size: 10px; background-color: rgb(236, 236, 236);&quot;&gt;(0,N)&lt;/span&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.9185" y="1" as="geometry">
+            <mxPoint x="6" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-18" connectable="0" parent="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;span style=&quot;color: rgb(102, 102, 102); font-size: 10px; background-color: rgb(236, 236, 236);&quot;&gt;(1,N)&lt;/span&gt;" vertex="1">
+          <mxGeometry x="670" y="1260" as="geometry" />
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-19" parent="1" style="swimlane;html=1;fontStyle=3;fontSize=12;startSize=30;fillColor=#f5f5f5;strokeColor=#999999;fontColor=#666666;dashed=1;swimlaneFillColor=#ffffff;collapsible=0;" value="catracas&amp;nbsp; (DEPENDÊNCIA)" vertex="1">
+          <mxGeometry height="95" width="280" x="920" y="1140" as="geometry" />
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-20" parent="-6Cg13lMd9y6vX1icf-3-19" style="text;html=1;align=left;verticalAlign=top;fontSize=11;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;" value="&lt;font face=&quot;Courier New&quot; color=&quot;#666666&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;id&amp;nbsp;INTEGER&lt;/font&gt;&lt;div&gt;&lt;font color=&quot;#666666&quot; face=&quot;Courier New&quot;&gt;codigo VARCHAR(20) NOT NULL&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(102, 102, 102); font-family: &amp;quot;Courier New&amp;quot;; background-color: transparent;&quot;&gt;...&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="59" width="280" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-21" edge="1" parent="1" source="-6Cg13lMd9y6vX1icf-3-20" style="edgeStyle=orthogonalEdgeStyle;fontSize=12;html=1;endArrow=ERzeroToMany;startArrow=ERmandOne;rounded=0;entryX=0.698;entryY=-0.001;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="-6Cg13lMd9y6vX1icf-3-6" value="">
+          <mxGeometry height="100" relative="1" width="100" as="geometry">
+            <Array as="points">
+              <mxPoint x="920" y="1200" />
+              <mxPoint x="831.3" y="1200" />
+            </Array>
+            <mxPoint x="750" y="1180" as="sourcePoint" />
+            <mxPoint x="832" y="1269.42" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-22" connectable="0" parent="-6Cg13lMd9y6vX1icf-3-21" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;span style=&quot;color: rgb(102, 102, 102); font-size: 10px; background-color: rgb(236, 236, 236);&quot;&gt;(0,N)&lt;/span&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.9185" y="1" as="geometry">
+            <mxPoint x="-14" y="-13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-23" connectable="0" parent="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;span style=&quot;color: rgb(102, 102, 102); font-size: 10px; background-color: rgb(236, 236, 236);&quot;&gt;(1,N)&lt;/span&gt;" vertex="1">
+          <mxGeometry x="850" y="1270" as="geometry" />
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-24" parent="1" style="swimlane;html=1;fontStyle=3;fontSize=12;startSize=30;fillColor=#f5f5f5;strokeColor=#999999;fontColor=#666666;dashed=1;swimlaneFillColor=#ffffff;collapsible=0;" value="acesso&amp;nbsp; (DEPENDÊNCIA)" vertex="1">
+          <mxGeometry height="127" width="280" x="300" y="1550" as="geometry" />
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-25" parent="-6Cg13lMd9y6vX1icf-3-24" style="text;html=1;align=left;verticalAlign=top;fontSize=11;whiteSpace=nowrap;overflow=hidden;spacingLeft=6;" value="&lt;font face=&quot;Courier New&quot; color=&quot;#666666&quot;&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;id&amp;nbsp;INTEGER&lt;/font&gt;&lt;div&gt;&lt;font color=&quot;#666666&quot; face=&quot;Courier New&quot;&gt;codigo VARCHAR(20) NOT NULL&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font color=&quot;#666666&quot; face=&quot;Courier New&quot;&gt;&lt;div style=&quot;&quot;&gt;valor_cobrado DECIMAL(2,2) NOT NULL&lt;/div&gt;&lt;div style=&quot;color: rgb(102, 102, 102);&quot;&gt;&lt;div style=&quot;color: rgb(102, 102, 102);&quot;&gt;resultado ENUM(LIBERADO, NEGADO) NOT NULL&lt;/div&gt;&lt;/div&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(102, 102, 102); font-family: &amp;quot;Courier New&amp;quot;; background-color: transparent;&quot;&gt;...&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="95" width="280" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-26" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;fontSize=12;html=1;endArrow=ERmandOne;startArrow=ERmandOne;rounded=0;entryX=0.28;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" target="-6Cg13lMd9y6vX1icf-3-7" value="">
+          <mxGeometry height="100" relative="1" width="100" as="geometry">
+            <Array as="points">
+              <mxPoint x="680.83" y="1610" />
+            </Array>
+            <mxPoint x="580" y="1610" as="sourcePoint" />
+            <mxPoint x="680" y="1510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-27" connectable="0" parent="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;span style=&quot;color: rgb(102, 102, 102); font-size: 10px; background-color: rgb(236, 236, 236);&quot;&gt;(1,1)&lt;/span&gt;" vertex="1">
+          <mxGeometry x="595" y="1590" as="geometry" />
+        </mxCell>
+        <mxCell id="-6Cg13lMd9y6vX1icf-3-28" connectable="0" parent="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;span style=&quot;color: rgb(102, 102, 102); font-size: 10px; background-color: rgb(236, 236, 236);&quot;&gt;(1,1)&lt;/span&gt;" vertex="1">
+          <mxGeometry x="700" y="1520" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
