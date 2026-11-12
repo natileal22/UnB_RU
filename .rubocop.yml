@@ -1,0 +1,9 @@
+AllCops:
+  TargetRubyVersion: 3.3
+  NewCops: enable
+  Exclude:
+    - "db/schema.rb"
+    - "vendor/**/*"
+
+Layout/LineLength:
+  Max: 120
