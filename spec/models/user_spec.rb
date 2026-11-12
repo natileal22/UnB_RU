@@ -1,31 +1,52 @@
-require "rails_helper"
+require 'rails_helper'
 
 RSpec.describe User, type: :model do
   subject(:user) do
-    described_class.new(name: "Ana Silva", matricula: "123456789", password: "SenhaForte123")
+    described_class.new(name: 'Ana Silva', matricula: '123456789', password: 'SenhaForte123')
   end
 
   it { is_expected.to be_valid }
 
-  it "rejects a matrícula with the wrong format" do
-    user.matricula = "123"
+  it 'rejects a matrícula with the wrong format' do
+    user.matricula = '123'
 
     expect(user).not_to be_valid
-    expect(user.errors[:matricula]).to include("inválida")
+    expect(user.errors[:matricula]).to include('inválida')
   end
 
-  it "rejects a matrícula made of repeated digits" do
-    user.matricula = "999999999"
+  it 'rejects a matrícula made of repeated digits' do
+    user.matricula = '999999999'
 
     expect(user).not_to be_valid
-    expect(user.errors[:matricula]).to include("inválida")
+    expect(user.errors[:matricula]).to include('inválida')
   end
 
-  it "requires a unique matrícula" do
-    described_class.create!(name: "Ana Silva", matricula: "123456789", password: "SenhaForte123")
-    duplicate = described_class.new(name: "Bruno Oliveira", matricula: "123456789", password: "AcessoRU456")
+  it 'requires a unique matrícula' do
+    described_class.create!(name: 'Ana Silva', matricula: '123456789', password: 'SenhaForte123')
+    duplicate = described_class.new(name: 'Bruno Oliveira', matricula: '123456789', password: 'AcessoRU456')
 
     expect(duplicate).not_to be_valid
-    expect(duplicate.errors[:matricula]).to include("já cadastrada")
+    expect(duplicate.errors[:matricula]).to include('já cadastrada')
+  end
+
+  it 'accepts a 7-digit SIAPE matrícula for funcionario' do
+    user = described_class.new(
+      nome: 'Carlos Operador',
+      matricula: '1234567',
+      password: 'SenhaCorreta123',
+      perfil: 'funcionario'
+    )
+    expect(user).to be_valid
+    expect(user.operador_autorizado?).to be(true)
+  end
+
+  it 'rejects a 9-digit matrícula for funcionario' do
+    user = described_class.new(
+      nome: 'Carlos Operador',
+      matricula: '123456789',
+      password: 'SenhaCorreta123',
+      perfil: 'funcionario'
+    )
+    expect(user).not_to be_valid
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_11_161135) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_12_200212) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -36,12 +36,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_11_161135) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "name", null: false
+    t.string "nome", null: false
     t.string "matricula", null: false
     t.string "email"
-    t.string "password", null: false
+    t.string "password_digest", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "perfil", default: "estudante", null: false
     t.index ["matricula"], name: "index_users_on_matricula", unique: true
   end
 

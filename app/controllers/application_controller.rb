@@ -13,13 +13,22 @@ class ApplicationController < ActionController::Base
     @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
   end
 
-  def exigir_login
-    redirect_to login_path, alert: "Faça login para continuar" unless current_user
+  # Autenticação do operador (issue do Pedro): redireciona quem não é funcionário/administrador.
+  def exigir_operador!
+    return if current_user&.operador_autorizado?
+
+    redirect_to operador_entrar_path, alert: 'Acesso restrito a funcionários.'
   end
 
-  def exigir_operador
-    return if current_user&.operador?
+  # Configuração do ponto de acesso (issue #5): sem login vai para a autenticação do operador.
+  def exigir_login
+    redirect_to operador_entrar_path, alert: 'Faça login para continuar' unless current_user
+  end
 
-    render "shared/acesso_negado", status: :forbidden
+  # Configuração do ponto de acesso (issue #5): logado, mas sem perfil de operador, vê a mensagem de acesso negado.
+  def exigir_perfil_operador
+    return if current_user&.operador_autorizado?
+
+    render 'shared/acesso_negado', status: :forbidden
   end
 end
