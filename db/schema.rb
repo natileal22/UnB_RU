@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_12_120300) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_11_161135) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -22,31 +22,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_12_120300) do
     t.datetime "occurred_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
-    t.string "motivo_negacao"
-    t.decimal "valor_cobrado", precision: 6, scale: 2, default: "0.0", null: false
     t.index ["occurred_at"], name: "index_accesses_on_occurred_at"
     t.index ["restaurant_id", "catraca"], name: "index_accesses_on_restaurant_id_and_catraca"
     t.index ["restaurant_id"], name: "index_accesses_on_restaurant_id"
     t.index ["resultado"], name: "index_accesses_on_resultado"
-    t.index ["user_id"], name: "index_accesses_on_user_id"
-  end
-
-  create_table "catracas", force: :cascade do |t|
-    t.bigint "restaurant_id", null: false
-    t.string "codigo", null: false
-    t.string "status", default: "ativa", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["restaurant_id", "codigo"], name: "index_catracas_on_restaurant_id_and_codigo", unique: true
-    t.index ["restaurant_id"], name: "index_catracas_on_restaurant_id"
   end
 
   create_table "restaurants", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "status", default: "ativo", null: false
     t.index ["name"], name: "index_restaurants_on_name", unique: true
   end
 
@@ -57,12 +42,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_12_120300) do
     t.string "password", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "perfil", default: "ALUNO", null: false
-    t.decimal "saldo", precision: 8, scale: 2, default: "0.0", null: false
     t.index ["matricula"], name: "index_users_on_matricula", unique: true
   end
 
   add_foreign_key "accesses", "restaurants"
-  add_foreign_key "accesses", "users"
-  add_foreign_key "catracas", "restaurants"
 end
