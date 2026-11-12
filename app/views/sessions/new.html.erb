@@ -1,0 +1,13 @@
+<h1>Sessions#new</h1>
+<p>Find me in app/views/sessions/new.html.erb</p>
+<% content_for :title, "Autenticação" %>
+
+<main class="auth-page">
+  <section class="auth-card">
+    <h1>Autenticação</h1>
+    <% if flash[:notice] %>
+      <p class="flash flash-notice" role="status"><%= flash[:notice] %></p>
+    <% end %>
+    <p>Seu cadastro foi concluído. A autenticação estará disponível nesta página.</p>
+  </section>
+</main>

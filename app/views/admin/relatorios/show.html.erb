@@ -1,0 +1,81 @@
+<% content_for :title, "Relatório Global de Operação" %>
+
+<main class="report-page">
+  <header class="report-header">
+    <div>
+      <p class="eyebrow">Módulo de Auditoria DAC/DUS</p>
+      <h1>Relatório Global de Operação</h1>
+      <p class="report-subtitle">Histórico completo de acessos dos restaurantes universitários</p>
+    </div>
+  </header>
+
+  <section class="report-filters" aria-label="Filtros do relatório">
+    <%= form_with url: admin_relatorio_path, method: :get, scope: nil do |form| %>
+      <div class="filter-field">
+        <%= form.label :restaurant_id, "Restaurante" %>
+        <%= form.collection_select :restaurant_id, @restaurants, :id, :name,
+                                   { include_blank: "Todos os restaurantes" },
+                                   { aria: { label: "Restaurante" } } %>
+      </div>
+      <div class="filter-field">
+        <%= form.label :catraca, "Catraca" %>
+        <%= form.text_field :catraca, value: @filters[:catraca], placeholder: "Ex.: CAT-01" %>
+      </div>
+      <div class="filter-field">
+        <%= form.label :resultado, "Resultado" %>
+        <%= form.select :resultado, [["Todos", ""], ["Liberado", "LIBERADO"], ["Negado", "NEGADO"]],
+                        selected: @filters[:resultado] %>
+      </div>
+      <div class="filter-field">
+        <%= form.label :date_from, "De" %>
+        <%= form.date_field :date_from, value: @filters[:date_from] %>
+      </div>
+      <div class="filter-field">
+        <%= form.label :date_to, "Até" %>
+        <%= form.date_field :date_to, value: @filters[:date_to] %>
+      </div>
+      <label class="group-filter">
+        <%= form.check_box :grouped, { checked: @grouped }, "1", "0" %>
+        Agrupar por restaurante e catraca
+      </label>
+      <%= form.submit "Aplicar filtros", class: "primary-button" %>
+    <% end %>
+  </section>
+
+  <section class="report-summary" aria-label="Resumo">
+    <article><span>Total de acessos</span><strong><%= @total_accesses %></strong></article>
+    <article><span>Acessos liberados</span><strong class="status-released"><%= @released_accesses %></strong></article>
+    <article><span>Acessos negados</span><strong class="status-denied"><%= @denied_accesses %></strong></article>
+  </section>
+
+  <section class="report-table-card">
+    <h2>Consolidação de acessos</h2>
+    <% if @accesses.empty? %>
+      <p class="empty-state">Nenhum acesso encontrado para os filtros informados</p>
+    <% elsif @grouped %>
+      <table>
+        <thead><tr><th>Restaurante</th><th>Catraca</th><th>Quantidade de acessos</th></tr></thead>
+        <tbody>
+          <% @grouped_accesses.each do |(restaurant, catraca), accesses| %>
+            <tr><td><%= restaurant %></td><td><%= catraca %></td><td><%= accesses.size %></td></tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <table>
+        <thead><tr><th>Restaurante</th><th>Catraca</th><th>Matrícula</th><th>Resultado</th><th>Data</th></tr></thead>
+        <tbody>
+          <% @accesses.each do |access| %>
+            <tr>
+              <td><%= access.restaurant.name %></td>
+              <td><%= access.catraca %></td>
+              <td><%= access.matricula %></td>
+              <td><span class="result result-<%= access.resultado.downcase %>"><%= access.resultado %></span></td>
+              <td><%= l(access.occurred_at, format: :short) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </section>
+</main>
