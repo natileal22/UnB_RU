@@ -31,13 +31,12 @@ Funcionalidade: Recarga de Saldo
     Então o sistema deve aprovar a compra
     E o saldo da conta deve ser atualizado com mais 80.00 reais
 
-  Cenário: Tentativa de recarga com Cartão de Crédito sem limite (Caminho Triste)
+    Cenário: Tentativa de recarga com Cartão de Crédito sem limite (Caminho Triste)
     Dado que o estudante está cadastrado no sistema do Ru 
     E está na página de Recarga de Saldo
     Quando ele seleciona o método de pagamento Cartão de Crédito
     E insere o valor de 80.00 reais
-    E preenche os dados do cartão corretamente
+    E preenche os dados de um cartão sem limite
     E confirma a transação
-    Mas está sem limite no cartão
     Então o sistema deve recusar a compra
     E o saldo da conta não deve ser atualizado com mais 80.00 reais
