@@ -7,7 +7,8 @@ class User < ApplicationRecord
   PERFIS = %w[estudante funcionario administrador].freeze
 
   has_many :accesses, dependent: :nullify
-
+  has_many :recargas, dependent: :destroy
+  
   validates :name, presence: true
   validates :perfil, presence: true, inclusion: { in: PERFIS }
   validates :matricula, presence: true, uniqueness: { message: 'já cadastrada' }
