@@ -27,9 +27,36 @@
 
 ### Funcionalidade: Recarga de Saldo
 * **Responsável:** Natália Leal
-* **Story Points:** 
-* **Regras de Negócio:** O estudante deve poder recarregar via PIX ou Cartão de Crédito. Valores negativos ou nulos são inválidos. Cartões sem limite devem ter a transação recusada.
-
+* **Story Points:** 5
+* **User Story:** Como estudante, eu quero adicionar créditos à minha conta via PIX ou cartão de crédito, para que eu tenha saldo suficiente para acessar os restaurantes da UnB.
+* **Regras de Negócio:**
+  * RN01: A recarga pode ser feita por PIX ou por Cartão de Crédito.
+  * RN02: O valor da recarga deve ser maior que zero. Valores negativos, zero ou em branco são recusados com a mensagem "Valor de recarga inválido", e nada é registrado.
+  * RN03: No PIX, o sistema gera o código de pagamento (QR Code / copia e cola) e a recarga fica pendente. O saldo só é creditado depois da confirmação do pagamento.
+  * RN04: No cartão, são obrigatórios o número (16 dígitos), o nome impresso, a validade (MM/AA) e o CVV (3 dígitos). Dados incompletos ou inválidos são recusados com "Dados do cartão inválidos", e nada é registrado.
+  * RN05: Cartão sem limite tem a compra recusada com "Compra recusada: cartão sem limite disponível". A recarga fica registrada como recusada e o saldo não muda.
+  * RN06: Na aprovação, a mudança de status da recarga e o crédito no saldo acontecem na mesma transação. Uma recarga nunca é creditada duas vezes.
+  * RN07: Só o estudante logado acessa a recarga; sem login, ele é levado para a autenticação. Um estudante só consegue confirmar o pagamento das próprias recargas.
+  * RN08: Os campos do cartão só aparecem quando o método Cartão de Crédito está selecionado.
+* **Hipóteses:** o pagamento é simulado, sem integração com banco ou operadora real. O botão "Já paguei" faz o papel do aviso do banco no PIX, e o cartão 4000 0000 0000 0002 simula um cartão sem limite. O QR Code é representado pelo código copia e cola. A recarga usa o cadastro de usuário, o login e a coluna `saldo` criada na Validação de Entrada.
+* 
+* **Declaração de Uso de IA:** Foi utilizada IA generativa, Claude (Anthropic), na Sprint 2 desta funcionalidade. A IA foi utilizada como apoio para instalar o ambiente no Linux, a organizar a feature da Sprint 1 (cabeçalho de idioma) e a integrar a branch com o trabalho dos colegas. Ela testou o código (migration, model `Recarga`, simulador `GatewayCartao`, controller, telas, steps do Cucumber e specs do RSpec) num ambiente próprio e repassou com a explicação de cada arquivo e erros que poderiam acontecer, com esses teste foi sugerido algumas mudanças de segurança para evitar quebra no projeto.
+* 
+### Funcionalidade: Cardápio da Refeição Atual
+* **Responsável:** Natália Leal (221021581)
+* **Story Points:** 5
+* **User Story:** Como estudante, eu quero ver o cardápio da refeição que está sendo servida agora, incluindo as opções padrão, ovolactovegetariana e vegetariana estrita, para decidir se vou ao restaurante.
+* **Regras de Negócio:**
+  * RN01: A refeição atual é definida pelo horário do sistema: café da manhã das 07:00 às 09:30, almoço das 11:00 às 14:30 e jantar das 17:00 às 19:30. O horário de início faz parte da refeição e o de término não (horários a confirmar com o grupo).
+  * RN02: No horário de uma refeição com cardápio cadastrado, a página mostra o nome da refeição e as três opções, sempre nesta ordem: Padrão, Ovolactovegetariano e Vegetariano Estrito.
+  * RN03: Só aparece o cardápio da data de hoje. Cardápios de outros dias nunca são exibidos.
+  * RN04: No horário de uma refeição sem cardápio cadastrado, a página mostra "O cardápio para o <refeição> de hoje ainda não foi disponibilizado".
+  * RN05: Fora do horário de funcionamento, a página mostra "Nenhuma refeição está sendo servida neste horário" e informa a próxima refeição com o horário de início (por exemplo, "Jantar às 17:00"). Depois do jantar, a próxima é o café da manhã.
+  * RN06: Cada refeição tem no máximo um cardápio por dia.
+  * RN07: A página é pública e não exige login.
+* **Hipóteses:** os horários ficam definidos no código (`app/services/horario_refeicao.rb`), e não no banco. O cadastro de cardápios pelo administrador está fora do escopo; para desenvolvimento, `bin/rails cardapio:importar` carrega o `cardapio.json` do RU para a semana atual.
+* **Declaração de Uso de IA:** Foi utilizada IA generativa, Claude (Anthropic), pelo Claude Code, na Sprint 2 desta funcionalidade. A IA foi utilizada para validar e sugerir melhorias na modelagem das (tabelas `cardapios` e `itens_cardapio`, seguindo o MER do grupo), os horários das refeições e o importador do `cardapio.json`. Ela testou o código (migrations, models, `HorarioRefeicao`, controller, tela, steps do Cucumber e specs do RSpec) num ambiente próprio e repassou a explicação de cada arquivo. A aluna criou os arquivos, rodou os testes e fez os commits no próprio computador. Os cenários BDD da Sprint 1 não precisaram de alteração. Os testes passam localmente e no CI.
+* 
 ### Funcionalidade: Autenticação do Funcionário
 * **Responsável:** Pedro de Paula
 * **Story Points:**
@@ -53,7 +80,7 @@
 * **Hipóteses:** preço fixo de R$ 4,50 até existir uma tabela de preços; a validação de horário de refeição está fora do escopo desta história.
 * **Como testar:** `bundle exec cucumber features/validacao_entrada.feature` e `bundle exec rspec spec/services/validacao_entrada_spec.rb spec/requests/catracas_spec.rb`
 
-Foi utilizada IA generativa, Claude (Opus 5.5 no chat do claude.ai e [confirmar] no Claude Code, da Anthropic), no planejamento e no plano de ação da sprint, nos rascunhos da história, das regras de negócio e dos cenários BDD, na modelagem da tabela `accesses` e nesta seção da Wiki referentes à issue #6. No chat, a IA ajudou a interpretar o roteiro da disciplina, a montar o passo a passo da implementação com a explicação de cada arquivo e a revisar os cenários e o código. Ao detectar que a branch de autenticação do funcionário (issue do Pedro) colidia com esta implementação (coluna `perfil` duplicada, senha com `has_secure_password` e step de mensagem de erro repetido), a IA simulou o merge e propôs a integração. Os testes foram executados e conferidos localmente (49 exemplos RSpec e 29 cenários Cucumber passando, RuboCop sem erros), e o CI os executa a cada push.  O texto ainda será revisado pela aluna antes da entrega.
+Foi utilizada IA generativa, Claude (Opus 5.5 no chat do claude.ai e o Claude Code, da Anthropic), no planejamento e no plano de ação da sprint, nos rascunhos da história, das regras de negócio e dos cenários BDD, na modelagem da tabela `accesses` e nesta seção da Wiki referentes à issue #6. No chat, a IA ajudou a interpretar o roteiro da disciplina, a montar o passo a passo da implementação com a explicação de cada arquivo e a revisar os cenários e o código. Ao detectar que a branch de autenticação do funcionário (issue do Pedro) colidia com esta implementação (coluna `perfil` duplicada, senha com `has_secure_password` e step de mensagem de erro repetido), a IA simulou o merge e propôs a integração. Os testes foram executados e conferidos localmente (49 exemplos RSpec e 29 cenários Cucumber passando, RuboCop sem erros), e o CI os executa a cada push.  O texto ainda será revisado pela aluna antes da entrega.
 
 ### Funcionalidade: Configuração do Ponto de Acesso
 * **Responsável:** Isabela de Souza Clímaco (190088931)
@@ -70,7 +97,7 @@ Foi utilizada IA generativa, Claude (Opus 5.5 no chat do claude.ai e [confirmar]
 * **Hipóteses:** a seleção fica na sessão (sem tabela nova); trocar de restaurante sem sair do sistema está fora do escopo.
 * **Como testar:** `bundle exec cucumber features/configuracao_ponto_acesso.feature` e `bundle exec rspec spec/requests/pontos_acesso_spec.rb`
 
-Foi utilizada IA generativa, Claude (Opus 5.5 no chat do claude.ai e [confirmar] no Claude Code, da Anthropic), no plano de ação, nos rascunhos da história, das regras de negócio e dos cenários BDD e nesta seção da Wiki referentes à issue #5. A comparação com a issue de gestão de restaurantes e catracas, para separar o que já estava coberto pelo colega do que era exclusivo desta issue, também foi feita com apoio da IA. A implementação (controllers, telas, steps do Cucumber e specs do RSpec) foi gerada pelo Claude Code em etapas com aprovação da aluna, adaptada à autenticação do funcionário (perfis `estudante`, `funcionario` e `administrador` e login do operador). Para evitar conflito entre steps, os passos compartilhados foram reunidos em `features/step_definitions/comum_steps.rb`, e o step de mensagem de erro da feature de autenticação foi reaproveitado. Os cenários foram verificados com o Cucumber (todos passando) antes da entrega. O texto ainda será revisado pela aluna antes da entrega.
+Foi utilizada IA generativa, Claude (Opus 5.5 no chat do claude.ai e o Claude Code, da Anthropic), no plano de ação, nos rascunhos da história, das regras de negócio e dos cenários BDD e nesta seção da Wiki referentes à issue #5. A comparação com a issue de gestão de restaurantes e catracas, para separar o que já estava coberto pelo colega do que era exclusivo desta issue, também foi feita com apoio da IA. A implementação (controllers, telas, steps do Cucumber e specs do RSpec) foi gerada pelo Claude Code em etapas com aprovação da aluna, adaptada à autenticação do funcionário (perfis `estudante`, `funcionario` e `administrador` e login do operador). Para evitar conflito entre steps, os passos compartilhados foram reunidos em `features/step_definitions/comum_steps.rb`, e o step de mensagem de erro da feature de autenticação foi reaproveitado. Os cenários foram verificados com o Cucumber (todos passando) antes da entrega. O texto ainda será revisado pela aluna antes da entrega.
 
 ### Funcionalidade: Gestão de restaurantes e catracas
 * **Responsável:** Kassio Gandara de Souza
