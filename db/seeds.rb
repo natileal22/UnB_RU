@@ -36,4 +36,10 @@ restaurants.each do |name, accesses|
   end
 end
 
+User.find_or_create_by!(matricula: "1234567") do |u|
+  u.nome = "Operador RU Darcy"
+  u.password = "SenhaCorreta123"
+  u.perfil = "funcionario"
+end
+
 puts "Seed concluída: #{User.count} usuários, #{Restaurant.count} restaurantes e #{Access.count} acessos."

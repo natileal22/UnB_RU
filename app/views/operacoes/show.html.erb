@@ -1,0 +1,16 @@
+<% content_for :title, "Operação" %>
+
+<main class="auth-page">
+  <section class="auth-card">
+    <p>Operando no restaurante</p>
+    <h1 id="restaurante-em-operacao"><%= @restaurante.name %></h1>
+    <%= render "shared/flash" %>
+
+    <h2>Catracas</h2>
+    <ul>
+      <% @restaurante.catracas.order(:codigo).each do |catraca| %>
+        <li><%= link_to catraca.codigo, catraca_path(catraca) %></li>
+      <% end %>
+    </ul>
+  </section>
+</main>

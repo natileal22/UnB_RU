@@ -1,0 +1,22 @@
+<% content_for :title, "Catraca #{@catraca.codigo}" %>
+
+<main class="auth-page">
+  <section class="auth-card">
+    <h1>Catraca <%= @catraca.codigo %></h1>
+    <p class="auth-intro"><%= @catraca.restaurant.name %></p>
+
+    <% if @resultado&.liberado? %>
+      <p class="flash flash-notice" role="status"><%= @resultado.mensagem %></p>
+    <% elsif @resultado %>
+      <p class="flash flash-alert" role="alert"><%= @resultado.mensagem %></p>
+    <% end %>
+
+    <%= form_with url: entrada_catraca_path(@catraca), method: :post do |form| %>
+      <div class="field">
+        <%= form.label :matricula, "Matrícula" %>
+        <%= form.text_field :matricula, inputmode: "numeric", autocomplete: "off" %>
+      </div>
+      <%= form.submit "Validar entrada", class: "primary-button" %>
+    <% end %>
+  </section>
+</main>
