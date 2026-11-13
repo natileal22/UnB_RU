@@ -1,3 +1,4 @@
+# language: pt
 Funcionalidade: Autenticação de Funcionário
   Como funcionário do restaurante
   Eu quero fazer login na aplicação de controle
