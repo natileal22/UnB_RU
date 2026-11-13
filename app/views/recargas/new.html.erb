@@ -1,0 +1,39 @@
+<% content_for :title, "Recarga de Saldo" %>
+
+<main class="auth-page">
+  <section class="auth-card">
+    <h1>Recarga de Saldo</h1>
+    <p class="auth-intro">Saldo atual: <strong><%= number_to_currency(current_user.saldo) %></strong></p>
+
+    <%= render "shared/flash" %>
+
+    <%= form_with model: @recarga, url: recargas_path, class: "recarga-form" do |form| %>
+      <fieldset class="field">
+        <legend>Método de pagamento</legend>
+        <%= form.radio_button :metodo, "pix" %>
+        <%= form.label :metodo_pix, "PIX", class: "opcao-metodo" %>
+        <%= form.radio_button :metodo, "cartao_credito" %>
+        <%= form.label :metodo_cartao_credito, "Cartão de Crédito", class: "opcao-metodo" %>
+      </fieldset>
+
+      <div class="field">
+        <%= form.label :valor, "Valor (R$)" %>
+        <%= form.number_field :valor, step: "0.01" %>
+      </div>
+
+      <fieldset class="field dados-cartao">
+        <legend>Dados do cartão</legend>
+        <%= label_tag "cartao[numero]", "Número do cartão" %>
+        <%= text_field_tag "cartao[numero]", nil, inputmode: "numeric", maxlength: 19, autocomplete: "cc-number" %>
+        <%= label_tag "cartao[nome]", "Nome impresso no cartão" %>
+        <%= text_field_tag "cartao[nome]", nil, autocomplete: "cc-name" %>
+        <%= label_tag "cartao[validade]", "Validade (MM/AA)" %>
+        <%= text_field_tag "cartao[validade]", nil, maxlength: 5, autocomplete: "cc-exp" %>
+        <%= label_tag "cartao[cvv]", "CVV" %>
+        <%= text_field_tag "cartao[cvv]", nil, inputmode: "numeric", maxlength: 3, autocomplete: "cc-csc" %>
+      </fieldset>
+
+      <%= form.submit "Confirmar recarga", class: "primary-button" %>
+    <% end %>
+  </section>
+</main>
