@@ -43,4 +43,5 @@ jobs:
           features/validacao_entrada.feature
           features/configuracao_ponto_acesso.feature
           features/cadastro-usuario.feature
+          features/relatorio_global_acessos.feature
       - run: bundle exec rubocop --fail-level E
