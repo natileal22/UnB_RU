@@ -1,219 +1,239 @@
 # UnB RU
 
----
+Sistema de gerenciamento do Restaurante Universitário da Universidade de
+Brasília, desenvolvido em Ruby on Rails.
 
-Sistema de gerenciamento para o Restaurante Universitário da UnB.
+## Sumário
 
-## Banco de dados
+- [Funcionalidades](#funcionalidades)
+- [Requisitos](#requisitos)
+- [Configuração](#configuração)
+- [Banco de dados](#banco-de-dados)
+- [Executando a aplicação](#executando-a-aplicação)
+- [Testes](#testes)
+- [Estrutura do projeto](#estrutura-do-projeto)
+- [Contribuição](#contribuição)
 
-O projeto usa PostgreSQL. Em produção e no desenvolvimento compartilhado ele roda no Supabase; nos testes, sempre em um PostgreSQL local.
-
-### Primeira execução
-
-1. Instale o PostgreSQL e rode `bundle install`.
-2. Copie `.env.example` para `.env`. Sem nenhuma conexão remota configurada, o app usa o PostgreSQL local (`localhost:5432`, usuário `postgres`).
-3. Crie os bancos com `bin/rails db:create` e confira o ambiente com `bundle exec cucumber -p fumaca`. O comando `bundle exec cucumber` sem perfil roda todas as features e sai com código 1 enquanto houver passos ainda não implementados.
-
-### Usar o Supabase
-
-Descomente `DATABASE_URL` no `.env` e preencha com a string de conexão do projeto (Configurações do projeto > Database). Use a porta 6543 (Supavisor, modo transação) no dia a dia. O app liga `sslmode=require` e desliga `prepared_statements` e `advisory_locks` sozinho nessa porta. O banco de teste ignora essa variável e continua local.
-
-### Como migrar
-
-O modo transação (porta 6543) não serve para migrações. Para rodar `bin/rails db:migrate`:
-
-1. Troque a `DATABASE_URL` do `.env` pela conexão da porta 5432 (pooler em modo sessão ou conexão direta; o `DIRECT_URL` do `.env.example` mostra o formato).
-2. Rode `bin/rails db:migrate`.
-3. Volte a `DATABASE_URL` para a porta 6543.
-
-Estas tarefas recusam rodar contra servidor remoto: `db:drop`, `db:drop:_unsafe`, `db:reset`, `db:setup`, `db:schema:load`, `db:purge`, `db:purge:all`, `db:migrate:reset`, `db:truncate_all` e `db:seed:replant`. Outras tarefas que alterem o banco não têm essa trava. Se for isso mesmo que você quer, rode com `PERMITIR_BANCO_REMOTO=sim`.
-
-### Chave das credenciais
-
-O `config/credentials.yml.enc` vem no repositório, mas a `config/master.key` não. Peça a chave a quem mantém o projeto.
-
-## Funcionalidades da Sprint 2
+## Funcionalidades
 
 ### Cadastro de usuário
 
-Acesse `GET /cadastro/new` para cadastrar um estudante com nome, matrícula e senha.
-A matrícula deve ter nove dígitos e não pode estar cadastrada anteriormente. O cadastro
-persiste o registro em `users` e redireciona para `/login` com a mensagem de sucesso.
-Não há autenticação real nesta entrega e a senha é persistida conforme a especificação
-da sprint, sem criptografia.
+Disponível em `/cadastro/new`. Permite que estudantes criem uma conta
+informando:
 
-### Relatório global de operação
+- nome;
+- matrícula de nove dígitos;
+- senha.
 
-Administradores acessam `GET /admin/relatorio`. A tela lista os acessos registrados e
-permite filtrar por restaurante, catraca, resultado e período. A opção de agrupamento
-consolida a quantidade por restaurante e catraca. Quando nenhum registro corresponde
-aos filtros, a tela exibe uma mensagem de lista vazia.
+O sistema valida campos obrigatórios, impede matrículas inválidas ou
+duplicadas, persiste a conta e redireciona o estudante para a tela de login.
 
-### Dados de exemplo
+### Autenticação de funcionários
 
-Na branch consolidada, a seed popula usuários, restaurantes e acessos das duas
-features. Ela é idempotente e pode ser executada novamente sem duplicar os dados:
+Funcionários e administradores podem acessar a autenticação do operador em
+`/operador/entrar`. O acesso é validado por matrícula, senha e perfil.
+
+### Configuração do ponto de acesso
+
+Funcionários e administradores podem selecionar o restaurante em que irão
+operar. Apenas restaurantes ativos ficam disponíveis para seleção.
+
+### Validação de entrada
+
+O sistema valida a matrícula apresentada na catraca, a disponibilidade da
+catraca, o restaurante selecionado e o saldo do estudante. As tentativas,
+liberadas ou negadas, são registradas para auditoria.
+
+### Relatório global de acessos
+
+Administradores acessam `/admin/relatorio` para consultar os registros de
+acesso. O relatório permite:
+
+- filtrar por restaurante;
+- filtrar por catraca;
+- filtrar por resultado;
+- filtrar por período;
+- agrupar por restaurante e catraca;
+- consultar uma mensagem quando não há resultados.
+
+## Requisitos
+
+- Ruby 3.3 ou superior;
+- Bundler;
+- PostgreSQL 16 ou compatível;
+- Node.js, quando necessário pelo ambiente Rails;
+- Google Chrome/Chromium para cenários Capybara que utilizem JavaScript.
+
+As versões das gems estão registradas em [Gemfile.lock](Gemfile.lock).
+
+## Configuração
+
+Instale as dependências:
 
 ```bash
-git switch feat/adriano-issue_1_9
+bundle install
+```
+
+Se o projeto fornecer um arquivo `.env.example`, copie-o para `.env` e ajuste
+as variáveis de ambiente:
+
+```bash
+cp .env.example .env
+```
+
+Sem uma conexão remota configurada, o projeto utiliza um PostgreSQL local com
+as configurações definidas em `config/database.yml`.
+
+Crie o banco e execute as migrações:
+
+```bash
+bin/rails db:create
+bin/rails db:migrate
+```
+
+Para carregar os dados de exemplo:
+
+```bash
 bin/rails db:seed
 ```
 
-Após executar a seed, use `ana.silva@unb.br` ou a matrícula `123456789` como
-referência do cadastro. Para testar o relatório, os dados incluem os restaurantes
-`RU Darcy Ribeiro` e `RU Gama`, as catracas `CAT-01` e `CAT-02` e os resultados
-`LIBERADO` e `NEGADO`.
+A seed é idempotente e pode ser executada mais de uma vez sem duplicar os
+registros previstos.
 
-### Testes
+## Banco de dados
 
-Na branch consolidada `feat/adriano-issue_1_9`, as duas issues e todas as migrations
-estão disponíveis no mesmo checkout. Use um único banco de teste para executar a
-suíte completa.
+### Uso com Supabase
 
-#### Preparação da branch e do banco
+Para desenvolvimento compartilhado, configure `DATABASE_URL` com a conexão do
+projeto Supabase. A porta `6543` (Supavisor, modo transação) é adequada para o
+uso diário da aplicação.
 
-```bash
-git switch feat/adriano-issue_1_9
+### Migrações
 
-TEST_DB_NAME=unb_ru_test \
-RAILS_ENV=test \
-bin/rails db:create db:migrate
-```
+Migrações devem usar uma conexão PostgreSQL na porta `5432` (pooler em modo
+sessão ou conexão direta). Depois de executar as migrações, volte a usar a
+conexão da porta `6543`, se aplicável.
 
-O resultado esperado é:
+### Proteção contra operações destrutivas
 
-```text
-16 examples, 0 failures
-```
-
-#### RSpec completo
+As tarefas de banco potencialmente destrutivas recusam conexões remotas por
+padrão. Para executar conscientemente uma dessas operações, informe:
 
 ```bash
-TEST_DB_NAME=unb_ru_test \
-RAILS_ENV=test \
+PERMITIR_BANCO_REMOTO=sim <comando>
+```
+
+### Credenciais Rails
+
+O arquivo `config/credentials.yml.enc` está versionado, mas
+`config/master.key` não deve ser versionado. Solicite a chave aos
+responsáveis pelo projeto quando necessário.
+
+## Executando a aplicação
+
+Inicie o servidor:
+
+```bash
+bin/rails server
+```
+
+A aplicação estará disponível em <http://localhost:3000>.
+
+Principais endereços:
+
+| Recurso | Endereço |
+| --- | --- |
+| Página inicial | <http://localhost:3000/> |
+| Cadastro | <http://localhost:3000/cadastro/new> |
+| Login do estudante | <http://localhost:3000/login> |
+| Login do operador | <http://localhost:3000/operador/entrar> |
+| Relatório global | <http://localhost:3000/admin/relatorio> |
+
+## Testes
+
+Antes de executar os testes, prepare o banco de teste:
+
+```bash
+RAILS_ENV=test bin/rails db:test:prepare
+```
+
+### RSpec
+
+Execute toda a suíte:
+
+```bash
+bundle exec rspec
+```
+
+Execute apenas os testes das issues #1 e #9:
+
+```bash
 bundle exec rspec \
-  spec/models/user_spec.rb \
   spec/requests/users_spec.rb \
-  spec/models/access_spec.rb \
-  spec/models/restaurant_spec.rb \
   spec/requests/admin/relatorios_spec.rb
 ```
 
-Os specs verificam o cadastro de usuário, os models `Access` e `Restaurant`,
-listagem de acessos, filtros, período, agrupamento, resultado vazio e bloqueio
-de funcionário.
+### Cucumber e Capybara
 
-Para executar apenas uma feature:
+Execute todas as features implementadas:
 
 ```bash
-TEST_DB_NAME=unb_ru_test RAILS_ENV=test \
-bundle exec rspec spec/models/user_spec.rb spec/requests/users_spec.rb
-
-TEST_DB_NAME=unb_ru_test RAILS_ENV=test \
-bundle exec rspec spec/models/access_spec.rb spec/models/restaurant_spec.rb \
-  spec/requests/admin/relatorios_spec.rb
+bundle exec cucumber --strict --publish-quiet \
+  features/saude.feature \
+  features/autenticacao_funcionario.feature \
+  features/validacao_entrada.feature \
+  features/configuracao_ponto_acesso.feature \
+  features/cadastro-usuario.feature \
+  features/relatorio_global_acessos.feature
 ```
 
-Para testar a funcionalidade no navegador:
+Execute somente as features das issues #1 e #9:
 
 ```bash
-bin/rails server
+bundle exec cucumber --strict --publish-quiet \
+  features/cadastro-usuario.feature \
+  features/relatorio_global_acessos.feature
 ```
 
-Acesse <http://localhost:3000/cadastro/new> e teste:
+Os arquivos `.feature` contêm as especificações BDD, enquanto os steps ficam
+em [features/step_definitions](features/step_definitions).
 
-- cadastro válido com nome, matrícula de nove dígitos e senha;
-- envio sem preencher os campos;
-- matrícula `123`;
-- matrícula `999999999`;
-- cadastro repetido com a mesma matrícula.
+### RuboCop
 
-Para verificar o registro persistido:
+Analise o código com:
 
 ```bash
-bin/rails console
-```
-
-```ruby
-user = User.find_by(matricula: "123456789")
-user.name
-user.matricula
-user.password
-```
-
-#### Teste funcional no navegador
-
-Inicie o servidor na branch consolidada:
-
-```bash
-bin/rails server
-```
-
-Acesse <http://localhost:3000/cadastro/new> para testar o cadastro. Para testar o
-relatório, acesse <http://localhost:3000/admin/relatorio>. Para inserir dados de teste,
-abra o console Rails:
-
-```bash
-bin/rails console
-```
-
-```ruby
-darcy = Restaurant.create!(name: "RU Darcy Ribeiro")
-gama = Restaurant.create!(name: "RU Gama")
-
-Access.create!(
-  restaurant: darcy,
-  catraca: "CAT-01",
-  matricula: "241012345",
-  resultado: "LIBERADO",
-  occurred_at: Time.zone.parse("2026-10-20")
-)
-
-Access.create!(
-  restaurant: darcy,
-  catraca: "CAT-02",
-  matricula: "241012346",
-  resultado: "NEGADO",
-  occurred_at: Time.zone.parse("2026-10-20")
-)
-
-Access.create!(
-  restaurant: gama,
-  catraca: "CAT-01",
-  matricula: "241012347",
-  resultado: "LIBERADO",
-  occurred_at: Time.zone.parse("2026-10-21")
-)
-```
-
-Teste a listagem sem filtros e depois:
-
-```text
-/admin/relatorio?catraca=CAT-01
-/admin/relatorio?resultado=NEGADO
-/admin/relatorio?date_from=2026-10-20&date_to=2026-10-21
-/admin/relatorio?grouped=1
-/admin/relatorio?catraca=CAT-99
-```
-
-O último endereço deve exibir `Nenhum acesso encontrado para os filtros
-informados`.
-
-#### Cucumber, RuboCop e CI
-
-Os arquivos `.feature` são a especificação BDD das issues:
-
-- `features/cadastro-usuario.feature`
-- `features/relatorio_global_acessos.feature`
-
-Os steps específicos dessas duas features ainda não estão implementados. O
-RSpec é, portanto, a cobertura automatizada disponível para elas. O smoke test
-do Cucumber pode ser executado com:
-
-```bash
-bundle exec cucumber features/saude.feature
 bundle exec rubocop --fail-level E
 ```
 
-O workflow de CI em `.github/workflows/ci.yml` executa os 16 exemplos RSpec,
-o smoke test do Cucumber e o RuboCop em cada push e pull request.
+### Integração contínua
+
+O workflow em [.github/workflows/ci.yml](.github/workflows/ci.yml) é executado
+em pushes e pull requests. Ele prepara o banco de teste, executa o RSpec, as
+features implementadas do Cucumber/Capybara e o RuboCop.
+
+## Estrutura do projeto
+
+```text
+app/
+  controllers/     Controllers HTTP
+  models/          Models Active Record
+  services/        Regras de negócio reutilizáveis
+  views/           Templates das páginas
+config/             Rotas e configurações Rails
+db/                 Migrações, schema e seeds
+features/           Especificações Cucumber/Capybara
+spec/               Testes RSpec
+docs/               Documentação e artefatos do projeto
+```
+
+## Contribuição
+
+1. Crie uma branch a partir da branch de trabalho atual.
+2. Implemente a alteração acompanhada de testes.
+3. Execute RSpec, Cucumber/Capybara e RuboCop.
+4. Atualize a documentação relacionada.
+5. Abra um pull request descrevendo a alteração e os testes executados.
+
+Consulte [Wiki.md](Wiki.md) para as regras de negócio, responsáveis e
+documentação das funcionalidades da sprint.
