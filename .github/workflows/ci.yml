@@ -42,12 +42,5 @@ jobs:
           features/autenticacao_funcionario.feature
           features/validacao_entrada.feature
           features/configuracao_ponto_acesso.feature
-      - run: bundle exec rubocop --fail-level E
-            - run: >-
-          bundle exec cucumber --strict --publish-quiet
-          features/saude.feature
-          features/autenticacao_funcionario.feature
-          features/validacao_entrada.feature
-          features/configuracao_ponto_acesso.feature
           features/recarga_saldo.feature
       - run: bundle exec rubocop --fail-level E
