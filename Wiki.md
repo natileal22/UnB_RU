@@ -40,10 +40,10 @@
   * RN08: Os campos do cartão só aparecem quando o método Cartão de Crédito está selecionado.
 * **Hipóteses:** o pagamento é simulado, sem integração com banco ou operadora real. O botão "Já paguei" faz o papel do aviso do banco no PIX, e o cartão 4000 0000 0000 0002 simula um cartão sem limite. O QR Code é representado pelo código copia e cola. A recarga usa o cadastro de usuário, o login e a coluna `saldo` criada na Validação de Entrada.
 * 
-* **Declaração de Uso de IA:** Foi utilizada IA generativa, Claude (Anthropic), na Sprint 2 desta funcionalidade. A IA foi utilizada como apoio para instalar o ambiente no Linux, a organizar a feature da Sprint 1 (cabeçalho de idioma) e a integrar a branch com o trabalho dos colegas. Ela testou o código (migration, model `Recarga`, simulador `GatewayCartao`, controller, telas, steps do Cucumber e specs do RSpec) num ambiente próprio e repassou com a explicação de cada arquivo e erros que poderiam acontecer, com esses teste foi sugerido algumas mudanças de segurança para evitar quebra no projeto.
-* 
+* **Declaração de Uso de IA:** Foi utilizada IA generativa, Claude (Anthropic), na Sprint 2 desta funcionalidade. A IA foi utilizada como apoio para instalar o ambiente no Linux, a organizar a feature da Sprint 1 (cabeçalho de idioma) e a integrar a branch com o trabalho dos colegas. Ela implementou e testou o código (migration, model `Recarga`, simulador `GatewayCartao`, controller, telas, steps do Cucumber e specs do RSpec) num ambiente próprio e repassou com a explicação de cada arquivo e erros que poderiam acontecer, com esses teste foi sugerido algumas mudanças de segurança para evitar quebra no projeto.
+  
 ### Funcionalidade: Cardápio da Refeição Atual
-* **Responsável:** Natália Leal (221021581)
+* **Responsável:** Natália Leal
 * **Story Points:** 5
 * **User Story:** Como estudante, eu quero ver o cardápio da refeição que está sendo servida agora, incluindo as opções padrão, ovolactovegetariana e vegetariana estrita, para decidir se vou ao restaurante.
 * **Regras de Negócio:**
@@ -55,13 +55,13 @@
   * RN06: Cada refeição tem no máximo um cardápio por dia.
   * RN07: A página é pública e não exige login.
 * **Hipóteses:** os horários ficam definidos no código (`app/services/horario_refeicao.rb`), e não no banco. O cadastro de cardápios pelo administrador está fora do escopo; para desenvolvimento, `bin/rails cardapio:importar` carrega o `cardapio.json` do RU para a semana atual.
-* **Declaração de Uso de IA:** Foi utilizada IA generativa, Claude (Anthropic), pelo Claude Code, na Sprint 2 desta funcionalidade. A IA foi utilizada para validar e sugerir melhorias na modelagem das (tabelas `cardapios` e `itens_cardapio`, seguindo o MER do grupo), os horários das refeições e o importador do `cardapio.json`. Ela testou o código (migrations, models, `HorarioRefeicao`, controller, tela, steps do Cucumber e specs do RSpec) num ambiente próprio e repassou a explicação de cada arquivo. A aluna criou os arquivos, rodou os testes e fez os commits no próprio computador. Os cenários BDD da Sprint 1 não precisaram de alteração. Os testes passam localmente e no CI.
-* 
+* **Declaração de Uso de IA:** Foi utilizada IA generativa, Claude (Anthropic), pelo Claude Code, na Sprint 2 desta funcionalidade. A IA foi utilizada na implementação da modelagem das (tabelas `cardapios` e `itens_cardapio`, seguindo o MER do grupo), os horários das refeições e o importador do `cardapio.json` seguido da minha aprovação. Ela também teve participação na criação e testou dos código (migrations, models, `HorarioRefeicao`, controller, tela, steps do Cucumber e specs do RSpec) num ambiente próprio e repassou a explicação de cada arquivo. Eu criei os arquivos, rodei e validei os testes e fiz os commits. Os cenários BDD da Sprint 1 não precisaram de alteração. Os testes passam localmente e no CI.
+  
 ### Funcionalidade: Autenticação do Funcionário
 * **Responsável:** Pedro de Paula
 * **Story Points:**
 * **Regras de Negócio:** O funcionário que estiver cadastrado no sistema deve poder se autenticar com usuário (matrícula de 7 dígitos) e senha, sendo redirecionado para a página de Gestão de Restaurantes e Catracas. Tentativas de autenticação com credenciais inválidas (incorretas ou não cadastradas) devem falhar, exibindo mensagem de erro e se mantendo na página de autenticação.
-* 
+  
 ### Funcionalidade: Validação de entrada
 * **Responsável:** Isabela de Souza Clímaco (190088931)
 * **Story Points:** 3
