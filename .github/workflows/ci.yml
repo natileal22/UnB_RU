@@ -42,4 +42,5 @@ jobs:
           features/autenticacao_funcionario.feature
           features/validacao_entrada.feature
           features/configuracao_ponto_acesso.feature
+          features/cardapio-atual.feature
       - run: bundle exec rubocop --fail-level E
