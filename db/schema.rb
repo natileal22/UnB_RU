@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_12_200212) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_13_154919) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -32,6 +32,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_12_200212) do
     t.index ["user_id"], name: "index_accesses_on_user_id"
   end
 
+  create_table "cardapios", force: :cascade do |t|
+    t.date "data", null: false
+    t.string "refeicao", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["data", "refeicao"], name: "index_cardapios_on_data_and_refeicao", unique: true
+  end
+
   create_table "catracas", force: :cascade do |t|
     t.bigint "restaurant_id", null: false
     t.string "codigo", null: false
@@ -40,6 +48,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_12_200212) do
     t.datetime "updated_at", null: false
     t.index ["restaurant_id", "codigo"], name: "index_catracas_on_restaurant_id_and_codigo", unique: true
     t.index ["restaurant_id"], name: "index_catracas_on_restaurant_id"
+  end
+
+  create_table "itens_cardapio", force: :cascade do |t|
+    t.bigint "cardapio_id", null: false
+    t.string "tipo", null: false
+    t.string "item", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cardapio_id"], name: "index_itens_cardapio_on_cardapio_id"
   end
 
   create_table "restaurants", force: :cascade do |t|
@@ -65,4 +82,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_12_200212) do
   add_foreign_key "accesses", "restaurants"
   add_foreign_key "accesses", "users"
   add_foreign_key "catracas", "restaurants"
+  add_foreign_key "itens_cardapio", "cardapios"
 end
