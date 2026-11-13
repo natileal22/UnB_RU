@@ -1,0 +1,21 @@
+<% content_for :title, "Ponto de acesso" %>
+
+<main class="auth-page">
+  <section class="auth-card">
+    <h1>Selecione o restaurante</h1>
+    <%= render "shared/flash" %>
+
+    <% if @restaurantes.empty? %>
+      <p>Nenhum restaurante disponível</p>
+    <% else %>
+      <%= form_with url: ponto_acesso_path, method: :post do |form| %>
+        <div class="field">
+          <%= form.label :restaurant_id, "Restaurante" %>
+          <%= form.select :restaurant_id, @restaurantes.map { |r| [r.name, r.id] },
+                          include_blank: "Selecione um restaurante" %>
+        </div>
+        <%= form.submit "Confirmar", class: "primary-button" %>
+      <% end %>
+    <% end %>
+  </section>
+</main>
