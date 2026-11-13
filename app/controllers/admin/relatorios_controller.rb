@@ -50,7 +50,8 @@ class Admin::RelatoriosController < ApplicationController
   end
 
   def deny_non_administrators
-    return if session[:role].blank? || session[:role].to_s.casecmp("Administrador").zero?
+    return if current_user&.perfil == "administrador"
+    return if session[:role].to_s.casecmp("Administrador").zero?
 
     render plain: "Acesso negado: apenas o Administrador pode realizar esta ação", status: :forbidden
   end

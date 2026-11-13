@@ -1,3 +1,5 @@
+# language: pt
+
 Funcionalidade: Relatório global de acessos
   Como administrador
   Eu quero visualizar o histórico completo de todos os acessos do campus

@@ -1,3 +1,5 @@
+# language: pt
+
 Funcionalidade: Cadastro de Usuário
   Como estudante
   Eu quero me cadastrar no sistema utilizando minha matrícula
