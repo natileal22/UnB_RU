@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_12_200212) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_13_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -38,6 +38,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_12_200212) do
     t.string "status", default: "ativa", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "responsavel_id"
+    t.index ["responsavel_id"], name: "index_catracas_on_responsavel_id"
     t.index ["restaurant_id", "codigo"], name: "index_catracas_on_restaurant_id_and_codigo", unique: true
     t.index ["restaurant_id"], name: "index_catracas_on_restaurant_id"
   end
@@ -65,4 +67,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_12_200212) do
   add_foreign_key "accesses", "restaurants"
   add_foreign_key "accesses", "users"
   add_foreign_key "catracas", "restaurants"
+  add_foreign_key "catracas", "users", column: "responsavel_id"
 end

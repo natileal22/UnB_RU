@@ -44,4 +44,5 @@ jobs:
           features/configuracao_ponto_acesso.feature
           features/cadastro-usuario.feature
           features/relatorio_global_acessos.feature
+          features/historico_local_catraca.feature
       - run: bundle exec rubocop --fail-level E

@@ -1,0 +1,55 @@
+<% content_for :title, "Histórico Local" %>
+
+<main class="auth-page">
+  <section class="auth-card">
+    <h1>Histórico Local</h1>
+
+    <% if flash[:alert] %>
+      <p id="flash-alert" class="flash flash-alert" role="alert"><%= flash[:alert] %></p>
+    <% end %>
+
+    <% if @resultado.sem_catraca? %>
+      <p id="aviso-sem-catraca" class="flash flash-alert" role="alert">
+        Nenhuma catraca vinculada a você. Procure o administrador
+      </p>
+    <% else %>
+      <%= form_with url: operador_historico_index_path, method: :get, id: "filtro-periodo" do |form| %>
+        <div class="field">
+          <%= form.label :data_inicial, "Data inicial" %>
+          <%= form.text_field :data_inicial, value: params[:data_inicial], placeholder: "dd/mm/aaaa" %>
+        </div>
+        <div class="field">
+          <%= form.label :data_final, "Data final" %>
+          <%= form.text_field :data_final, value: params[:data_final], placeholder: "dd/mm/aaaa" %>
+        </div>
+        <%= form.submit "Filtrar", class: "primary-button" %>
+      <% end %>
+
+      <% if @resultado.valido? && @resultado.acessos.empty? %>
+        <p id="acessos-vazio">Nenhum acesso registrado nesta catraca</p>
+      <% elsif @resultado.valido? %>
+        <table id="acessos">
+          <thead>
+            <tr><th>Data e hora</th><th>Catraca</th><th>Matrícula</th><th>Resultado</th></tr>
+          </thead>
+          <tbody>
+            <% @resultado.acessos.each do |acesso| %>
+              <tr>
+                <td><%= l(acesso.occurred_at, format: "%d/%m/%Y %H:%M") %></td>
+                <td><%= acesso.catraca %></td>
+                <td><%= acesso.matricula %></td>
+                <td>
+                  <% if acesso.resultado == "LIBERADO" %>
+                    Liberado
+                  <% else %>
+                    Recusado: <%= ValidacaoEntrada::MENSAGENS.fetch(acesso.motivo_negacao, "Acesso negado") %>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    <% end %>
+  </section>
+</main>
