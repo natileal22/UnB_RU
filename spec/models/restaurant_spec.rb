@@ -58,12 +58,44 @@ RSpec.describe Restaurant, type: :model do
     end
   end
 
-  it 'bloqueia a remoção quando há catraca' do
-    restaurante = described_class.create!(name: 'RU Gama')
-    Catraca.create!(restaurant: restaurante, codigo: 'CAT-01')
+  describe 'bloqueio da remoção' do
+    let(:restaurante) { described_class.create!(name: 'RU Gama') }
 
-    expect(restaurante.motivo_bloqueio_remocao).to include('catracas vinculadas')
-    expect(described_class.create!(name: 'RU Asa Norte').motivo_bloqueio_remocao).to be_nil
+    it 'libera restaurante sem catracas e sem acessos' do
+      expect(restaurante.motivo_bloqueio_remocao).to be_nil
+    end
+
+    it 'manda remover as catracas quando todas podem ser removidas' do
+      Catraca.create!(restaurant: restaurante, codigo: 'CAT-01', status: 'inativa')
+
+      expect(restaurante.motivo_bloqueio_remocao)
+        .to end_with('Remova as catracas antes ou apenas inative o restaurante')
+    end
+
+    it 'avisa que só pode ficar inativo quando uma catraca tem responsável' do
+      func = User.create!(name: 'Carlos', matricula: '9000002', password: 'SenhaForte123', perfil: 'funcionario')
+      Catraca.create!(restaurant: restaurante, codigo: 'CAT-01', status: 'inativa', responsavel: func)
+
+      expect(restaurante.motivo_bloqueio_remocao).to include('responsável ou registros de acesso')
+      expect(restaurante.motivo_bloqueio_remocao).not_to include('Remova as catracas antes')
+    end
+
+    it 'avisa que só pode ficar inativo quando uma catraca tem acessos' do
+      Catraca.create!(restaurant: restaurante, codigo: 'CAT-01', status: 'inativa')
+      Access.create!(restaurant: restaurante, catraca: 'CAT-01', matricula: '241000001', resultado: 'LIBERADO',
+                     occurred_at: Time.current)
+
+      expect(restaurante.motivo_bloqueio_remocao).to include('responsável ou registros de acesso')
+    end
+
+    it 'avisa quando só restaram registros de acesso sem catraca' do
+      Access.create!(restaurant: restaurante, catraca: 'CAT-01', matricula: '241000001', resultado: 'LIBERADO',
+                     occurred_at: Time.current)
+
+      expect(restaurante.motivo_bloqueio_remocao).to eq(
+        'Não é possível remover um restaurante com registros de acesso. Ele só pode ficar inativo'
+      )
+    end
   end
 end
 # rubocop:enable Metrics/BlockLength

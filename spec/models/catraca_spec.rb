@@ -75,6 +75,34 @@ RSpec.describe Catraca, type: :model do
       expect(mensagem_de(responsavel: aluno)).to eq('Responsável deve ser funcionário ou administrador')
     end
 
+    it 'não deixa mudar o código nem o restaurante de catraca com acessos' do
+      catraca = described_class.create!(restaurant: restaurante, codigo: 'CAT-01', status: 'inativa')
+      Access.create!(restaurant: restaurante, catraca: 'CAT-01', matricula: '241000001', resultado: 'LIBERADO',
+                     occurred_at: Time.current)
+      aviso = 'Não é possível alterar o código ou o restaurante de uma catraca com registros de acesso'
+
+      catraca.codigo = 'CAT-10'
+      expect(catraca.valid?(:gestao)).to be(false)
+      expect(catraca.errors.first.message).to eq(aviso)
+
+      catraca.restore_attributes
+      catraca.restaurant = Restaurant.create!(name: 'RU Gama')
+      expect(catraca.valid?(:gestao)).to be(false)
+      expect(catraca.errors.first.message).to eq(aviso)
+    end
+
+    it 'deixa mudar o status de catraca com acessos e o código de catraca sem acessos' do
+      catraca = described_class.create!(restaurant: restaurante, codigo: 'CAT-01', status: 'inativa')
+      catraca.codigo = 'CAT-10'
+      expect(catraca).to be_valid(:gestao)
+
+      catraca.save!
+      Access.create!(restaurant: restaurante, catraca: 'CAT-10', matricula: '241000001', resultado: 'LIBERADO',
+                     occurred_at: Time.current)
+      catraca.status = 'em_manutencao'
+      expect(catraca).to be_valid(:gestao)
+    end
+
     it 'só libera a remoção de catraca inativa sem responsável e sem acessos' do
       catraca = described_class.create!(restaurant: restaurante, codigo: 'CAT-01', status: 'inativa')
       expect(catraca.motivo_bloqueio_remocao).to be_nil

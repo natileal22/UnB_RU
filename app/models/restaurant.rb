@@ -30,13 +30,20 @@ class Restaurant < ApplicationRecord
   end
 
   def motivo_bloqueio_remocao
-    return unless catracas.exists? || accesses.exists?
+    return motivo_por_catracas if catracas.exists?
 
-    'Não é possível remover um restaurante com catracas vinculadas. ' \
-      'Remova as catracas antes ou apenas inative o restaurante'
+    'Não é possível remover um restaurante com registros de acesso. Ele só pode ficar inativo' if accesses.exists?
   end
 
   private
+
+  # a mensagem muda quando alguma catraca nunca poderia ser removida
+  def motivo_por_catracas
+    base = 'Não é possível remover um restaurante com catracas vinculadas.'
+    return "#{base} Remova as catracas antes ou apenas inative o restaurante" unless catracas.any?(&:preso?)
+
+    "#{base} Há catraca com responsável ou registros de acesso, então o restaurante só pode ficar inativo"
+  end
 
   def horarios_de_funcionamento
     abertura = checar_horario(:horario_abertura, 'abertura')

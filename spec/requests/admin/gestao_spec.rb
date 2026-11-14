@@ -32,19 +32,26 @@ RSpec.describe 'Admin::Gestao', type: :request do
     expect(response.body).not_to include('new_restaurant', 'Cadastrar Restaurante', 'Remover', 'Inativar')
   end
 
-  it 'nega ao funcionário todas as ações administrativas' do
+  it 'nega ao funcionário todas as ações mesmo com dados válidos e não altera nada' do
     entrar_como('funcionario')
+    vazio = Restaurant.create!(name: 'RU Vazio')
     catraca = Catraca.create!(restaurant: restaurante, codigo: 'CAT-01', status: 'inativa')
+    estado = -> { [Restaurant.order(:id).map(&:attributes), Catraca.order(:id).map(&:attributes)] }
+    antes = estado.call
+    nova = { catraca: { codigo: 'CAT-02', restaurant_id: restaurante.id, status: 'inativa' } }
 
-    [[:get, new_admin_restaurante_path], [:post, admin_restaurantes_path],
-     [:delete, admin_restaurante_path(restaurante)], [:patch, inativar_admin_restaurante_path(restaurante)],
-     [:get, new_admin_catraca_path], [:delete, admin_catraca_path(catraca)]].each do |metodo, caminho|
-      send(metodo, caminho)
+    [[:post, admin_restaurantes_path, { restaurant: dados }],
+     [:patch, admin_restaurante_path(restaurante), { restaurant: { capacidade: 999 } }],
+     [:delete, admin_restaurante_path(vazio), {}], [:patch, inativar_admin_restaurante_path(restaurante), {}],
+     [:post, admin_catracas_path, nova], [:patch, admin_catraca_path(catraca), { catraca: { codigo: 'CAT-77' } }],
+     [:delete, admin_catraca_path(catraca), {}], [:get, new_admin_restaurante_path, {}],
+     [:get, new_admin_catraca_path, {}]].each do |metodo, caminho, parametros|
+      send(metodo, caminho, params: parametros)
 
       expect(response).to have_http_status(:forbidden)
       expect(response.body).to include('Acesso negado: apenas o Administrador pode realizar esta ação')
     end
-    expect(Restaurant.count + Catraca.count).to eq(2)
+    expect(estado.call).to eq(antes)
   end
 
   context 'como administrador' do
@@ -113,6 +120,17 @@ RSpec.describe 'Admin::Gestao', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(Catraca.count).to eq(0)
+    end
+
+    it 'rejeita mudar o código de catraca com registros de acesso' do
+      catraca = Catraca.create!(restaurant: restaurante, codigo: 'CAT-01', status: 'inativa')
+      Access.create!(restaurant: restaurante, catraca: 'CAT-01', matricula: '241000001', resultado: 'LIBERADO',
+                     occurred_at: Time.current)
+      patch admin_catraca_path(catraca), params: { catraca: { codigo: 'CAT-10' } }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include('Não é possível alterar o código ou o restaurante de uma catraca')
+      expect(catraca.reload.codigo).to eq('CAT-01')
     end
 
     it 'não remove catraca ativa e remove inativa' do

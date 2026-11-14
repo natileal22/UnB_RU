@@ -5,6 +5,17 @@ def formulario_da_catraca(codigo, nome_restaurante)
   "#editar-form-catraca-#{nome_restaurante.parameterize}--#{codigo.parameterize}"
 end
 
+# find_by e nao find_or_create para nao recriar uma catraca apagada
+def catraca_existente(codigo, nome_restaurante)
+  Catraca.joins(:restaurant).find_by!(codigo: codigo, restaurants: { name: nome_restaurante })
+end
+
+# dados validos para o 403 provar que sem a guarda a acao funcionaria
+def parametros_da_catraca(rota, catraca)
+  dados = { codigo: 'CAT-99', restaurant_id: catraca.restaurant_id, status: 'inativa' }
+  %w[criar editar].include?(rota) ? { catraca: dados } : {}
+end
+
 def caminho_da_catraca(rota, metodo, catraca)
   case rota
   when 'nova' then new_admin_catraca_path
@@ -44,9 +55,11 @@ end
 
 Quando('envio uma requisição {string} para a rota {string} da catraca {string} ' \
        'do restaurante {string}') do |metodo, rota, codigo, nome|
-  catraca = Catraca.joins(:restaurant).find_by!(codigo: codigo, restaurants: { name: nome })
+  catraca = catraca_existente(codigo, nome)
   @atributos_antes = catraca.attributes
-  page.driver.submit(metodo.downcase.to_sym, caminho_da_catraca(rota, metodo, catraca), {})
+  @total_antes = Catraca.count
+  caminho = caminho_da_catraca(rota, metodo, catraca)
+  page.driver.submit(metodo.downcase.to_sym, caminho, parametros_da_catraca(rota, catraca))
 end
 
 Então('o responsável pela catraca {string} do restaurante {string} deve ser {string}') do |codigo, nome, responsavel|
@@ -74,6 +87,7 @@ Então('o elemento {string} deve existir na página') do |seletor|
 end
 
 Então('a catraca {string} do restaurante {string} deve permanecer inalterada') do |codigo, nome|
-  expect(catraca_do_feature(codigo, nome).attributes).to eq(@atributos_antes)
+  expect(Catraca.count).to eq(@total_antes)
+  expect(catraca_existente(codigo, nome).attributes).to eq(@atributos_antes)
 end
 # rubocop:enable Naming/AsciiIdentifiers

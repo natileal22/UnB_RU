@@ -16,6 +16,13 @@ def caminho_do_restaurante(rota, metodo, restaurante)
   end
 end
 
+# dados validos para o 403 provar que sem a guarda a acao funcionaria
+def parametros_do_restaurante(rota)
+  dados = { name: 'RU Novo', localizacao: 'Campus Novo', capacidade: 100, horario_abertura: '11:00',
+            horario_fechamento: '14:00' }
+  %w[criar editar].include?(rota) ? { restaurant: dados } : {}
+end
+
 Dado('existe o restaurante {string} com:') do |nome, tabela|
   atributos = tabela.rows_hash.to_h do |chave, valor|
     chave == 'status' ? [:status, codigo_de_status(valor)] : [COLUNAS_RESTAURANTE.fetch(chave), valor]
@@ -58,8 +65,12 @@ end
 
 Quando('envio uma requisição {string} para a rota {string} do restaurante {string}') do |metodo, rota, nome|
   restaurante = Restaurant.find_by!(name: nome)
-  @atributos_antes = restaurante.attributes
-  page.driver.submit(metodo.downcase.to_sym, caminho_do_restaurante(rota, metodo, restaurante), {})
+  # ativar so muda algo quando o restaurante esta inativo
+  restaurante.update!(status: 'inativo') if rota == 'ativar'
+  @atributos_antes = restaurante.reload.attributes
+  @total_antes = Restaurant.count
+  caminho = caminho_do_restaurante(rota, metodo, restaurante)
+  page.driver.submit(metodo.downcase.to_sym, caminho, parametros_do_restaurante(rota))
 end
 
 Então('nenhum restaurante deve estar cadastrado') do
@@ -91,6 +102,7 @@ Então('o restaurante {string} deve continuar existindo') do |nome|
 end
 
 Então('o restaurante {string} deve permanecer inalterado') do |nome|
+  expect(Restaurant.count).to eq(@total_antes)
   expect(Restaurant.find_by!(name: nome).attributes).to eq(@atributos_antes)
 end
 # rubocop:enable Naming/AsciiIdentifiers

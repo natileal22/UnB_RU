@@ -138,6 +138,53 @@ Funcionalidade: Gestão de Catracas
     Então o elemento "#flash-notice" deve ter o texto "Catraca atualizada com sucesso"
     E o elemento "#status-catraca-ru-darcy-ribeiro--cat-10" deve ter o texto exato "Inativa"
 
+  @triste @edicao @status
+  Cenário: Não ativar catraca em manutenção de restaurante Inativo
+    Dado que estou autenticado como "Administrador"
+    E existe o restaurante "RU Gama" com:
+      | status | Inativo |
+    E existe a catraca "CAT-01" no restaurante "RU Gama" com:
+      | status | Em Manutenção |
+    E estou na página "Gestão de Restaurantes e Catracas"
+    Quando clico em "#editar-catraca-ru-gama--cat-01"
+    E dentro do formulário de edição da catraca "CAT-01" do restaurante "RU Gama" seleciono "Ativa" no campo "Status"
+    E dentro do formulário de edição da catraca "CAT-01" do restaurante "RU Gama" clico no botão "Salvar"
+    Então o elemento "#flash-alert" deve ter o texto "Não é possível ativar a catraca porque o restaurante está Inativo"
+    E o elemento "#status-catraca-ru-gama--cat-01" deve ter o texto exato "Em Manutenção"
+
+  @triste @edicao @integridade
+  Cenário: Não renomear catraca que já tem registros de acesso
+    Dado que estou autenticado como "Administrador"
+    E existe a catraca "CAT-01" no restaurante "RU Darcy Ribeiro" com:
+      | status | Inativa |
+    E existem os acessos na catraca "CAT-01" do restaurante "RU Darcy Ribeiro":
+      | data       | hora  | matricula | resultado |
+      | 10/09/2026 | 11:45 | 241012345 | Liberado  |
+    E estou na página "Gestão de Restaurantes e Catracas"
+    Quando clico em "#editar-catraca-ru-darcy-ribeiro--cat-01"
+    E dentro de "#editar-form-catraca-ru-darcy-ribeiro--cat-01" preencho o campo "Código" com "CAT-10"
+    E dentro de "#editar-form-catraca-ru-darcy-ribeiro--cat-01" clico no botão "Salvar"
+    Então o elemento "#flash-alert" deve ter o texto "Não é possível alterar o código ou o restaurante"
+    E o elemento "#catraca-ru-darcy-ribeiro--cat-01" deve existir na página
+    E o elemento "#catraca-ru-darcy-ribeiro--cat-10" não deve existir na página
+
+  @triste @edicao @integridade
+  Cenário: Não mover para outro restaurante uma catraca que já tem registros de acesso
+    Dado que estou autenticado como "Administrador"
+    E existe o restaurante "RU Gama"
+    E existe a catraca "CAT-01" no restaurante "RU Darcy Ribeiro" com:
+      | status | Inativa |
+    E existem os acessos na catraca "CAT-01" do restaurante "RU Darcy Ribeiro":
+      | data       | hora  | matricula | resultado |
+      | 10/09/2026 | 11:45 | 241012345 | Liberado  |
+    E estou na página "Gestão de Restaurantes e Catracas"
+    Quando clico em "#editar-catraca-ru-darcy-ribeiro--cat-01"
+    E dentro de "#editar-form-catraca-ru-darcy-ribeiro--cat-01" seleciono "RU Gama" no campo "Restaurante"
+    E dentro de "#editar-form-catraca-ru-darcy-ribeiro--cat-01" clico no botão "Salvar"
+    Então o elemento "#flash-alert" deve ter o texto "Não é possível alterar o código ou o restaurante"
+    E o elemento "#catraca-ru-darcy-ribeiro--cat-01" deve existir na página
+    E o elemento "#catraca-ru-gama--cat-01" não deve existir na página
+
   @feliz @status
   Esquema do Cenário: Mudar o status de uma catraca no mesmo restaurante Ativo
     Dado que estou autenticado como "Administrador"
