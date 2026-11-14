@@ -3,7 +3,8 @@
 # rubocop:disable Naming/AsciiIdentifiers
 PAGINAS_HISTORICO = {
   'Histórico Local' => :operador_historico_index_path,
-  'Autenticação' => :operador_entrar_path
+  'Autenticação' => :operador_entrar_path,
+  'Gestão de Restaurantes e Catracas' => :admin_restaurantes_path
 }.freeze
 
 def caminho_da_pagina(nome)
@@ -15,11 +16,11 @@ def catraca_do_feature(codigo, nome_restaurante)
   Catraca.find_or_create_by!(restaurant: restaurante, codigo: codigo)
 end
 
-Dado('que existe o restaurante {string}') do |nome|
+Dado(/^(?:que )?existe o restaurante "([^"]*)"$/) do |nome|
   Restaurant.find_or_create_by!(name: nome)
 end
 
-Dado('que estou autenticado como {string}') do |perfil|
+Dado(/^(?:que )?estou autenticado como "([^"]*)"$/) do |perfil|
   step %(estou logado como "#{perfil}")
 end
 
@@ -46,9 +47,10 @@ Dado('nenhuma catraca está vinculada ao funcionário') do
   Catraca.where(responsavel_id: @usuario_logado.id).update_all(responsavel_id: nil)
 end
 
-Dado('existe a catraca {string} no restaurante {string} com:') do |codigo, nome, tabela|
-  status = codigo_de_status(tabela.rows_hash.fetch('status'))
-  catraca_do_feature(codigo, nome).update!(status: status)
+Dado(/^(?:que )?existe a catraca "([^"]*)" no restaurante "([^"]*)" com:$/) do |codigo, nome, tabela|
+  dados = tabela.rows_hash
+  responsavel = User.find_by!(nome: dados['responsavel']) if dados['responsavel']
+  catraca_do_feature(codigo, nome).update!(status: codigo_de_status(dados.fetch('status')), responsavel: responsavel)
 end
 
 Dado('estou na página {string}') do |nome|

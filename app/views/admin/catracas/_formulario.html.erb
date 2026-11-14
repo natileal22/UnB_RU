@@ -1,0 +1,22 @@
+<%# catraca nova ou em edicao com namespace para nao repetir id entre formularios %>
+<%= form_with model: catraca, scope: :catraca, id: form_id, namespace: namespace,
+              url: (catraca.persisted? ? admin_catraca_path(catraca) : admin_catracas_path),
+              method: (catraca.persisted? ? :patch : :post) do |form| %>
+  <div class="field">
+    <%= form.label :codigo, 'Código' %>
+    <%= form.text_field :codigo %>
+  </div>
+  <div class="field">
+    <%= form.label :restaurant_id, 'Restaurante' %>
+    <%= form.select :restaurant_id, @restaurantes.map { |r| [r.name, r.id] } %>
+  </div>
+  <div class="field">
+    <%= form.label :status, 'Status' %>
+    <%= form.select :status, Catraca::STATUS_ROTULOS.invert %>
+  </div>
+  <div class="field">
+    <%= form.label :responsavel_id, 'Responsável' %>
+    <%= form.select :responsavel_id, @responsaveis.map { |u| [u.nome, u.id] }, include_blank: true %>
+  </div>
+  <%= form.submit 'Salvar', class: 'primary-button' %>
+<% end %>

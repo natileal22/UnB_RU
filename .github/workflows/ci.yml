@@ -45,4 +45,6 @@ jobs:
           features/cadastro-usuario.feature
           features/relatorio_global_acessos.feature
           features/historico_local_catraca.feature
+          features/gestao_restaurantes.feature
+          features/gestao_catracas.feature
       - run: bundle exec rubocop --fail-level E

@@ -38,6 +38,13 @@ Rails.application.routes.draw do
     get "relatorio", to: "relatorios#show", as: :relatorio
     resources :restaurantes, except: [:destroy]
     resources :catracas, only: [:create, :update]
+    resources :restaurantes, only: [:destroy] do
+      member do
+        patch :ativar
+        patch :inativar
+      end
+    end
+    resources :catracas, only: [:new, :edit, :destroy]
   end
   # ----------------
 

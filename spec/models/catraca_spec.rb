@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/BlockLength
 require 'rails_helper'
 
 RSpec.describe Catraca, type: :model do
@@ -28,4 +29,61 @@ RSpec.describe Catraca, type: :model do
     expect(described_class.new(status: 'ativa')).to be_disponivel
     expect(described_class.new(status: 'em_manutencao')).not_to be_disponivel
   end
+
+  describe 'regras de gestão' do
+    def mensagem_de(**atributos)
+      catraca = described_class.new({ restaurant: restaurante, codigo: 'CAT-05' }.merge(atributos))
+      catraca.valid?(:gestao)
+      catraca.errors.first&.message
+    end
+
+    it 'rejeita código com formato inválido' do
+      ['CAT 01', 'CAT#01', 'CAT/01'].each do |codigo|
+        expect(mensagem_de(codigo: codigo)).to eq('Código da catraca contém caracteres inválidos')
+      end
+    end
+
+    it 'rejeita código vazio e acima de 20 caracteres' do
+      expect(mensagem_de(codigo: '')).to eq('Código da catraca é obrigatório')
+      expect(mensagem_de(codigo: 'A' * 21)).to eq('Código da catraca deve ter no máximo 20 caracteres')
+      expect(mensagem_de(codigo: 'A' * 20)).to be_nil
+    end
+
+    it 'não diferencia maiúsculas no código repetido do mesmo restaurante' do
+      described_class.create!(restaurant: restaurante, codigo: 'CAT-01')
+
+      expect(mensagem_de(codigo: 'cat-01')).to eq('Já existe uma catraca com este código neste restaurante')
+    end
+
+    it 'aceita o mesmo código em outro restaurante' do
+      described_class.create!(restaurant: restaurante, codigo: 'CAT-01')
+      outro = Restaurant.create!(name: 'RU Gama')
+
+      expect(described_class.new(restaurant: outro, codigo: 'CAT-01')).to be_valid(:gestao)
+    end
+
+    it 'não ativa catraca em restaurante inativo' do
+      restaurante.update!(status: 'inativo')
+
+      expect(mensagem_de(status: 'ativa')).to eq('Não é possível ativar a catraca porque o restaurante está Inativo')
+      expect(mensagem_de(status: 'inativa')).to be_nil
+    end
+
+    it 'não aceita estudante como responsável' do
+      aluno = User.create!(name: 'Ana', matricula: '241000001', password: 'SenhaForte123', perfil: 'estudante')
+
+      expect(mensagem_de(responsavel: aluno)).to eq('Responsável deve ser funcionário ou administrador')
+    end
+
+    it 'só libera a remoção de catraca inativa sem responsável e sem acessos' do
+      catraca = described_class.create!(restaurant: restaurante, codigo: 'CAT-01', status: 'inativa')
+      expect(catraca.motivo_bloqueio_remocao).to be_nil
+
+      Access.create!(restaurant: restaurante, catraca: 'CAT-01', matricula: '241000001', resultado: 'LIBERADO',
+                     occurred_at: Time.current)
+      expect(catraca.motivo_bloqueio_remocao).to include('responsável ou registros de acesso')
+      expect(described_class.new(status: 'ativa').motivo_bloqueio_remocao).to include('catraca Ativa')
+    end
+  end
 end
+# rubocop:enable Metrics/BlockLength

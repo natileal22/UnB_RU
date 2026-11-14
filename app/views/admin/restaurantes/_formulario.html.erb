@@ -1,0 +1,26 @@
+<%# restaurante novo ou em edicao com namespace para nao repetir id entre formularios %>
+<%= form_with model: restaurante, scope: :restaurant, id: form_id, namespace: namespace,
+              url: (restaurante.persisted? ? admin_restaurante_path(restaurante) : admin_restaurantes_path),
+              method: (restaurante.persisted? ? :patch : :post) do |form| %>
+  <div class="field">
+    <%= form.label :name, 'Nome' %>
+    <%= form.text_field :name %>
+  </div>
+  <div class="field">
+    <%= form.label :localizacao, 'Localização' %>
+    <%= form.text_field :localizacao %>
+  </div>
+  <div class="field">
+    <%= form.label :capacidade, 'Capacidade' %>
+    <%= form.number_field :capacidade, min: 1, max: 5000 %>
+  </div>
+  <div class="field">
+    <%= form.label :horario_abertura, 'Abertura' %>
+    <%= form.time_field :horario_abertura %>
+  </div>
+  <div class="field">
+    <%= form.label :horario_fechamento, 'Fechamento' %>
+    <%= form.time_field :horario_fechamento %>
+  </div>
+  <%= form.submit 'Salvar', class: 'primary-button' %>
+<% end %>

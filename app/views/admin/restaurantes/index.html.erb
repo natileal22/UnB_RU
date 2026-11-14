@@ -1,2 +1,83 @@
-<%# app/views/admin/restaurantes/index.html.erb %>
-<h1>Gestão de Restaurantes e Catracas</h1>
+<% content_for :title, 'Gestão de Restaurantes e Catracas' %>
+<% administrador = current_user.perfil == 'administrador' %>
+
+<main class="auth-page">
+  <section class="auth-card">
+    <h1>Gestão de Restaurantes e Catracas</h1>
+
+    <% if flash[:notice] %>
+      <p id="flash-notice" class="flash flash-notice" role="status"><%= flash[:notice] %></p>
+    <% end %>
+    <% if flash[:alert] %>
+      <p id="flash-alert" class="flash flash-alert" role="alert"><%= flash[:alert] %></p>
+    <% end %>
+
+    <p id="totais">
+      <%= @restaurantes.size %> restaurantes e <%= @restaurantes.sum { |r| r.catracas.size } %> catracas
+    </p>
+
+    <% if administrador %>
+      <%= button_to '+ Cadastrar Restaurante', new_admin_restaurante_path, method: :get, class: 'primary-button' %>
+      <%= button_to '+ Associar Nova Catraca', new_admin_catraca_path, method: :get, class: 'primary-button' %>
+
+      <%= render 'admin/restaurantes/formulario', restaurante: @novo_restaurante, form_id: 'new_restaurant',
+                                                  namespace: nil %>
+      <%= render 'admin/catracas/formulario', catraca: @nova_catraca, form_id: 'new_turnstile', namespace: nil %>
+    <% end %>
+
+    <ul id="restaurantes">
+      <% @restaurantes.each do |restaurante| %>
+        <li id="restaurante-<%= restaurante.slug %>">
+          <strong><%= restaurante.name %></strong>
+          <%= restaurante.localizacao %> |
+          <%= restaurante.capacidade %> lugares |
+          <%= restaurante.horario_abertura&.strftime('%H:%M') %> às
+          <%= restaurante.horario_fechamento&.strftime('%H:%M') %>
+          <span id="status-restaurante-<%= restaurante.slug %>"><%= restaurante.status_rotulo %></span>
+
+          <% if administrador %>
+            <%= link_to 'Editar Unidade', edit_admin_restaurante_path(restaurante),
+                        id: "editar-restaurante-#{restaurante.slug}" %>
+            <% if restaurante.ativo? %>
+              <%= button_to 'Inativar', inativar_admin_restaurante_path(restaurante), method: :patch,
+                            id: "inativar-restaurante-#{restaurante.slug}" %>
+            <% else %>
+              <%= button_to 'Ativar', ativar_admin_restaurante_path(restaurante), method: :patch,
+                            id: "ativar-restaurante-#{restaurante.slug}" %>
+            <% end %>
+            <%= button_to 'Remover', admin_restaurante_path(restaurante), method: :delete,
+                          id: "remover-restaurante-#{restaurante.slug}",
+                          form: { data: { turbo_confirm: 'Deseja realmente remover o restaurante?' } } %>
+
+            <% if @restaurante_em_edicao == restaurante %>
+              <%= render 'admin/restaurantes/formulario', restaurante: @restaurante_em_edicao,
+                                                          form_id: "editar-form-restaurante-#{restaurante.slug}",
+                                                          namespace: "editar_restaurante_#{restaurante.id}" %>
+            <% end %>
+          <% end %>
+
+          <ul>
+            <% restaurante.catracas.sort_by(&:codigo).each do |catraca| %>
+              <li id="catraca-<%= catraca.slug %>">
+                <%= catraca.codigo %> |
+                <span id="status-catraca-<%= catraca.slug %>"><%= catraca.status_rotulo %></span> |
+                <%= catraca.responsavel&.nome %>
+                <% if administrador %>
+                  <%= link_to 'Editar', edit_admin_catraca_path(catraca), id: "editar-catraca-#{catraca.slug}" %>
+                  <%= button_to 'Remover', admin_catraca_path(catraca), method: :delete,
+                                id: "remover-catraca-#{catraca.slug}",
+                                form: { data: { turbo_confirm: 'Deseja realmente remover a catraca?' } } %>
+                  <% if @catraca_em_edicao == catraca %>
+                    <%= render 'admin/catracas/formulario', catraca: @catraca_em_edicao,
+                                                            form_id: "editar-form-catraca-#{catraca.slug}",
+                                                            namespace: "editar_catraca_#{catraca.id}" %>
+                  <% end %>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </li>
+      <% end %>
+    </ul>
+  </section>
+</main>
