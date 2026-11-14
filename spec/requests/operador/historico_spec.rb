@@ -62,6 +62,19 @@ RSpec.describe 'Operador::Historico', type: :request do
       expect(response.body).to include('Nenhum acesso registrado nesta catraca')
     end
 
+    it 'filtra por período válido e lista do mais recente para o mais antigo' do
+      Catraca.create!(restaurant: restaurante, codigo: 'CAT-01', responsavel: User.last)
+      { '241000001' => '2026-09-09 11:45', '241000002' => '2026-09-10 11:50', '241000003' => '2026-09-10 12:20',
+        '241000004' => '2026-09-11 12:05' }.each do |matricula, quando|
+        Access.create!(restaurant: restaurante, catraca: 'CAT-01', matricula: matricula, resultado: 'LIBERADO',
+                       occurred_at: Time.zone.parse(quando))
+      end
+      get operador_historico_index_path, params: { data_inicial: '10/09/2026', data_final: '10/09/2026' }
+
+      expect(response.body).not_to include('241000001', '241000004')
+      expect(response.body.index('241000003')).to be < response.body.index('241000002')
+    end
+
     it 'responde 422 com alerta quando o período é inválido' do
       Catraca.create!(restaurant: restaurante, codigo: 'CAT-01', responsavel: User.last)
       get operador_historico_index_path, params: { data_inicial: '30/09/2026', data_final: '01/09/2026' }

@@ -3,7 +3,7 @@
 @issue-7
 Funcionalidade: Histórico local da catraca
   Como funcionário
-  Eu quero visualizar na aplicação de controle o histórico de todos os acessos registrados apenas na catraca que estou gerenciando no momento
+  Eu quero visualizar o histórico dos acessos das catracas vinculadas a mim
   Para realizar auditorias ou conferências locais de fluxo
 
   Contexto:
@@ -30,6 +30,33 @@ Funcionalidade: Histórico local da catraca
     E a lista "#acessos" deve exibir "241055555"
     E o elemento "#acessos" não deve ter o texto "241099999"
 
+  @feliz @historico @ordenacao
+  Cenário: Listar os acessos do mais recente para o mais antigo (Caminho Feliz)
+    Dado que estou autenticado como "Funcionário"
+    E existem os acessos na catraca "CAT-01" do restaurante "RU Darcy Ribeiro":
+      | data       | hora  | matricula | resultado |
+      | 10/09/2026 | 11:45 | 241012345 | Liberado  |
+      | 10/09/2026 | 12:20 | 241055555 | Liberado  |
+    E a catraca "CAT-01" do restaurante "RU Darcy Ribeiro" está vinculada ao funcionário
+    Quando acesso a página "Histórico Local"
+    Então a lista "#acessos" deve exibir "241055555" antes de "241012345"
+
+  @feliz @historico @filtro
+  Cenário: Filtrar o histórico por um período válido (Caminho Feliz)
+    Dado que estou autenticado como "Funcionário"
+    E existem os acessos na catraca "CAT-01" do restaurante "RU Darcy Ribeiro":
+      | data       | hora  | matricula | resultado |
+      | 09/09/2026 | 11:45 | 241012345 | Liberado  |
+      | 10/09/2026 | 11:50 | 241067890 | Liberado  |
+      | 11/09/2026 | 12:05 | 241099999 | Liberado  |
+    E a catraca "CAT-01" do restaurante "RU Darcy Ribeiro" está vinculada ao funcionário
+    E estou na página "Histórico Local"
+    Quando dentro de "#filtro-periodo" preencho o campo "Data inicial" com "10/09/2026"
+    E dentro de "#filtro-periodo" preencho o campo "Data final" com "10/09/2026"
+    E dentro de "#filtro-periodo" clico no botão "Filtrar"
+    Então a lista "#acessos" deve exibir "241067890"
+    E o elemento "#acessos" não deve ter o texto "241012345"
+    E o elemento "#acessos" não deve ter o texto "241099999"
   @triste @historico @rack_test @hipotese
   Cenário: Redirecionar para a autenticação quando não há login (Caminho Triste)
     Dado que minha sessão expirou
