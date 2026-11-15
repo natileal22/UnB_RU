@@ -32,7 +32,7 @@ class UsersController < ApplicationController
 
   def matricula_invalid?
     @user.errors.details[:matricula].any? do |error|
-      %i[invalid format].include?(error[:error])
+      %w[invalid format inválida].include?(error[:error].to_s)
     end
   end
 end

@@ -34,3 +34,11 @@
 # Pastas de trabalho de agentes (não versionar)
 /.agents
 /.trail
+
+/docs
+.gitignore
+
+/.ai
+/.idea
+
+/bin/rails

@@ -49,6 +49,62 @@ permite filtrar por restaurante, catraca, resultado e período. A opção de agr
 consolida a quantidade por restaurante e catraca. Quando nenhum registro corresponde
 aos filtros, a tela exibe uma mensagem de lista vazia.
 
+### Validação de entrada
+
+Acesse `GET /catracas/:id` (a tela de uma catraca) e informe a matrícula do estudante.
+O sistema verifica, nesta ordem, o formato da matrícula (nove dígitos), se a catraca e o
+restaurante estão ativos, se a catraca pertence ao restaurante selecionado pelo
+funcionário (quando houver ponto de acesso configurado), se o estudante está cadastrado
+e se o saldo cobre a refeição de R$ 4,50. Com tudo válido, a entrada é liberada e o
+valor é debitado do saldo; caso contrário, a tela mostra o motivo da recusa e o saldo não
+muda. Toda tentativa, liberada ou negada, é registrada em `accesses` com o resultado, o
+motivo da negação e o valor cobrado, e aparece no relatório global de operação. A regra
+fica em `app/services/validacao_entrada.rb`, e o débito e o registro acontecem na mesma
+transação.
+
+### Configuração do ponto de acesso
+
+Funcionários e administradores entram por `GET /operador/entrar` e escolhem em
+`GET /ponto-de-acesso` o restaurante em que vão operar. A lista mostra apenas
+restaurantes ativos. A escolha fica guardada na sessão e leva à tela de operação
+(`GET /operacao`), que exibe o restaurante e suas catracas. Estudantes recebem a mensagem
+de acesso negado, e quem não está autenticado é redirecionado para a autenticação do
+operador. Com o ponto de acesso configurado, a validação de entrada só aceita catracas do
+restaurante selecionado.
+
+#### Teste manual da validação e do ponto de acesso
+
+A seed cria os restaurantes, o operador e os estudantes, mas não as catracas nem o saldo.
+Depois de `bin/rails db:seed`, complete pelo console:
+
+```bash
+bin/rails console
+```
+
+```ruby
+darcy = Restaurant.find_by!(name: "RU Darcy Ribeiro")
+Catraca.find_or_create_by!(restaurant: darcy, codigo: "CAT-01")
+User.find_by!(matricula: "123456789").update!(saldo: 10)
+exit
+```
+
+Em seguida, rode `bin/rails server` e:
+
+1. Entre em `http://localhost:3000/operador/entrar` com a matrícula `1234567` e a senha
+   `SenhaCorreta123`.
+2. Abra `http://localhost:3000/ponto-de-acesso`, escolha `RU Darcy Ribeiro` e confirme.
+3. Na tela de operação, clique em `CAT-01` e informe a matrícula `123456789`. A entrada é
+   liberada e o saldo cai para R$ 5,50. Repita com `12345` (formato inválido) ou
+   `999888777` (não cadastrada) para ver as recusas.
+4. Confira os registros em `http://localhost:3000/admin/relatorio`.
+
+#### Testes automatizados
+
+```bash
+bundle exec rspec spec/services/validacao_entrada_spec.rb spec/requests/catracas_spec.rb spec/requests/pontos_acesso_spec.rb spec/models/catraca_spec.rb
+bundle exec cucumber features/validacao_entrada.feature features/configuracao_ponto_acesso.feature
+```
+
 ### Dados de exemplo
 
 Na branch consolidada, a seed popula usuários, restaurantes e acessos das duas
