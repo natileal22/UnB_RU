@@ -1,0 +1,14 @@
+<% content_for :title, "Pagamento via PIX" %>
+
+<main class="auth-page">
+  <section class="auth-card">
+    <h1>Pagamento via PIX</h1>
+    <p>Valor: <strong><%= number_to_currency(@recarga.valor) %></strong></p>
+
+    <h2>QR Code de pagamento</h2>
+    <p>Escaneie o QR Code no app do seu banco ou use o código copia e cola:</p>
+    <p><code id="codigo-pix"><%= @recarga.codigo_pix %></code></p>
+
+    <%= button_to "Já paguei", confirmar_recarga_path(@recarga), method: :patch, class: "primary-button" %>
+  </section>
+</main>
