@@ -68,6 +68,37 @@ bundle exec rubocop --fail-level E
 
 O CI do GitHub Actions (`.github/workflows/ci.yml`) roda esses três comandos a cada push.
 
+## Deploy
+
+O projeto publica no [Render](https://render.com) (plano gratuito) com o banco no [Supabase](https://supabase.com).
+O endereço da aplicação aparece no topo do serviço `unb-ru` do Render, e o `GET /up` responde 200 quando ela está no ar.
+No plano gratuito o serviço hiberna depois de 15 minutos sem acesso, então a primeira requisição demora de 30 a 60 segundos.
+
+**Arquivos do deploy**
+
+- `render.yaml`: descreve o serviço web (Ruby, plano gratuito, health check em `/up`), sem nenhum segredo.
+- `bin/render-build.sh`: instala as gems, compila os assets e aplica as migrations no banco. Só roda a seed se `SEED_DEMO` for `true`.
+- `.github/workflows/cd.yml`: o CD. Quando o CI passa na `main`, chama o deploy hook do Render. Também dá para disparar à mão em Actions > CD > Run workflow.
+
+**Variáveis do serviço no Render**
+
+| Variável | Valor |
+|---|---|
+| `RAILS_ENV` | `production` |
+| `SECRET_KEY_BASE` | gerada pelo Render |
+| `DATABASE_URL` | string do Session Pooler do Supabase (Connect > Session pooler, porta 5432) |
+| `SEED_DEMO` | `false` (use `true` só no primeiro deploy, se quiser dados de exemplo) |
+
+A senha do banco só entra na `DATABASE_URL`, no painel do Render. Ela nunca vai para o Git.
+
+**Passo a passo**
+
+1. No Render, crie um Web Service a partir do repositório e da branch `sprint-2` (ou um Blueprint com o `render.yaml`).
+2. Preencha a `DATABASE_URL` e confirme as outras variáveis da tabela.
+3. Em Settings > Deploy Hook, copie a URL e guarde no GitHub como o secret `RENDER_DEPLOY_HOOK_URL`
+   (Settings > Secrets and variables > Actions). Depois disso, cada push na `main` com o CI verde publica sozinho.
+4. O primeiro deploy cria as tabelas pelo `db:migrate` do script de build.
+
 ## Funcionalidades da Sprint 2
 
 ### Cadastro de usuário
