@@ -4,6 +4,12 @@
 
 Sistema de gerenciamento para o Restaurante Universitário da UnB.
 
+## Links do projeto
+
+- [Wiki do repositório](https://github.com/natileal22/UnB_RU/wiki): funcionalidades, regras de negócio e responsáveis.
+- [Kanban da Sprint 2](https://github.com/users/Kassio-Souza/projects/3): Backlog, Doing, Done e Accepted.
+- [Repositório do grupo](https://github.com/natileal22/UnB_RU).
+
 ## Banco de dados
 
 O projeto usa PostgreSQL. Em produção e no desenvolvimento compartilhado ele roda no Supabase; nos testes, sempre em um PostgreSQL local.
@@ -31,6 +37,36 @@ Estas tarefas recusam rodar contra servidor remoto: `db:drop`, `db:drop:_unsafe`
 ### Chave das credenciais
 
 O `config/credentials.yml.enc` vem no repositório, mas a `config/master.key` não. Peça a chave a quem mantém o projeto.
+
+## Como rodar o projeto
+
+```bash
+bundle install
+cp .env.example .env          # sem DATABASE_URL, usa o PostgreSQL local
+bin/rails db:create db:migrate db:seed
+bin/rails server              # http://localhost:3000
+```
+
+A seed cria dois estudantes (`123456789` e `202012345`) e um funcionário (`1234567`). O administrador não vem na
+seed. Para criar um, abra o `bin/rails console` e rode:
+
+```ruby
+User.create!(name: "Administrador", matricula: "7654321", email: "admin@unb.br",
+             password: "SenhaCorreta123", perfil: "administrador")
+```
+
+A página inicial (`/`) tem os acessos de estudante, operador e administrador. Estudantes entram em `/login`, e
+funcionários e administradores em `/operador/entrar`.
+
+### Rodar todos os testes
+
+```bash
+bundle exec rspec
+bundle exec cucumber --strict --tags "not @wip" $(grep -oE "features/[a-z_-]+\.feature" .github/workflows/ci.yml | sort -u)
+bundle exec rubocop --fail-level E
+```
+
+O CI do GitHub Actions (`.github/workflows/ci.yml`) roda esses três comandos a cada push.
 
 ## Funcionalidades da Sprint 2
 
@@ -153,13 +189,24 @@ bundle exec rspec spec/requests/operador/historico_spec.rb spec/services/histori
 bundle exec cucumber features/historico_local_catraca.feature features/gestao_restaurantes.feature   features/gestao_catracas.feature features/extrato_historico.feature   features/exportacao_pdf_relatorio_operacao.feature
 ```
 
+### Telas de entrada, menu e cardápio completo
+
+A página inicial (`GET /`) é a porta de entrada: mostra o acesso de estudante, de operador e de administrador, o
+login do estudante e os links de cadastro. Depois do login, o estudante vê a home com saldo, tarifa, turno atual e
+cardápio, e o funcionário e o administrador vão direto para o Ponto de acesso e para a Gestão. Todas as telas do layout
+básico têm um menu com os links de cada perfil.
+
+O cardápio completo fica em `GET /cardapio/hoje` (café da manhã, almoço e jantar do dia, com a refeição em serviço
+marcada) e `GET /cardapio/semana`. Ele usa uma API própria do cardápio (pasta `app/salvaguarda/cardapio_api`, veja o
+`LEIA-ME.md` dela para configurar a URL e a chave) e cai nos dados importados do cardápio quando a API falha.
+
 ### Dados de exemplo
 
-Na branch consolidada, a seed popula usuários, restaurantes e acessos das duas
+Na branch `sprint-2`, a seed popula usuários, restaurantes e acessos das duas
 features. Ela é idempotente e pode ser executada novamente sem duplicar os dados:
 
 ```bash
-git switch feat/adriano-issue_1_9
+git switch sprint-2
 bin/rails db:seed
 ```
 
@@ -170,14 +217,14 @@ referência do cadastro. Para testar o relatório, os dados incluem os restauran
 
 ### Testes
 
-Na branch consolidada `feat/adriano-issue_1_9`, as duas issues e todas as migrations
+Na branch `sprint-2`, as duas issues e todas as migrations
 estão disponíveis no mesmo checkout. Use um único banco de teste para executar a
 suíte completa.
 
 #### Preparação da branch e do banco
 
 ```bash
-git switch feat/adriano-issue_1_9
+git switch sprint-2
 
 TEST_DB_NAME=unb_ru_test \
 RAILS_ENV=test \
@@ -247,7 +294,7 @@ user.password
 
 #### Teste funcional no navegador
 
-Inicie o servidor na branch consolidada:
+Inicie o servidor na branch `sprint-2`:
 
 ```bash
 bin/rails server
