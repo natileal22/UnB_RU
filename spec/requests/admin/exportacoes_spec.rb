@@ -36,6 +36,7 @@ RSpec.describe 'Admin::Exportacoes', type: :request do
 
       expect(response).to have_http_status(:forbidden)
       expect(response.body).to include('Acesso negado: apenas o Administrador pode exportar o relatório')
+      expect(response.body).not_to include('portal-topo', 'voltar-relatorio')
       expect(response.media_type).not_to eq('application/pdf')
     end
   end
@@ -82,6 +83,20 @@ RSpec.describe 'Admin::Exportacoes', type: :request do
       expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include('Não há registros no período para exportar')
       expect(response.media_type).not_to eq('application/pdf')
+    end
+
+    it 'mostra o erro no layout da administração com o link de volta levando os filtros' do
+      get admin_exportar_relatorio_path, params: periodo.merge(catraca: 'CAT-99', restaurant_id: restaurante.id)
+
+      expect(response.body).to include('portal-topo', 'id="voltar-relatorio"', 'date_from=2026-09-01',
+                                       'date_to=2026-09-30', 'catraca=CAT-99', "restaurant_id=#{restaurante.id}")
+    end
+
+    it 'volta ao relatório sem datas quando o período é inválido' do
+      get admin_exportar_relatorio_path, params: { data_inicial: 'abc', data_final: '30/09/2026' }
+
+      expect(response.body).to include('id="voltar-relatorio"')
+      expect(response.body).not_to include('date_from', 'date_to')
     end
 
     it 'bloqueia período inválido e sem parâmetros' do

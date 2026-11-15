@@ -3,6 +3,8 @@
 module Admin
   # exportacao em pdf do relatorio global da issue 12 so para administrador
   class ExportacoesController < ApplicationController
+    layout 'administracao'
+
     before_action :exigir_login
     before_action :exigir_administrador
 
@@ -23,12 +25,13 @@ module Admin
     def exigir_administrador
       return if current_user.perfil == 'administrador'
 
-      mostrar_erro('Acesso negado: apenas o Administrador pode exportar o relatório', :forbidden)
+      # o cabecalho da administracao nao serve para quem nao e administrador
+      mostrar_erro('Acesso negado: apenas o Administrador pode exportar o relatório', :forbidden, 'application')
     end
 
-    def mostrar_erro(mensagem, status)
+    def mostrar_erro(mensagem, status, layout = 'administracao')
       @mensagem = mensagem
-      render :erro, status: status
+      render :erro, status: status, layout: layout
     end
   end
 end
