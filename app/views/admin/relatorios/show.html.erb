@@ -7,6 +7,13 @@
       <h1>Relatório Global de Operação</h1>
       <p class="report-subtitle">Histórico completo de acessos dos restaurantes universitários</p>
     </div>
+    <% if @filters[:date_from].present? && @filters[:date_to].present? %>
+      <%= link_to "Exportar PDF", admin_exportar_relatorio_path(data_inicial: data_br(@filters[:date_from]),
+                                                                 data_final: data_br(@filters[:date_to]),
+                                                                 restaurant_id: @filters[:restaurant_id].presence,
+                                                                 catraca: @filters[:catraca].presence),
+                  id: "exportar-pdf", class: "primary-button" %>
+    <% end %>
   </header>
 
   <section class="report-filters" aria-label="Filtros do relatório">

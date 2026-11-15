@@ -36,6 +36,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     get "relatorio", to: "relatorios#show", as: :relatorio
+    get "relatorio/exportar", to: "exportacoes#show", as: :exportar_relatorio
     resources :restaurantes, except: [:destroy]
     resources :catracas, only: [:create, :update]
     resources :restaurantes, only: [:destroy] do
