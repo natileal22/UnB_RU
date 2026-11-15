@@ -134,6 +134,32 @@ As catracas não têm a rota `destroy`, em coerência com a regra de exclusão l
 
 **Diferenças em relação aos cenários.** O Figma mostra o filtro por status e modo, e os cenários pedem filtro por data (dd/mm/aaaa) e hora (HH:MM). A tela não tem campo de período. Também aparecem o modo FastPass e a janela de horário, que não existem nas features do repositório, e a tela inclui o botão de exportar CSV ou PDF.
 
+## Tela da issue #8: Gestão de Restaurantes e Catracas (US13)
+
+**Estrutura.** Cabeçalho da administração com as abas do módulo (Restaurantes e Catracas, Turnos e Time-frames, Vagas e Cotas FastPass, Relatório Global de Operação), título "Gestão de Restaurantes e Catracas Físicas" e dois botões de ação: **Cadastrar Restaurante** e **Associar Nova Catraca**.
+
+**Cartões.** Total de restaurantes (1 unidade), catracas cadastradas (6, em 3 pisos) e corredores FastPass (1).
+
+**Lista de unidades.** Cada restaurante aparece num bloco com número, nome, localização ("Central / Gleba A"), capacidade total (1.200 refeições por hora) e quantidade de catracas ativas, mais os botões **Editar Unidade** e **Ver Catracas**.
+
+**Catracas.** Ao abrir uma unidade, as catracas aparecem agrupadas por piso (térreo, intermediário e superior), cada uma com o nome e o status (Online ou Pronta).
+
+**Rails.**
+- `Admin::RestaurantesController` e `Admin::CatracasController`, os dois com o concern `GestaoAdministrativa`. O concern concentra as guardas (sem login vai para a autenticação, e só o administrador altera algo), a preparação da tela e o tratamento de erro de validação. A listagem fica aberta ao funcionário, que só consulta.
+- Rotas em `namespace :admin`: `resources :restaurantes` (com `ativar` e `inativar` como ações de membro) e `resources :catracas`. As ações `new` e `edit` renderizam a própria listagem com o formulário aberto, em vez de ter uma página separada, o que deixa a tela única como no Figma.
+- A regra de inativar um restaurante (as catracas ativas passam a inativas e as em manutenção ficam como estão) fica no service `InativacaoRestaurante`, e não no controller.
+- As validações ficam nos models. No restaurante: nome obrigatório e único sem diferenciar maiúsculas de minúsculas, localização obrigatória, capacidade inteira de 1 a 5000 e horário de abertura anterior ao de fechamento. Na catraca: código obrigatório e único dentro do restaurante, responsável que não pode ser estudante, catraca ativa só em restaurante ativo e janela de funcionamento dentro do horário do restaurante. As regras de gestão valem só no contexto `:gestao`, para não afetar os testes e os dados dos outros integrantes.
+- Remover é bloqueado quando há catraca vinculada (no restaurante) e quando a catraca está ativa, tem responsável ou tem acessos registrados. A mensagem diz o motivo verdadeiro.
+- Uma catraca com acessos registrados não muda de código nem de restaurante, porque o acesso liga a catraca pelo restaurante e pelo código em texto.
+- Em `app/views/admin/restaurantes/index.html.erb` fica a lista, e os formulários são parciais (`_formulario` de restaurante e de catraca), com identificadores únicos para não repetir ids entre os formulários da mesma página.
+
+**Diferenças em relação aos cenários.**
+- **Piso:** o Figma agrupa as catracas por piso, mas nenhum cenário usa essa informação. Por isso o campo `piso` ficou fora do banco e as catracas aparecem em uma lista simples por restaurante.
+- **Status:** o Figma mostra "Online" e "Pronta", e o modelo usa `ativa`, `inativa` e `em_manutencao`. A tela mostra o status do modelo, e a correspondência com o Figma é só de nome.
+- **Capacidade:** o Figma expressa em refeições por hora, e o campo guarda um número inteiro de capacidade sem a unidade de tempo.
+- **Corredores FastPass:** o terceiro cartão do Figma depende do FastPass, que não existe nas features.
+- **Horário:** os cenários e o Figma não falam de horário, mas o restaurante guarda abertura e fechamento, e cada catraca pode ter a própria janela de funcionamento (opcional), para o controle de quando a catraca fica disponível e quando fecha.
+
 ## Tela da issue #12: Relatório Global de Operação (US16)
 
 **Estrutura.** Cabeçalho de administração, abas (Restaurantes e Catracas, Turnos e Time-frames, Vagas e Cotas FastPass, Relatório Global de Operação), título, botões **Exportar CSV** e **Exportar PDF Oficial**, filtros, quatro cartões, tabela de consolidação, métodos de liquidação e distribuição por refeição.
@@ -161,4 +187,4 @@ As catracas não têm a rota `destroy`, em coerência com a regra de exclusão l
 
 - O Figma inclui FastPass, turnos e vagas (US05, US06, US14, US15), funcionalidades que não estão nas features do repositório. O modelo ER entregue cobre só o que existe nas features.
 - O Figma e as features divergem nos filtros do histórico local (status e modo contra período) e na separação entre extrato e histórico.
-- A tela de Gestão de Restaurantes e Catracas (US13) mostra o piso da catraca, que entrou no modelo como `piso : Int`.
+- A tela de Gestão de Restaurantes e Catracas (US13) mostra o piso da catraca. O modelo ER prevê o campo `piso : Int`, mas nenhum cenário o usa e a implementação o deixou de fora. Se a tela do Figma for seguida à risca, o campo entra com uma migração nova.
