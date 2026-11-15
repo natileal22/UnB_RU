@@ -56,6 +56,12 @@ RSpec.describe 'Extratos', type: :request do
                                        'R$ 25,00', 'Pendente', '11/09/2026 12:10', 'RU Central', 'CAT-01')
     end
 
+    it 'mostra no cabeçalho do estudante os links Recarga e Cardápio e o botão Sair' do
+      get extrato_path
+
+      expect(response.body).to include(nova_recarga_path, cardapio_atual_path, 'Cardápio', 'Sair')
+    end
+
     it 'mostra cabeçalho do estudante, cartões, selos e o link de limpar filtros' do
       recarga(ana, '2026-09-10 12:00', valor: 25)
       recarga(ana, '2026-09-11 12:00', valor: 5, status: 'recusada')

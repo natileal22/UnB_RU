@@ -1,0 +1,30 @@
+<%# menu unico por perfil so com rotas que ja existem e o link da pagina atual fica ativo %>
+<% ativo = ->(caminho) { "portal-ativo" if current_page?(caminho) } %>
+
+<header class="portal-topo">
+  <strong class="portal-marca">RU UnB</strong>
+  <nav class="portal-menu">
+    <% if current_user.nil? %>
+      <%= link_to "Login", login_path, class: ativo.(login_path) %>
+      <%= link_to "Cadastro", new_user_path, class: ativo.(new_user_path) %>
+      <%= link_to "Cardápio", cardapio_atual_path, class: ativo.(cardapio_atual_path) %>
+    <% elsif current_user.perfil == "estudante" %>
+      <%= link_to "Cardápio", cardapio_atual_path, class: ativo.(cardapio_atual_path) %>
+      <%= link_to "Recarga", nova_recarga_path, class: ativo.(nova_recarga_path) %>
+      <%= link_to "Extrato", extrato_path, class: ativo.(extrato_path) %>
+    <% elsif current_user.perfil == "funcionario" %>
+      <%= link_to "Ponto de acesso", ponto_acesso_path, class: ativo.(ponto_acesso_path) %>
+      <%= link_to "Operação", operacao_path, class: ativo.(operacao_path) %>
+      <%= link_to "Histórico local", operador_historico_index_path, class: ativo.(operador_historico_index_path) %>
+    <% else %>
+      <%= link_to "Restaurantes e Catracas", admin_restaurantes_path, class: ativo.(admin_restaurantes_path) %>
+      <%= link_to "Relatório Global", admin_relatorio_path, class: ativo.(admin_relatorio_path) %>
+    <% end %>
+  </nav>
+  <% if current_user %>
+    <div class="portal-usuario">
+      <%= current_user.nome %>
+      <%= button_to "Sair", operador_sair_path, method: :delete, class: "link-sair" %>
+    </div>
+  <% end %>
+</header>

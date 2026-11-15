@@ -36,7 +36,7 @@ RSpec.describe 'Admin::Exportacoes', type: :request do
 
       expect(response).to have_http_status(:forbidden)
       expect(response.body).to include('Acesso negado: apenas o Administrador pode exportar o relatório')
-      expect(response.body).not_to include('portal-topo', 'voltar-relatorio')
+      expect(response.body).not_to include('voltar-relatorio', admin_restaurantes_path)
       expect(response.media_type).not_to eq('application/pdf')
     end
   end
