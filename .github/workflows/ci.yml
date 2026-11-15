@@ -49,4 +49,5 @@ jobs:
           features/gestao_restaurantes.feature
           features/gestao_catracas.feature
           features/exportacao_pdf_relatorio_operacao.feature
+          features/extrato_historico.feature
       - run: bundle exec rubocop --fail-level E

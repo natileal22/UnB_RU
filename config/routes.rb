@@ -16,6 +16,9 @@ Rails.application.routes.draw do
     patch :confirmar, on: :member
   end
 
+  # extrato e historico da issue 3
+  get "extrato", to: "extratos#index", as: :extrato
+
   # Configuração do Ponto de Acesso (issue #5)
   get "ponto-de-acesso", to: "pontos_acesso#new", as: :ponto_acesso
   post "ponto-de-acesso", to: "pontos_acesso#create"

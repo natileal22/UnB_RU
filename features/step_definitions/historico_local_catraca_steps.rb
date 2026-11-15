@@ -5,7 +5,9 @@ PAGINAS_HISTORICO = {
   'Histórico Local' => :operador_historico_index_path,
   'Autenticação' => :operador_entrar_path,
   'Gestão de Restaurantes e Catracas' => :admin_restaurantes_path,
-  'Relatório Global de Operação' => :admin_relatorio_path
+  'Relatório Global de Operação' => :admin_relatorio_path,
+  'Extrato de Recargas' => :extrato_path,
+  'Histórico de Refeições' => :extrato_path
 }.freeze
 
 def caminho_da_pagina(nome)
