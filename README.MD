@@ -105,6 +105,54 @@ bundle exec rspec spec/services/validacao_entrada_spec.rb spec/requests/catracas
 bundle exec cucumber features/validacao_entrada.feature features/configuracao_ponto_acesso.feature
 ```
 
+### Histórico local da catraca
+
+O funcionário acessa `GET /operador/historico` (login em `/operador/entrar`). A tela lista os
+acessos, do mais recente para o mais antigo, só das catracas que o administrador vinculou a ele.
+Mostra dois cartões (passagens liberadas e arrecadação do período) e uma tabela com horário,
+matrícula, resultado (liberado, ou recusado com o motivo) e tarifa. Dá para filtrar por período
+(dd/mm/aaaa) e por status. Com data inválida ou período invertido, a tela mostra o erro e não
+calcula os cartões. Estudante e administrador recebem 403, e quem não está logado vai para a
+autenticação.
+
+### Gestão de restaurantes e catracas
+
+O administrador acessa `GET /admin/restaurantes`. A tela tem cartões com o total de restaurantes,
+de catracas e de catracas ativas, e um bloco por unidade com **Editar Unidade** e **Ver Catracas**.
+Dá para cadastrar, editar, inativar, reativar e remover restaurantes, e cadastrar, editar e remover
+catracas. Cada catraca tem responsável (funcionário ou administrador), status e uma janela de
+funcionamento opcional, que precisa caber no horário do restaurante.
+
+Regras principais: o nome do restaurante é único sem diferenciar maiúsculas; a capacidade vai de 1
+a 5000; a abertura vem antes do fechamento; inativar o restaurante inativa as catracas ativas;
+uma catraca com acessos registrados não muda de código nem de restaurante; a remoção é bloqueada
+com a mensagem do motivo. O funcionário só consulta, e qualquer ação dele recebe 403.
+
+### Extrato e histórico de refeições
+
+O estudante acessa `GET /extrato` (login em `/login`). É uma tela só, com três cartões (total gasto
+no mês, refeições realizadas e total recarregado), um filtro de período e duas listas: o extrato de
+recargas, com todas as recargas e o status de cada uma, e o histórico de refeições, só com os
+acessos liberados dele. A tela mostra apenas os dados do usuário logado. Filtro vazio não limita o
+resultado, e data inválida mostra o erro. Funcionário e administrador recebem 403.
+
+### Exportação em PDF do relatório de operação
+
+No `GET /admin/relatorio`, com o período aplicado, o administrador clica em **Exportar PDF**
+(`GET /admin/relatorio/exportar`). O PDF respeita o período e, se houver, os filtros de restaurante
+e de catraca, e o nome do arquivo traz a catraca filtrada (`relatorio_operacao_<catraca>_<início>_a_<fim>.pdf`).
+Sem registros no período, ou com filtro sem resultado, a tela mostra um aviso em vez de baixar o
+arquivo. Datas inválidas, falha na geração e perfil sem permissão (403) têm página própria. O PDF é
+gerado sem gem, por um gerador próprio em Ruby.
+
+#### Testes dessas quatro funcionalidades
+
+```bash
+bundle exec rspec spec/requests/operador/historico_spec.rb spec/services/historico_local_spec.rb   spec/requests/extratos_spec.rb spec/services/extrato_historico_spec.rb spec/services/periodo_filtro_spec.rb   spec/requests/admin/gestao_spec.rb spec/models/catraca_spec.rb spec/models/restaurant_spec.rb   spec/services/inativacao_restaurante_spec.rb spec/requests/admin/exportacoes_spec.rb   spec/services/exportacao_relatorio_spec.rb spec/services/gerador_pdf_spec.rb
+
+bundle exec cucumber features/historico_local_catraca.feature features/gestao_restaurantes.feature   features/gestao_catracas.feature features/extrato_historico.feature   features/exportacao_pdf_relatorio_operacao.feature
+```
+
 ### Dados de exemplo
 
 Na branch consolidada, a seed popula usuários, restaurantes e acessos das duas
