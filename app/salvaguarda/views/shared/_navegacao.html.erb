@@ -1,5 +1,8 @@
 <%# menu unico por perfil so com rotas que ja existem e o link da pagina atual fica ativo %>
 <% ativo = ->(caminho) { "portal-ativo" if current_page?(caminho) } %>
+<%# o estudante tem o proprio sair e os outros perfis usam o do operador %>
+<% caminho_sair = current_user&.perfil == "estudante" ? sair_path : operador_sair_path %>
+<%= stylesheet_link_tag "salvaguarda" %>
 
 <header class="portal-topo">
   <strong class="portal-marca">RU UnB</strong>
@@ -8,7 +11,9 @@
       <%= link_to "Login", login_path, class: ativo.(login_path) %>
       <%= link_to "Cadastro", new_user_path, class: ativo.(new_user_path) %>
       <%= link_to "Cardápio", cardapio_atual_path, class: ativo.(cardapio_atual_path) %>
+      <%= link_to "Acesso operacional", operador_entrar_path, class: ativo.(operador_entrar_path) %>
     <% elsif current_user.perfil == "estudante" %>
+      <%= link_to "Início", root_path, class: ativo.(root_path) %>
       <%= link_to "Cardápio", cardapio_atual_path, class: ativo.(cardapio_atual_path) %>
       <%= link_to "Recarga", nova_recarga_path, class: ativo.(nova_recarga_path) %>
       <%= link_to "Extrato", extrato_path, class: ativo.(extrato_path) %>
@@ -24,7 +29,7 @@
   <% if current_user %>
     <div class="portal-usuario">
       <%= current_user.nome %>
-      <%= button_to "Sair", operador_sair_path, method: :delete, class: "link-sair" %>
+      <%= button_to "Sair", caminho_sair, method: :delete, class: "link-sair" %>
     </div>
   <% end %>
 </header>

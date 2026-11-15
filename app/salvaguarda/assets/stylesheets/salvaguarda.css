@@ -1,0 +1,119 @@
+/* reserva: porta de entrada, home do estudante e harmonizacao das telas dos colegas */
+:root {
+  --azul-escuro: #003380;
+}
+
+/* harmonizacao minima das classes que as paginas dos colegas ja usam */
+.auth-card {
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.auth-card h1 {
+  color: var(--azul-escuro);
+}
+
+.field input {
+  background: #f5f1f0;
+  border: 1px solid var(--cinza-borda, #e4dfdd);
+  border-radius: 0.5rem;
+}
+
+.primary-button {
+  background: var(--azul-escuro);
+  border-radius: 0.5rem;
+}
+
+/* porta de entrada */
+.sg-topo {
+  background: var(--azul-escuro);
+  color: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+}
+
+.sg-marca {
+  font-size: 1.25rem;
+}
+
+.sg-porta {
+  margin: 0 auto;
+  max-width: 900px;
+  padding: 1.5rem 1rem;
+}
+
+.sg-sistemas h2 {
+  color: var(--azul-escuro);
+}
+
+.sg-cartoes {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.sg-sistema {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  color: var(--azul);
+  font-weight: bold;
+  padding: 1.25rem;
+  text-align: center;
+  text-decoration: none;
+}
+
+.sg-login {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  margin: 2rem auto;
+  max-width: 420px;
+  padding: 1.5rem;
+}
+
+.sg-login h1 {
+  color: var(--azul-escuro);
+  font-size: 1.4rem;
+}
+
+.sg-aviso {
+  color: #5c5755;
+  font-size: 0.85rem;
+}
+
+.sg-rodape {
+  color: #5c5755;
+  font-size: 0.9rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+/* home do estudante */
+.sg-colunas {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.sg-colunas .cartao {
+  margin-bottom: 1rem;
+}
+
+.sg-turnos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sg-turnos li {
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+}
+
+.sg-turnos .sg-turno-atual {
+  background: #dce6fa;
+}

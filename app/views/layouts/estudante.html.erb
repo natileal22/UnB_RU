@@ -13,14 +13,15 @@
     <header class="portal-topo">
       <strong class="portal-marca">RU UnB</strong>
       <nav class="portal-menu">
+        <%= link_to "Início", root_path, class: ("portal-ativo" if current_page?(root_path)) %>
         <%= link_to "Recarga", nova_recarga_path %>
         <%= link_to "Cardápio", cardapio_atual_path %>
-        <%= link_to "Extrato", extrato_path, class: "portal-ativo" %>
+        <%= link_to "Extrato", extrato_path, class: ("portal-ativo" if current_page?(extrato_path)) %>
       </nav>
       <div class="portal-usuario">
         <%= current_user.nome %> · Matrícula <%= current_user.matricula %> ·
         Saldo <%= valor_br(current_user.saldo) %>
-        <%= button_to "Sair", operador_sair_path, method: :delete, class: "link-sair" %>
+        <%= button_to "Sair", sair_path, method: :delete, class: "link-sair" %>
       </div>
     </header>
 

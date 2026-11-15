@@ -4,3 +4,6 @@
 ActiveSupport.on_load(:action_controller) do
   append_view_path Rails.root.join('app/salvaguarda/views')
 end
+
+# o css da reserva fica na propria pasta e entra pelo stylesheet_link_tag salvaguarda
+Rails.application.config.assets.paths << Rails.root.join('app/salvaguarda/assets/stylesheets')

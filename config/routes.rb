@@ -1,11 +1,13 @@
-Rails.application.routes.draw do
+Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength -- arquivo unico de rotas do projeto
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  root "saude#index"
+  # pagina inicial de reserva em app/salvaguarda e o sair do estudante, que nao tinha como sair
+  root 'inicio#show'
+  delete 'sair', to: 'inicio#sair', as: :sair
   get "cardapio", to: "cardapios#show", as: :cardapio_atual
   resources :users, only: %i[new create], path: "cadastro"
   get "login", to: "sessions#new", as: :login

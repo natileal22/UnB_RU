@@ -29,7 +29,7 @@ RSpec.describe 'Extratos', type: :request do
   it 'redireciona para a autenticação sem sessão' do
     get extrato_path
 
-    expect(response).to redirect_to(operador_entrar_path)
+    expect(response).to redirect_to(login_path)
   end
 
   %w[funcionario administrador].each do |perfil|

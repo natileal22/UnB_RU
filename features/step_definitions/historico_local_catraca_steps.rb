@@ -73,7 +73,9 @@ Quando('dentro de {string} clico no botão {string}') do |escopo, botao|
 end
 
 Então('devo ser redirecionado para a página {string}') do |nome|
-  expect(page).to have_current_path(caminho_da_pagina(nome))
+  # o estudante cai no login dele e o operador no do operador, os dois sao autenticacao
+  caminhos = nome == 'Autenticação' ? [login_path, operador_entrar_path] : [caminho_da_pagina(nome)]
+  expect(caminhos).to include(URI(page.current_url).path)
 end
 
 Então('a lista {string} deve exibir {string}') do |seletor, texto|
