@@ -5,6 +5,8 @@ RSpec.describe "Admin global report", type: :request do
   let!(:gama) { Restaurant.create!(name: "RU Gama") }
 
   before do
+    allow_any_instance_of(Admin::RelatoriosController).to receive(:session).and_return(role: "Administrador")
+
     Access.create!(restaurant: darcy, catraca: "CAT-01", matricula: "241012345",
                    resultado: "LIBERADO", occurred_at: Time.zone.parse("2026-10-20"))
     Access.create!(restaurant: darcy, catraca: "CAT-02", matricula: "241012346",
@@ -45,6 +47,16 @@ RSpec.describe "Admin global report", type: :request do
 
   it "denies a non-administrator session" do
     allow_any_instance_of(Admin::RelatoriosController).to receive(:session).and_return(role: "Funcionário")
+
+    get admin_relatorio_path
+
+    expect(response).to have_http_status(:forbidden)
+    expect(response.body).to include("Acesso negado: apenas o Administrador pode realizar esta ação")
+    expect(response.body).not_to include("241012345")
+  end
+
+  it "denies an unauthenticated session" do
+    allow_any_instance_of(Admin::RelatoriosController).to receive(:session).and_return({})
 
     get admin_relatorio_path
 

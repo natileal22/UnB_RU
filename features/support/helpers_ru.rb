@@ -8,10 +8,17 @@ module HelpersRu
   end
 
   # Os .feature usam ALUNO/FUNCIONARIO/ADMIN; o model (autenticação do Pedro) usa estudante/funcionario/administrador.
-  PERFIS_DO_FEATURE = { "ALUNO" => "estudante", "FUNCIONARIO" => "funcionario", "ADMIN" => "administrador" }.freeze
+  PERFIS_DO_FEATURE = {
+    "ALUNO" => "estudante",
+    "ESTUDANTE" => "estudante",
+    "FUNCIONARIO" => "funcionario",
+    "FUNCIONÁRIO" => "funcionario",
+    "ADMIN" => "administrador",
+    "ADMINISTRADOR" => "administrador"
+  }.freeze
 
   def perfil_do_model(texto)
-    PERFIS_DO_FEATURE.fetch(texto)
+    PERFIS_DO_FEATURE.fetch(texto.to_s.upcase)
   end
 
   # Estudante: 9 dígitos. Funcionário/administrador: 7 dígitos (SIAPE).
