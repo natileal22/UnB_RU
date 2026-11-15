@@ -1,0 +1,26 @@
+# blueprint do Render: um servico web gratuito e o deploy sai pelo GitHub Actions (cd.yml)
+# nenhum segredo fica aqui, a DATABASE_URL e preenchida no painel do Render
+services:
+  - type: web
+    name: unb-ru
+    runtime: ruby
+    plan: free
+    buildCommand: ./bin/render-build.sh
+    startCommand: bundle exec puma -C config/puma.rb
+    healthCheckPath: /up
+    autoDeploy: false
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      - key: RAILS_LOG_TO_STDOUT
+        value: "true"
+      - key: RAILS_SERVE_STATIC_FILES
+        value: "true"
+      - key: WEB_CONCURRENCY
+        value: "1"
+      - key: SECRET_KEY_BASE
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: SEED_DEMO
+        value: "false"
