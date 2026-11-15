@@ -22,12 +22,12 @@ RSpec.describe PeriodoFiltro do
 
   it 'recusa formato inválido e data inexistente' do
     %w[abc 2026-09-01 1/9/2026 31/02/2026].each do |texto|
-      expect(chamar(texto, '30/09/2026').erro).to eq(HistoricoLocal::MSG_DATA_INVALIDA)
+      expect(chamar(texto, '30/09/2026').erro).to eq(PeriodoFiltro::MSG_DATA_INVALIDA)
     end
   end
 
   it 'recusa período invertido' do
-    expect(chamar('30/09/2026', '01/09/2026').erro).to eq(HistoricoLocal::MSG_PERIODO_INVERTIDO)
+    expect(chamar('30/09/2026', '01/09/2026').erro).to eq(PeriodoFiltro::MSG_PERIODO_INVERTIDO)
   end
 
   it 'aceita o mesmo dia nos dois extremos' do

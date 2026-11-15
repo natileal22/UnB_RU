@@ -76,7 +76,7 @@ RSpec.describe ExtratoHistorico do
     resultado = chamar(data_inicial: '30/09/2026', data_final: '01/09/2026')
 
     expect(resultado).not_to be_valido
-    expect(resultado.erro).to eq(HistoricoLocal::MSG_PERIODO_INVERTIDO)
+    expect(resultado.erro).to eq(PeriodoFiltro::MSG_PERIODO_INVERTIDO)
     expect([resultado.recargas, resultado.refeicoes]).to eq([[], []])
   end
 

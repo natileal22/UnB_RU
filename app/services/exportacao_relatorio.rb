@@ -13,18 +13,16 @@ class ExportacaoRelatorio
   end
 
   def initialize(data_inicial: nil, data_final: nil, restaurant_id: nil, catraca: nil)
-    @data_inicial = data_inicial.to_s.strip
-    @data_final = data_final.to_s.strip
+    @periodo = PeriodoFiltro.new(data_inicial: data_inicial, data_final: data_final, obrigatorio: true).call
     @restaurant_id = restaurant_id.to_s.strip
     @catraca = catraca.to_s.strip
   end
 
   def call
-    inicio = converter(@data_inicial)
-    fim = converter(@data_final)
-    erro = validar(inicio, fim)
-    return recusar(erro) if erro
+    return recusar(@periodo.erro) unless @periodo.valido?
 
+    inicio = @periodo.inicio
+    fim = @periodo.fim
     acessos = buscar(inicio, fim)
     return recusar(motivo_sem_registros(inicio, fim)) if acessos.empty?
 
@@ -32,21 +30,6 @@ class ExportacaoRelatorio
   end
 
   private
-
-  # invalida marca texto que nao e data real e vazio tambem conta como invalido
-  def converter(texto)
-    return :invalida unless texto.match?(HistoricoLocal::FORMATO_DATA)
-
-    Date.strptime(texto, '%d/%m/%Y')
-  rescue Date::Error
-    :invalida
-  end
-
-  def validar(inicio, fim)
-    return HistoricoLocal::MSG_DATA_INVALIDA if inicio == :invalida || fim == :invalida
-
-    HistoricoLocal::MSG_PERIODO_INVERTIDO if inicio > fim
-  end
 
   # mesmos filtros de restaurante e catraca do relatorio global
   def buscar(inicio, fim)

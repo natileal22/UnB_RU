@@ -77,7 +77,7 @@ RSpec.describe 'Extratos', type: :request do
       get extrato_path, params: { data_inicial: 'abc' }
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include(HistoricoLocal::MSG_DATA_INVALIDA)
+      expect(response.body).to include(PeriodoFiltro::MSG_DATA_INVALIDA)
       expect(response.body).not_to include('id="extrato-vazio"')
     end
 
