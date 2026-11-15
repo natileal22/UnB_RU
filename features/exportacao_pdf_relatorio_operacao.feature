@@ -8,6 +8,10 @@ Funcionalidade: Exportação em PDF do relatório de operação
   O PDF cobre o período informado e aceita filtro opcional de restaurante e de catraca
   O nome do arquivo inclui a catraca quando ela está filtrada
   Os filtros de resultado e de agrupamento do relatório não entram no PDF
+  Dados de teste do restaurante RU Darcy Ribeiro, onde o cenário diz que existem registros no período:
+  a matrícula 241012345 passou na catraca CAT-01 em 01/09/2026 às 08:15 e foi Liberada
+  a matrícula 241012346 passou na catraca CAT-02 em 30/09/2026 às 23:30 e foi Negada
+  Só o cenário do restaurante cria mais um registro, a matrícula 241099999 no restaurante RU Gama
 
   @feliz @pdf @rack_test @hipotese
   Cenário: Exportar o período aplicado no relatório (Caminho Feliz)
@@ -17,12 +21,12 @@ Funcionalidade: Exportação em PDF do relatório de operação
     E o período de "01/09/2026" a "30/09/2026" está aplicado no relatório
     Quando clico em "#exportar-pdf"
     Então a resposta deve ter status 200
-    E o cabeçalho "Content-Type" da resposta deve conter "application/pdf"
-    E o cabeçalho "Content-Disposition" da resposta deve conter "relatorio_operacao_2026-09-01_a_2026-09-30.pdf"
+    E o cabeçalho "Content-Type" deve conter "application/pdf"
+    E o cabeçalho "Content-Disposition" deve conter "relatorio_operacao_2026-09-01_a_2026-09-30.pdf"
     E o PDF deve conter "Total de acessos: 2"
     E o PDF deve conter "NEGADO"
 
-  @feliz @pdf @rack_test @filtro
+  @feliz @pdf @rack_test @filtro @hipotese
   Cenário: Exportar apenas os acessos de uma catraca (Caminho Feliz)
     Dado que estou autenticado como "Administrador"
     E existem registros de acesso no período de "01/09/2026" a "30/09/2026"
@@ -31,13 +35,13 @@ Funcionalidade: Exportação em PDF do relatório de operação
     E a catraca "CAT-01" está filtrada no relatório
     Quando clico em "#exportar-pdf"
     Então a resposta deve ter status 200
-    E o cabeçalho "Content-Disposition" da resposta deve conter "relatorio_operacao_CAT-01_2026-09-01"
+    E o cabeçalho "Content-Disposition" deve conter "relatorio_operacao_CAT-01_2026-09-01_a_2026-09-30.pdf"
     E o PDF deve conter "Catraca: CAT-01"
     E o PDF deve conter "Total de acessos: 1"
     E o PDF deve conter "241012345"
     E o PDF não deve conter "241012346"
 
-  @feliz @pdf @rack_test @filtro
+  @feliz @pdf @rack_test @filtro @hipotese
   Cenário: Exportar apenas os acessos de um restaurante (Caminho Feliz)
     Dado que estou autenticado como "Administrador"
     E existem registros de acesso no período de "01/09/2026" a "30/09/2026"
@@ -48,10 +52,11 @@ Funcionalidade: Exportação em PDF do relatório de operação
     Quando clico em "#exportar-pdf"
     Então a resposta deve ter status 200
     E o PDF deve conter "Restaurante: RU Gama"
+    E o PDF deve conter "Total de acessos: 1"
     E o PDF deve conter "241099999"
     E o PDF não deve conter "241012345"
 
-  @feliz @pdf @rack_test @filtro
+  @feliz @pdf @rack_test @filtro @hipotese
   Cenário: Exportar sem aplicar o filtro de resultado do relatório (Caminho Feliz)
     Dado que estou autenticado como "Administrador"
     E existem registros de acesso no período de "01/09/2026" a "30/09/2026"
@@ -64,12 +69,24 @@ Funcionalidade: Exportação em PDF do relatório de operação
     E o PDF deve conter "241012346"
     E o PDF deve conter "Total de acessos: 2"
 
+  @triste @pdf @rack_test @filtro @hipotese
+  Cenário: Avisar quando o filtro não encontra registros no período (Caminho Triste)
+    Dado que estou autenticado como "Administrador"
+    E existem registros de acesso no período de "01/09/2026" a "30/09/2026"
+    E estou na página "Relatório Global de Operação"
+    E o período de "01/09/2026" a "30/09/2026" está aplicado no relatório
+    E a catraca "CAT-99" está filtrada no relatório
+    Quando clico em "#exportar-pdf"
+    Então a resposta deve ter status 422
+    E o elemento "#flash-alert" deve ter o texto "Não há registros no período para exportar"
+    E o cabeçalho "Content-Type" não deve conter "application/pdf"
+
   @triste @pdf @rack_test @hipotese
   Cenário: Redirecionar para a autenticação quando não há login (Caminho Triste)
     Dado que minha sessão expirou
     Quando envio uma requisição GET para a rota de exportação com data inicial "01/09/2026" e final "30/09/2026"
     Então devo ser redirecionado para a página "Autenticação"
-    E o cabeçalho "Content-Type" da resposta não deve conter "application/pdf"
+    E o cabeçalho "Content-Type" não deve conter "application/pdf"
 
   @triste @pdf @rack_test @hipotese
   Cenário: Avisar quando não há registros no período (Caminho Triste)
@@ -80,7 +97,7 @@ Funcionalidade: Exportação em PDF do relatório de operação
     Quando clico em "#exportar-pdf"
     Então a resposta deve ter status 422
     E o elemento "#flash-alert" deve ter o texto "Não há registros no período para exportar"
-    E o cabeçalho "Content-Type" da resposta não deve conter "application/pdf"
+    E o cabeçalho "Content-Type" não deve conter "application/pdf"
 
   @triste @pdf @rack_test @hipotese
   Esquema do Cenário: Bloquear a exportação com período inválido (Caminho Triste)
@@ -88,7 +105,7 @@ Funcionalidade: Exportação em PDF do relatório de operação
     Quando envio uma requisição GET para a rota de exportação com data inicial "<inicial>" e final "<final>"
     Então a resposta deve ter status 422
     E o elemento "#flash-alert" deve ter o texto "<mensagem>"
-    E o cabeçalho "Content-Type" da resposta não deve conter "application/pdf"
+    E o cabeçalho "Content-Type" não deve conter "application/pdf"
 
     Exemplos:
       | inicial    | final      | mensagem                                          |
@@ -107,7 +124,7 @@ Funcionalidade: Exportação em PDF do relatório de operação
     Quando clico em "#exportar-pdf"
     Então a resposta deve ter status 500
     E o elemento "#flash-alert" deve ter o texto "Não foi possível gerar o PDF. Tente novamente"
-    E o cabeçalho "Content-Type" da resposta não deve conter "application/pdf"
+    E o cabeçalho "Content-Type" não deve conter "application/pdf"
 
   @triste @pdf @rack_test @hipotese
   Esquema do Cenário: Negar a exportação a quem não é administrador (Caminho Triste)
@@ -115,7 +132,7 @@ Funcionalidade: Exportação em PDF do relatório de operação
     Quando envio uma requisição GET para a rota de exportação com data inicial "01/09/2026" e final "30/09/2026"
     Então a resposta deve ter status 403
     E o elemento "#flash-alert" deve ter o texto "Acesso negado: apenas o Administrador pode exportar o relatório"
-    E o cabeçalho "Content-Type" da resposta não deve conter "application/pdf"
+    E o cabeçalho "Content-Type" não deve conter "application/pdf"
 
     Exemplos:
       | perfil      |

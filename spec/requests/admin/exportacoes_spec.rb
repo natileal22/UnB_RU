@@ -98,6 +98,16 @@ RSpec.describe 'Admin::Exportacoes', type: :request do
 
       expect(response.body).to include('catraca=CAT-01', "restaurant_id=#{restaurante.id}")
     end
+
+    it 'mantém o restaurante selecionado no filtro depois de aplicar os filtros' do
+      restaurante
+      outro = Restaurant.create!(name: 'RU Gama')
+      get admin_relatorio_path, params: { restaurant_id: outro.id, catraca: 'CAT-01' }
+
+      expect(response.body).to include("<option selected=\"selected\" value=\"#{outro.id}\">RU Gama</option>")
+      expect(response.body).not_to include("selected=\"selected\" value=\"#{restaurante.id}\"")
+    end
+
     it 'mostra o link de exportação no relatório só com o período aplicado' do
       get admin_relatorio_path
       expect(response.body).not_to include('exportar-pdf')

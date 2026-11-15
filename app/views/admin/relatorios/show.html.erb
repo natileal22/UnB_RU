@@ -20,8 +20,9 @@
     <%= form_with url: admin_relatorio_path, method: :get, scope: nil do |form| %>
       <div class="filter-field">
         <%= form.label :restaurant_id, "Restaurante" %>
+        <%# select de restaurante mantem o valor escolhido depois de aplicar os filtros %>
         <%= form.collection_select :restaurant_id, @restaurants, :id, :name,
-                                   { include_blank: "Todos os restaurantes" },
+                                   { include_blank: "Todos os restaurantes", selected: @filters[:restaurant_id] },
                                    { aria: { label: "Restaurante" } } %>
       </div>
       <div class="filter-field">

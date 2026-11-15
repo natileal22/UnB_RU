@@ -55,11 +55,11 @@ Quando('envio uma requisição GET para a rota de exportação com data inicial 
   page.driver.submit(:get, admin_exportar_relatorio_path, { data_inicial: ini, data_final: fim })
 end
 
-Então('o cabeçalho {string} da resposta deve conter {string}') do |cabecalho, texto|
+Então('o cabeçalho {string} deve conter {string}') do |cabecalho, texto|
   expect(page.response_headers[cabecalho].to_s).to include(texto)
 end
 
-Então('o cabeçalho {string} da resposta não deve conter {string}') do |cabecalho, texto|
+Então('o cabeçalho {string} não deve conter {string}') do |cabecalho, texto|
   expect(page.response_headers[cabecalho].to_s).not_to include(texto)
 end
 # o texto do pdf vai em claro em windows 1252 entao da para procurar direto nos bytes
