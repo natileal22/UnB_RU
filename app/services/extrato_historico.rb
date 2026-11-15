@@ -6,6 +6,15 @@ class ExtratoHistorico
     def valido?
       erro.nil?
     end
+
+    def total_gasto
+      refeicoes.sum { |acesso| acesso.valor_cobrado.to_d }
+    end
+
+    # so recarga aprovada entra no saldo
+    def total_recarregado
+      recargas.select(&:aprovada?).sum(&:valor)
+    end
   end
 
   def initialize(usuario:, data_inicial: nil, data_final: nil)

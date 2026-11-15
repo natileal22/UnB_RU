@@ -1,67 +1,80 @@
 <% content_for :title, "Extrato e Histórico de Refeições" %>
 
-<main class="auth-page">
-  <section class="auth-card">
+<main class="tela">
+  <section class="tela-topo">
     <h1>Extrato e Histórico de Refeições</h1>
-
-    <% if flash[:alert] %>
-      <p id="flash-alert" class="flash flash-alert" role="alert"><%= flash[:alert] %></p>
-    <% end %>
-
-    <%= form_with url: extrato_path, method: :get, id: "filtro-periodo" do |form| %>
-      <div class="field">
-        <%= form.label :data_inicial, "Data inicial" %>
-        <%= form.text_field :data_inicial, value: params[:data_inicial], placeholder: "dd/mm/aaaa" %>
-      </div>
-      <div class="field">
-        <%= form.label :data_final, "Data final" %>
-        <%= form.text_field :data_final, value: params[:data_final], placeholder: "dd/mm/aaaa" %>
-      </div>
-      <%= form.submit "Filtrar", class: "primary-button" %>
-    <% end %>
-
-    <% if @resultado.valido? %>
-      <h2>Extrato de Recargas</h2>
-      <% if @resultado.recargas.empty? %>
-        <p id="extrato-vazio">Nenhuma recarga encontrada</p>
-      <% else %>
-        <table id="extrato-recargas">
-          <thead>
-            <tr><th>Data e hora</th><th>Método</th><th>Valor</th><th>Status</th></tr>
-          </thead>
-          <tbody>
-            <% @resultado.recargas.each do |recarga| %>
-              <tr>
-                <td><%= l(recarga.created_at, format: "%d/%m/%Y %H:%M") %></td>
-                <td><%= recarga.metodo == "pix" ? "PIX" : "Cartão de crédito" %></td>
-                <td><%= valor_br(recarga.valor) %></td>
-                <td><%= recarga.status.capitalize %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      <% end %>
-
-      <h2>Histórico de Refeições</h2>
-      <% if @resultado.refeicoes.empty? %>
-        <p id="historico-vazio">Nenhuma refeição encontrada</p>
-      <% else %>
-        <table id="historico-refeicoes">
-          <thead>
-            <tr><th>Data e hora</th><th>Restaurante</th><th>Catraca</th><th>Valor</th></tr>
-          </thead>
-          <tbody>
-            <% @resultado.refeicoes.each do |acesso| %>
-              <tr>
-                <td><%= l(acesso.occurred_at, format: "%d/%m/%Y %H:%M") %></td>
-                <td><%= acesso.restaurant.name %></td>
-                <td><%= acesso.catraca %></td>
-                <td><%= valor_br(acesso.valor_cobrado) %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      <% end %>
-    <% end %>
+    <p>Suas recargas e as refeições liberadas para você</p>
   </section>
+
+  <% if flash[:alert] %>
+    <p id="flash-alert" class="flash flash-alert" role="alert"><%= flash[:alert] %></p>
+  <% end %>
+
+  <% if @resultado.valido? %>
+    <div class="cartoes">
+      <%= render "shared/cartao_resumo", titulo: "Total gasto", valor: valor_br(@resultado.total_gasto),
+                                         rodape: "refeições liberadas no período" %>
+      <%= render "shared/cartao_resumo", titulo: "Refeições realizadas", valor: @resultado.refeicoes.size,
+                                         rodape: "no período" %>
+      <%= render "shared/cartao_resumo", titulo: "Total recarregado", valor: valor_br(@resultado.total_recarregado),
+                                         rodape: "recargas aprovadas no período" %>
+    </div>
+  <% end %>
+
+  <%= form_with url: extrato_path, method: :get, id: "filtro-periodo", class: "barra-filtros" do |form| %>
+    <div class="field">
+      <%= form.label :data_inicial, "Data inicial" %>
+      <%= form.text_field :data_inicial, value: params[:data_inicial], placeholder: "dd/mm/aaaa" %>
+    </div>
+    <div class="field">
+      <%= form.label :data_final, "Data final" %>
+      <%= form.text_field :data_final, value: params[:data_final], placeholder: "dd/mm/aaaa" %>
+    </div>
+    <%= form.submit "Filtrar", class: "primary-button" %>
+    <%= link_to "Limpar Filtros", extrato_path, id: "limpar-filtros", class: "link-limpar" %>
+  <% end %>
+
+  <% if @resultado.valido? %>
+    <h2>Extrato de Recargas</h2>
+    <% if @resultado.recargas.empty? %>
+      <%= render "shared/lista_vazia", id: "extrato-vazio", texto: "Nenhuma recarga encontrada" %>
+    <% else %>
+      <table id="extrato-recargas" class="tabela">
+        <thead>
+          <tr><th>Data e hora</th><th>Método</th><th>Valor</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <% @resultado.recargas.each do |recarga| %>
+            <tr>
+              <td><%= l(recarga.created_at, format: "%d/%m/%Y %H:%M") %></td>
+              <td><%= recarga.metodo == "pix" ? "PIX" : "Cartão de crédito" %></td>
+              <td><%= valor_br(recarga.valor) %></td>
+              <td><%= render "shared/selo_status", texto: recarga.status.capitalize, tipo: tipo_do_selo(recarga) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+
+    <h2>Histórico de Refeições</h2>
+    <% if @resultado.refeicoes.empty? %>
+      <%= render "shared/lista_vazia", id: "historico-vazio", texto: "Nenhuma refeição encontrada" %>
+    <% else %>
+      <table id="historico-refeicoes" class="tabela">
+        <thead>
+          <tr><th>Data e hora</th><th>Restaurante</th><th>Catraca</th><th>Valor</th></tr>
+        </thead>
+        <tbody>
+          <% @resultado.refeicoes.each do |acesso| %>
+            <tr>
+              <td><%= l(acesso.occurred_at, format: "%d/%m/%Y %H:%M") %></td>
+              <td><%= acesso.restaurant.name %></td>
+              <td><%= acesso.catraca %></td>
+              <td><%= valor_br(acesso.valor_cobrado) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  <% end %>
 </main>

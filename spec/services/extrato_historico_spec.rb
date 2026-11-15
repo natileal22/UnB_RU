@@ -80,6 +80,21 @@ RSpec.describe ExtratoHistorico do
     expect([resultado.recargas, resultado.refeicoes]).to eq([[], []])
   end
 
+  it 'soma o gasto e só as recargas aprovadas para os cartões' do
+    recarga(ana, '2026-09-01 12:00')
+    recarga(ana, '2026-09-02 12:00', status: 'recusada')
+    recarga(ana, '2026-09-03 12:00', status: 'pendente')
+    acesso(ana, '2026-09-10 12:00')
+    acesso(ana, '2026-09-11 12:00')
+    Access.update_all(valor_cobrado: 4.5)
+
+    resultado = chamar
+
+    expect(resultado.total_recarregado).to eq(10)
+    expect(resultado.total_gasto).to eq(9)
+    expect(resultado.refeicoes.size).to eq(2)
+  end
+
   it 'devolve listas vazias sem expor registros de outro estudante' do
     recarga(bruno, '2026-09-10 12:00')
     acesso(bruno, '2026-09-10 12:00')
