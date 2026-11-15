@@ -113,6 +113,23 @@ RSpec.describe 'Admin::Gestao', type: :request do
       expect(Catraca.find_by(codigo: 'CAT-01').responsavel).to eq(func)
     end
 
+    it 'cadastra catraca com horário e mostra na listagem' do
+      post admin_catracas_path, params: { catraca: { codigo: 'CAT-01', restaurant_id: restaurante.id, status: 'ativa',
+                                                     horario_abertura: '11:00', horario_fechamento: '14:00' } }
+      follow_redirect!
+
+      expect(response.body).to include('id="horario-catraca-ru-central--cat-01"')
+      expect(response.body).to match(/11:00 às\s+14:00/)
+    end
+
+    it 'rejeita catraca com abertura depois do fechamento' do
+      post admin_catracas_path, params: { catraca: { codigo: 'CAT-01', restaurant_id: restaurante.id, status: 'ativa',
+                                                     horario_abertura: '14:00', horario_fechamento: '11:00' } }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(Catraca.count).to eq(0)
+    end
+
     it 'rejeita catraca ativa em restaurante inativo' do
       restaurante.update!(status: 'inativo')
       post admin_catracas_path, params: { catraca: { codigo: 'CAT-09', restaurant_id: restaurante.id,

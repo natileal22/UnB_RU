@@ -5,6 +5,8 @@ class Catraca < ApplicationRecord
   STATUS = %w[ativa inativa em_manutencao].freeze
   STATUS_ROTULOS = { 'ativa' => 'Ativa', 'inativa' => 'Inativa', 'em_manutencao' => 'Em Manutenção' }.freeze
   FORMATO_CODIGO = /\A[A-Za-z0-9_-]+\z/
+  MSG_HORARIO_INCOMPLETO = 'Informe os horários de abertura e fechamento da catraca juntos'
+  MSG_HORARIO_INVERTIDO = 'O horário de abertura da catraca deve ser anterior ao horário de fechamento'
 
   belongs_to :restaurant
   belongs_to :responsavel, class_name: 'User', optional: true
@@ -21,6 +23,7 @@ class Catraca < ApplicationRecord
   validate :responsavel_operador
   validate :historico_preservado, on: :gestao
   validate :restaurante_ativo_para_ativar, on: :gestao
+  validate :horarios_de_funcionamento, on: :gestao
 
   def disponivel?
     status == 'ativa'
@@ -41,7 +44,9 @@ class Catraca < ApplicationRecord
   def motivo_bloqueio_remocao
     return 'Não é possível remover uma catraca Ativa. Inative a catraca antes de removê-la' if disponivel?
 
-    'Não é possível remover uma catraca com responsável ou registros de acesso. Ela só pode ficar inativa' if preso?
+    return unless preso?
+
+    'Não é possível remover uma catraca com responsável ou registros de acesso. Ela só pode ficar inativa'
   end
 
   # com responsavel ou acessos a catraca so pode ficar inativa
@@ -69,5 +74,32 @@ class Catraca < ApplicationRecord
     return unless disponivel? && restaurant && !restaurant.ativo?
 
     errors.add(:status, 'Não é possível ativar a catraca porque o restaurante está Inativo')
+  end
+
+  # horario e opcional mas vem os dois juntos e a abertura antes do fechamento
+  def horarios_de_funcionamento
+    return errors.add(:horario_abertura, MSG_HORARIO_INCOMPLETO) if horario_incompleto?
+
+    abertura = checar_horario(:horario_abertura, 'abertura')
+    fechamento = checar_horario(:horario_fechamento, 'fechamento')
+    return unless abertura && fechamento && abertura >= fechamento
+
+    errors.add(:horario_abertura, MSG_HORARIO_INVERTIDO)
+  end
+
+  def horario_incompleto?
+    preenchido?(:horario_abertura) != preenchido?(:horario_fechamento)
+  end
+
+  def preenchido?(campo)
+    public_send("#{campo}_before_type_cast").to_s.strip.present?
+  end
+
+  # devolve o horario valido ou nil e registra o erro quando veio texto que nao e hora
+  def checar_horario(campo, nome)
+    return public_send(campo) if public_send(campo) || !preenchido?(campo)
+
+    errors.add(campo, "Horário de #{nome} da catraca é inválido")
+    nil
   end
 end

@@ -49,7 +49,8 @@ module Admin
     end
 
     def catraca_params
-      params.require(:catraca).permit(:codigo, :restaurant_id, :status, :responsavel_id)
+      params.require(:catraca).permit(:codigo, :restaurant_id, :status, :responsavel_id,
+                                      :horario_abertura, :horario_fechamento)
     end
   end
 end

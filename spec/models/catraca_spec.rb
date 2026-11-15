@@ -69,6 +69,32 @@ RSpec.describe Catraca, type: :model do
       expect(mensagem_de(status: 'inativa')).to be_nil
     end
 
+    it 'aceita catraca sem horário e com horário válido' do
+      expect(mensagem_de).to be_nil
+      expect(mensagem_de(horario_abertura: '11:00', horario_fechamento: '14:00')).to be_nil
+    end
+
+    it 'rejeita abertura igual ou posterior ao fechamento' do
+      aviso = 'O horário de abertura da catraca deve ser anterior ao horário de fechamento'
+
+      expect(mensagem_de(horario_abertura: '14:00', horario_fechamento: '11:00')).to eq(aviso)
+      expect(mensagem_de(horario_abertura: '11:00', horario_fechamento: '11:00')).to eq(aviso)
+    end
+
+    it 'rejeita horário que não é hora' do
+      expect(mensagem_de(horario_abertura: '25:99', horario_fechamento: '14:00'))
+        .to eq('Horário de abertura da catraca é inválido')
+      expect(mensagem_de(horario_abertura: '11:00', horario_fechamento: 'abc'))
+        .to eq('Horário de fechamento da catraca é inválido')
+    end
+
+    it 'rejeita só um dos dois horários preenchido' do
+      aviso = 'Informe os horários de abertura e fechamento da catraca juntos'
+
+      expect(mensagem_de(horario_abertura: '11:00')).to eq(aviso)
+      expect(mensagem_de(horario_fechamento: '14:00')).to eq(aviso)
+    end
+
     it 'não aceita estudante como responsável' do
       aluno = User.create!(name: 'Ana', matricula: '241000001', password: 'SenhaForte123', perfil: 'estudante')
 

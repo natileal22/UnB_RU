@@ -75,6 +75,60 @@ Funcionalidade: Gestão de Catracas
       |                       | Código da catraca é obrigatório                    |
       | ABCDEFGHIJKLMNOPQRSTU | Código da catraca deve ter no máximo 20 caracteres |
 
+  @feliz @cadastro @horario
+  Cenário: Cadastrar catraca com horário de funcionamento
+    Dado que estou autenticado como "Administrador"
+    E estou na página "Gestão de Restaurantes e Catracas"
+    Quando clico no botão "+ Associar Nova Catraca"
+    E dentro de "#new_turnstile" preencho o campo "Código" com "CAT-01"
+    E dentro de "#new_turnstile" seleciono "RU Darcy Ribeiro" no campo "Restaurante"
+    E dentro de "#new_turnstile" seleciono "Ativa" no campo "Status"
+    E dentro de "#new_turnstile" preencho o campo "Abertura" com "11:00"
+    E dentro de "#new_turnstile" preencho o campo "Fechamento" com "14:00"
+    E dentro de "#new_turnstile" clico no botão "Salvar"
+    Então o elemento "#flash-notice" deve ter o texto "Catraca cadastrada com sucesso"
+    E o elemento "#horario-catraca-ru-darcy-ribeiro--cat-01" deve ter o texto "11:00 às 14:00"
+
+  @triste @cadastro @horario @validacao
+  Esquema do Cenário: Rejeitar catraca com abertura igual ou posterior ao fechamento
+    Dado que estou autenticado como "Administrador"
+    E estou na página "Gestão de Restaurantes e Catracas"
+    E a validação nativa do navegador está desativada no formulário "#new_turnstile"
+    Quando clico no botão "+ Associar Nova Catraca"
+    E dentro de "#new_turnstile" preencho o campo "Código" com "CAT-01"
+    E dentro de "#new_turnstile" seleciono "RU Darcy Ribeiro" no campo "Restaurante"
+    E dentro de "#new_turnstile" seleciono "Inativa" no campo "Status"
+    E dentro de "#new_turnstile" preencho o campo "Abertura" com "<abertura>"
+    E dentro de "#new_turnstile" preencho o campo "Fechamento" com "<fechamento>"
+    E dentro de "#new_turnstile" clico no botão "Salvar"
+    Então o elemento "#flash-alert" deve ter o texto "<mensagem>"
+    E não deve existir nenhuma catraca no restaurante "RU Darcy Ribeiro"
+
+    Exemplos:
+      | abertura | fechamento | mensagem                                                                    |
+      | 14:00    | 11:00      | O horário de abertura da catraca deve ser anterior ao horário de fechamento |
+      | 11:00    | 11:00      | O horário de abertura da catraca deve ser anterior ao horário de fechamento |
+
+  @triste @cadastro @horario @validacao
+  Esquema do Cenário: Rejeitar horário de catraca inválido ou preenchido pela metade
+    Dado que estou autenticado como "Administrador"
+    E estou na página "Gestão de Restaurantes e Catracas"
+    E a validação nativa do navegador está desativada no formulário "#new_turnstile"
+    Quando clico no botão "+ Associar Nova Catraca"
+    E dentro de "#new_turnstile" preencho o campo "Código" com "CAT-01"
+    E dentro de "#new_turnstile" seleciono "RU Darcy Ribeiro" no campo "Restaurante"
+    E dentro de "#new_turnstile" seleciono "Inativa" no campo "Status"
+    E dentro de "#new_turnstile" preencho o campo "Abertura" com "<abertura>"
+    E dentro de "#new_turnstile" preencho o campo "Fechamento" com "<fechamento>"
+    E dentro de "#new_turnstile" clico no botão "Salvar"
+    Então o elemento "#flash-alert" deve ter o texto "<mensagem>"
+    E não deve existir nenhuma catraca no restaurante "RU Darcy Ribeiro"
+
+    Exemplos:
+      | abertura | fechamento | mensagem                                                         |
+      | 25:99    | 14:00      | Horário de abertura da catraca é inválido                        |
+      | 11:00    |            | Informe os horários de abertura e fechamento da catraca juntos   |
+
   @triste @cadastro @unicidade
   Esquema do Cenário: Rejeitar código de catraca já existente no mesmo restaurante
     Dado que estou autenticado como "Administrador"

@@ -18,5 +18,13 @@
     <%= form.label :responsavel_id, 'Responsável' %>
     <%= form.select :responsavel_id, @responsaveis.map { |u| [u.nome, u.id] }, include_blank: true %>
   </div>
+  <div class="field">
+    <%= form.label :horario_abertura, 'Abertura' %>
+    <%= form.time_field :horario_abertura %>
+  </div>
+  <div class="field">
+    <%= form.label :horario_fechamento, 'Fechamento' %>
+    <%= form.time_field :horario_fechamento %>
+  </div>
   <%= form.submit 'Salvar', class: 'primary-button' %>
 <% end %>

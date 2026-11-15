@@ -62,6 +62,12 @@
                 <%= catraca.codigo %> |
                 <span id="status-catraca-<%= catraca.slug %>"><%= catraca.status_rotulo %></span> |
                 <%= catraca.responsavel&.nome %>
+                <% if catraca.horario_abertura && catraca.horario_fechamento %>
+                  | <span id="horario-catraca-<%= catraca.slug %>">
+                    <%= catraca.horario_abertura.strftime('%H:%M') %> às
+                    <%= catraca.horario_fechamento.strftime('%H:%M') %>
+                  </span>
+                <% end %>
                 <% if administrador %>
                   <%= link_to 'Editar', edit_admin_catraca_path(catraca), id: "editar-catraca-#{catraca.slug}" %>
                   <%= button_to 'Remover', admin_catraca_path(catraca), method: :delete,
