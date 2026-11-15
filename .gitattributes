@@ -1,0 +1,2 @@
+# o script de build roda no Linux do Render e precisa de fim de linha LF
+bin/render-build.sh text eol=lf
