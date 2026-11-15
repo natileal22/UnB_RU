@@ -56,6 +56,25 @@ RSpec.describe 'Extratos', type: :request do
                                        'R$ 25,00', 'Pendente', '11/09/2026 12:10', 'RU Central', 'CAT-01')
     end
 
+    it 'mostra cabeçalho do estudante, cartões, selos e o link de limpar filtros' do
+      recarga(ana, '2026-09-10 12:00', valor: 25)
+      recarga(ana, '2026-09-11 12:00', valor: 5, status: 'recusada')
+      acesso(ana, '2026-09-11 12:10')
+      Access.update_all(valor_cobrado: 4.5)
+
+      get extrato_path
+
+      expect(response.body).to include('Matrícula 241000001', 'Total gasto', 'R$ 4,50', 'Total recarregado',
+                                       'R$ 25,00', 'selo-ok', 'selo-erro', 'id="limpar-filtros"')
+    end
+
+    it 'não mostra os cartões com período inválido' do
+      get extrato_path, params: { data_inicial: 'abc' }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).not_to include('class="cartoes"')
+    end
+
     it 'mostra as mensagens de lista vazia' do
       get extrato_path
 

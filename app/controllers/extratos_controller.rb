@@ -2,6 +2,8 @@
 
 # extrato de recargas e historico de refeicoes do estudante logado
 class ExtratosController < ApplicationController
+  layout 'estudante'
+
   before_action :exigir_login
   before_action :exigir_estudante
 
@@ -18,7 +20,8 @@ class ExtratosController < ApplicationController
   def exigir_estudante
     return if current_user.perfil == 'estudante'
 
-    render 'extratos/acesso_negado', status: :forbidden
+    # o cabecalho do estudante nao serve para quem e do operador
+    render 'extratos/acesso_negado', layout: 'application', status: :forbidden
   end
 
   # so as datas entram e o usuario vem sempre da sessao
