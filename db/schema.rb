@@ -44,6 +44,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_120000) do
     t.index ["restaurant_id"], name: "index_catracas_on_restaurant_id"
   end
 
+  create_table "recargas", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.decimal "valor", precision: 8, scale: 2, null: false
+    t.string "metodo", null: false
+    t.string "status", default: "pendente", null: false
+    t.string "codigo_pix"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_recargas_on_user_id"
+  end
+
   create_table "restaurants", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -72,4 +83,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_120000) do
   add_foreign_key "accesses", "users"
   add_foreign_key "catracas", "restaurants"
   add_foreign_key "catracas", "users", column: "responsavel_id"
+  add_foreign_key "recargas", "users"
 end

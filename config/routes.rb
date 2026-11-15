@@ -10,6 +10,12 @@ Rails.application.routes.draw do
   get "login", to: "sessions#new", as: :login
   post "login", to: "sessions#create"
 
+  # Recarga de Saldo (issue #2)
+  get "recarga", to: "recargas#new", as: :nova_recarga
+  resources :recargas, only: %i[create show] do
+    patch :confirmar, on: :member
+  end
+
   # Configuração do Ponto de Acesso (issue #5)
   get "ponto-de-acesso", to: "pontos_acesso#new", as: :ponto_acesso
   post "ponto-de-acesso", to: "pontos_acesso#create"
