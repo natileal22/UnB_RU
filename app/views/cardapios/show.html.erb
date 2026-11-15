@@ -1,0 +1,30 @@
+<% content_for :title, "Cardápio da refeição atual" %>
+
+<main class="auth-page">
+  <section class="auth-card">
+    <h1>Cardápio da refeição atual</h1>
+
+    <% if @refeicao.nil? %>
+      <p class="flash flash-alert" role="status">Nenhuma refeição está sendo servida neste horário</p>
+      <p>Próxima refeição: <strong><%= @proxima.nome %> às <%= @proxima.inicio %></strong></p>
+    <% else %>
+      <p class="auth-intro">Refeição atual: <strong><%= @refeicao.nome %></strong>
+        (<%= @refeicao.inicio %> às <%= @refeicao.fim %>)</p>
+
+      <% if @cardapio %>
+        <ul class="cardapio-opcoes">
+          <% @cardapio.itens_ordenados.each do |item| %>
+            <li>
+              <span class="cardapio-tipo"><%= item.nome_do_tipo %></span>
+              <span class="cardapio-item"><%= item.item %></span>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="flash flash-alert" role="status">
+          O cardápio para o <%= @refeicao.nome %> de hoje ainda não foi disponibilizado
+        </p>
+      <% end %>
+    <% end %>
+  </section>
+</main>

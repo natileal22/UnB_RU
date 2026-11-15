@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   root "saude#index"
+  get "cardapio", to: "cardapios#show", as: :cardapio_atual
   resources :users, only: %i[new create], path: "cadastro"
   get "login", to: "sessions#new", as: :login
   post "login", to: "sessions#create"
