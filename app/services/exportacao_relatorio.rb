@@ -3,6 +3,7 @@
 # exportacao em pdf do relatorio global da issue 12 com periodo obrigatorio e filtros opcionais
 class ExportacaoRelatorio
   MSG_SEM_REGISTROS = 'Não há registros no período para exportar'
+  MSG_FILTRO_SEM_REGISTROS = 'Nenhum registro encontrado para os filtros informados'
   MSG_FALHA = 'Não foi possível gerar o PDF. Tente novamente'
 
   Resultado = Struct.new(:pdf, :arquivo, :erro, :status, keyword_init: true) do
@@ -25,7 +26,7 @@ class ExportacaoRelatorio
     return recusar(erro) if erro
 
     acessos = buscar(inicio, fim)
-    return recusar(MSG_SEM_REGISTROS) if acessos.empty?
+    return recusar(motivo_sem_registros(inicio, fim)) if acessos.empty?
 
     gerar(inicio, fim, acessos)
   end
@@ -49,10 +50,22 @@ class ExportacaoRelatorio
 
   # mesmos filtros de restaurante e catraca do relatorio global
   def buscar(inicio, fim)
-    acessos = Access.includes(:restaurant).recent_first.where(occurred_at: inicio.beginning_of_day..fim.end_of_day)
+    acessos = Access.includes(:restaurant).recent_first.where(occurred_at: periodo(inicio, fim))
     acessos = acessos.where(restaurant_id: @restaurant_id) if @restaurant_id.present?
     acessos = acessos.where(catraca: @catraca) if @catraca.present?
     acessos.to_a
+  end
+
+  def periodo(inicio, fim)
+    inicio.beginning_of_day..fim.end_of_day
+  end
+
+  # mensagem propria so quando o periodo tem registros e o filtro de restaurante ou catraca nao achou nenhum
+  def motivo_sem_registros(inicio, fim)
+    filtrado = @restaurant_id.present? || @catraca.present?
+    return MSG_SEM_REGISTROS unless filtrado && Access.exists?(occurred_at: periodo(inicio, fim))
+
+    MSG_FILTRO_SEM_REGISTROS
   end
 
   def gerar(inicio, fim, acessos)

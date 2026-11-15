@@ -71,6 +71,10 @@ Então('o PDF deve conter {string}') do |texto|
   expect(corpo_do_pdf).to include(texto.encode('Windows-1252').b)
 end
 
+Então('o PDF deve começar com {string}') do |texto|
+  expect(corpo_do_pdf).to start_with(texto.b)
+end
+
 Então('o PDF não deve conter {string}') do |texto|
   expect(corpo_do_pdf).not_to include(texto.encode('Windows-1252').b)
 end

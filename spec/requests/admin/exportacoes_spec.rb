@@ -65,6 +65,17 @@ RSpec.describe 'Admin::Exportacoes', type: :request do
       expect(response.body.b).to include('241000001')
       expect(response.body.b).not_to include('241000002')
     end
+
+    it 'avisa quando o filtro não encontra registros num período que tem registros' do
+      criar_acesso
+      get admin_exportar_relatorio_path, params: periodo.merge(catraca: 'CAT-99')
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include('Nenhum registro encontrado para os filtros informados')
+      expect(response.body).not_to include('Não há registros no período para exportar')
+      expect(response.media_type).not_to eq('application/pdf')
+    end
+
     it 'avisa quando não há registros no período' do
       get admin_exportar_relatorio_path, params: periodo
 

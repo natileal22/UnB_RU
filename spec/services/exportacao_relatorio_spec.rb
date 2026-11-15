@@ -90,10 +90,25 @@ RSpec.describe ExportacaoRelatorio do
       expect(resultado.pdf).not_to include('241000002', '241000003')
     end
 
-    it 'recusa quando o filtro não tem registros no período' do
-      expect(exportar_com(catraca: 'CAT-99').erro).to eq('Não há registros no período para exportar')
+    it 'usa a mensagem do filtro quando o período tem registros e o filtro não acha nenhum' do
+      resultado = exportar_com(catraca: 'CAT-99')
+
+      expect(resultado.erro).to eq('Nenhum registro encontrado para os filtros informados')
+      expect(resultado.status).to eq(:unprocessable_content)
+      expect(exportar_com(restaurant_id: 999_999).erro).to eq('Nenhum registro encontrado para os filtros informados')
     end
 
+    it 'mantém a mensagem do período quando o período está vazio mesmo com filtro' do
+      resultado = described_class.new(data_inicial: '01/01/2026', data_final: '31/01/2026', catraca: 'CAT-01').call
+
+      expect(resultado.erro).to eq('Não há registros no período para exportar')
+    end
+
+    it 'mantém a mensagem do período quando não há filtro e o período está vazio' do
+      resultado = described_class.new(data_inicial: '01/01/2026', data_final: '31/01/2026').call
+
+      expect(resultado.erro).to eq('Não há registros no período para exportar')
+    end
     it 'troca no nome do arquivo o que não é letra, número, hífen ou sublinhado' do
       Access.create!(restaurant: restaurante, catraca: '../CAT 7', matricula: '241000004', resultado: 'LIBERADO',
                      occurred_at: Time.zone.parse('2026-09-10 13:00'))

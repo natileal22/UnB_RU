@@ -22,7 +22,9 @@ Funcionalidade: Exportação em PDF do relatório de operação
     Quando clico em "#exportar-pdf"
     Então a resposta deve ter status 200
     E o cabeçalho "Content-Type" deve conter "application/pdf"
+    E o cabeçalho "Content-Disposition" deve conter "attachment"
     E o cabeçalho "Content-Disposition" deve conter "relatorio_operacao_2026-09-01_a_2026-09-30.pdf"
+    E o PDF deve começar com "%PDF-"
     E o PDF deve conter "Total de acessos: 2"
     E o PDF deve conter "NEGADO"
 
@@ -70,7 +72,7 @@ Funcionalidade: Exportação em PDF do relatório de operação
     E o PDF deve conter "Total de acessos: 2"
 
   @triste @pdf @rack_test @filtro @hipotese
-  Cenário: Avisar quando o filtro não encontra registros no período (Caminho Triste)
+  Cenário: Avisar quando os filtros não encontram registros no período (Caminho Triste)
     Dado que estou autenticado como "Administrador"
     E existem registros de acesso no período de "01/09/2026" a "30/09/2026"
     E estou na página "Relatório Global de Operação"
@@ -78,7 +80,7 @@ Funcionalidade: Exportação em PDF do relatório de operação
     E a catraca "CAT-99" está filtrada no relatório
     Quando clico em "#exportar-pdf"
     Então a resposta deve ter status 422
-    E o elemento "#flash-alert" deve ter o texto "Não há registros no período para exportar"
+    E o elemento "#flash-alert" deve ter o texto "Nenhum registro encontrado para os filtros informados"
     E o cabeçalho "Content-Type" não deve conter "application/pdf"
 
   @triste @pdf @rack_test @hipotese
@@ -89,7 +91,7 @@ Funcionalidade: Exportação em PDF do relatório de operação
     E o cabeçalho "Content-Type" não deve conter "application/pdf"
 
   @triste @pdf @rack_test @hipotese
-  Cenário: Avisar quando não há registros no período (Caminho Triste)
+  Cenário: Avisar quando o período não tem registros (Caminho Triste)
     Dado que estou autenticado como "Administrador"
     E não existem registros de acesso no período de "01/09/2026" a "30/09/2026"
     E estou na página "Relatório Global de Operação"
