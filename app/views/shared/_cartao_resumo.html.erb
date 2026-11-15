@@ -1,0 +1,8 @@
+<%# cartao com titulo valor em destaque e rodape opcional %>
+<div class="cartao">
+  <div class="cartao-titulo"><%= titulo %></div>
+  <div class="cartao-valor"><%= valor %></div>
+  <% if local_assigns[:rodape] %>
+    <div class="cartao-rodape"><%= rodape %></div>
+  <% end %>
+</div>

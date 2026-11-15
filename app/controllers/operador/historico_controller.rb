@@ -26,7 +26,7 @@ module Operador
     end
 
     def filtro
-      params.permit(:data_inicial, :data_final).to_h.symbolize_keys
+      params.permit(:data_inicial, :data_final, :resultado).to_h.symbolize_keys
     end
   end
 end

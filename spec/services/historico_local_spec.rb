@@ -54,6 +54,30 @@ RSpec.describe HistoricoLocal do
     expect(chamar(data_inicial: '10/09/2026').acessos).to eq([novo])
   end
 
+  context 'com filtro de status e cartões' do
+    before do
+      acesso('CAT-01', '241000001', '2026-09-10 11:45')
+      acesso('CAT-01', '241000002', '2026-09-10 11:50', resultado: 'NEGADO', motivo: 'SALDO_INSUFICIENTE')
+      Access.where(resultado: 'LIBERADO').update_all(valor_cobrado: 4.5)
+    end
+
+    it 'filtra a lista pelo resultado' do
+      expect(chamar(resultado: 'NEGADO').acessos.map(&:matricula)).to eq(['241000002'])
+      expect(chamar(resultado: 'LIBERADO').acessos.map(&:matricula)).to eq(['241000001'])
+    end
+
+    it 'trata status desconhecido como todos' do
+      expect(chamar(resultado: 'QUALQUER').acessos.size).to eq(2)
+    end
+
+    it 'conta só as passagens liberadas e soma o que foi debitado' do
+      resultado = chamar(resultado: 'NEGADO')
+
+      expect(resultado.passagens).to eq(1)
+      expect(resultado.arrecadacao).to eq(4.5)
+    end
+  end
+
   it 'rejeita data inicial posterior à final' do
     resultado = chamar(data_inicial: '30/09/2026', data_final: '01/09/2026')
 

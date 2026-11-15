@@ -55,6 +55,31 @@ RSpec.describe 'Operador::Historico', type: :request do
       expect(response.body).not_to include('241000002')
     end
 
+    it 'mostra título, cartões e selos de status e filtra pelo resultado' do
+      Catraca.create!(restaurant: restaurante, codigo: 'CAT-01', responsavel: User.last)
+      Access.create!(restaurant: restaurante, catraca: 'CAT-01', matricula: '241000001', resultado: 'LIBERADO',
+                     valor_cobrado: 4.5, occurred_at: Time.zone.parse('2026-09-10 11:45'))
+      Access.create!(restaurant: restaurante, catraca: 'CAT-01', matricula: '241000002', resultado: 'NEGADO',
+                     motivo_negacao: 'SALDO_INSUFICIENTE', occurred_at: Time.zone.parse('2026-09-10 11:50'))
+      get operador_historico_index_path
+
+      expect(response.body).to include('Histórico Local da Catraca CAT-01', 'R$ 4,50', 'selo-ok', 'selo-erro')
+
+      get operador_historico_index_path, params: { resultado: 'NEGADO' }
+
+      expect(response.body).to include('241000002')
+      expect(response.body).not_to include('241000001')
+    end
+
+    it 'não mostra os cartões quando o período é inválido' do
+      Catraca.create!(restaurant: restaurante, codigo: 'CAT-01', responsavel: User.last)
+      get operador_historico_index_path, params: { data_inicial: 'abc' }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include('Data inválida: use o formato dd/mm/aaaa')
+      expect(response.body).not_to include('class="cartoes"')
+    end
+
     it 'mostra mensagem quando a catraca não tem acessos' do
       Catraca.create!(restaurant: restaurante, codigo: 'CAT-01', responsavel: User.last)
       get operador_historico_index_path
