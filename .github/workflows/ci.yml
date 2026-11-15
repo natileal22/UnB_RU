@@ -42,6 +42,7 @@ jobs:
           features/autenticacao_funcionario.feature
           features/validacao_entrada.feature
           features/configuracao_ponto_acesso.feature
+          features/cardapio-atual.feature
           features/recarga_saldo.feature
           features/cadastro-usuario.feature
           features/relatorio_global_acessos.feature
