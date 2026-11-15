@@ -56,6 +56,7 @@
           <p>O cardápio para o <%= @refeicao.nome %> de hoje ainda não foi disponibilizado</p>
         <% end %>
       <% end %>
+      <%= link_to "Ver cardápio completo", cardapio_hoje_path, id: "ver-cardapio-completo", class: "botao-link" %>
     </section>
   </div>
 </main>

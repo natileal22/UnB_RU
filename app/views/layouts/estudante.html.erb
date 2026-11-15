@@ -15,7 +15,7 @@
       <nav class="portal-menu">
         <%= link_to "Início", root_path, class: ("portal-ativo" if current_page?(root_path)) %>
         <%= link_to "Recarga", nova_recarga_path %>
-        <%= link_to "Cardápio", cardapio_atual_path %>
+        <%= link_to "Cardápio", cardapio_hoje_path %>
         <%= link_to "Extrato", extrato_path, class: ("portal-ativo" if current_page?(extrato_path)) %>
       </nav>
       <div class="portal-usuario">

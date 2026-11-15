@@ -20,7 +20,7 @@ RSpec.describe 'Inicio', type: :request do
     get root_path
 
     expect(response.body).to include('Aplicação no ar', 'RU UnB Digital', 'UNIVERSIDADE DE BRASÍLIA',
-                                     operador_entrar_path, new_user_path, cardapio_atual_path)
+                                     operador_entrar_path, new_user_path, cardapio_hoje_path)
     expect(response.body).to match(/<form[^>]+action="#{login_path}"/)
     expect(response.body).not_to include('portal-topo')
   end
@@ -40,7 +40,7 @@ RSpec.describe 'Inicio', type: :request do
     Cardapio.create!(data: Time.zone.today, refeicao: 'almoco').itens.create!(tipo: 'padrao', item: 'Frango grelhado')
     get root_path
 
-    expect(response.body).to include('Turno atual: Almoço', 'Frango grelhado')
+    expect(response.body).to include('Turno atual: Almoço', 'Frango grelhado', 'ver-cardapio-completo')
   end
 
   it 'mostra a próxima refeição fora do horário' do

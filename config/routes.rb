@@ -9,6 +9,9 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength -- arquiv
   root 'inicio#show'
   delete 'sair', to: 'inicio#sair', as: :sair
   get "cardapio", to: "cardapios#show", as: :cardapio_atual
+  # cardapio completo do dia e da semana da reserva, a pagina da Natalia em /cardapio segue como esta
+  get 'cardapio/hoje', to: 'cardapio_completo#hoje', as: :cardapio_hoje
+  get 'cardapio/semana', to: 'cardapio_completo#semana', as: :cardapio_semana
   resources :users, only: %i[new create], path: "cadastro"
   get "login", to: "sessions#new", as: :login
   post "login", to: "sessions#create"

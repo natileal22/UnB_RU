@@ -18,7 +18,7 @@ RSpec.describe 'Navegacao', type: :request do
   it 'mostra Login, Cadastro e Cardápio ao visitante, sem o botão Sair' do
     get cardapio_atual_path
 
-    expect(response.body).to include(login_path, new_user_path, operador_entrar_path)
+    expect(response.body).to include(login_path, new_user_path, operador_entrar_path, cardapio_hoje_path)
     expect(response.body).not_to include('link-sair')
   end
 

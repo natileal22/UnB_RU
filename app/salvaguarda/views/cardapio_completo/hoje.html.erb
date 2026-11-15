@@ -1,0 +1,27 @@
+<% content_for :title, "Cardápio de hoje" %>
+<%= stylesheet_link_tag "salvaguarda" %>
+
+<main class="tela">
+  <section class="tela-topo">
+    <h1>Cardápio de hoje</h1>
+    <p><%= CardapioDoDia::DIAS[Time.zone.today.wday] %>, <%= l(Time.zone.today, format: "%d/%m/%Y") %></p>
+    <%= render "cardapio_completo/abas", fonte: @fonte %>
+  </section>
+
+  <div class="sg-colunas">
+    <% @refeicoes.each do |refeicao| %>
+      <section class="cartao" id="refeicao-<%= refeicao.horario.chave %>">
+        <h2><%= refeicao.horario.nome %></h2>
+        <p class="cartao-rodape"><%= refeicao.horario.inicio %> às <%= refeicao.horario.fim %></p>
+        <% if refeicao.horario == @atual %>
+          <%= render "shared/selo_status", texto: "Em serviço", tipo: "ok" %>
+        <% elsif refeicao.horario.inicio > @hora %>
+          <%= render "shared/selo_status", texto: "Abre às #{refeicao.horario.inicio}", tipo: "pendente" %>
+        <% else %>
+          <%= render "shared/selo_status", texto: "Encerrado", tipo: "neutro" %>
+        <% end %>
+        <%= render "cardapio_completo/opcoes", refeicao: refeicao %>
+      </section>
+    <% end %>
+  </div>
+</main>

@@ -16,16 +16,23 @@ de colega.
   acesso e o administrador para a Gestão. O `sair` serve ao estudante.
 - `shared/_navegacao.html.erb` é o menu, um só por perfil, só com rotas que já existem.
 - `operador/shared/_navbar.html.erb` é o partial que o `layouts/operador` já pedia. Ele só chama o menu.
+- `cardapio_do_dia.rb` e `cardapio_completo_controller.rb` são o cardápio completo: `/cardapio/hoje` mostra café,
+  almoço e jantar do dia com a refeição em serviço marcada, e `/cardapio/semana` mostra os 7 dias. Os dados vêm
+  da API do cardápio (`cardapio_api/cliente.rb`) e, se ela falhar, do banco (`Cardapio` e `ItemCardapio`). Os
+  horários vêm do `HorarioRefeicao`. A página da Natália em `/cardapio` segue como está.
 - `assets/stylesheets/salvaguarda.css` tem a paleta do Figma e uma harmonização mínima de `auth-card`,
   `field` e `primary-button`.
 
 ## Mudanças em arquivo compartilhado
 
-- `config/routes.rb`: `root "inicio#show"` no lugar de `saude#index` e a rota `delete "sair"`.
+- `config/routes.rb`: `root "inicio#show"` no lugar de `saude#index`, a rota `delete "sair"` e as rotas
+  `cardapio/hoje` e `cardapio/semana`.
 - `layouts/application.html.erb`: uma linha que mostra o menu quando a reserva existe.
 
 ## O que está pendente com cada colega e como a reserva cobre
 
+- **Natália (cardápio):** a página `/cardapio` mostra só a refeição do momento. A reserva mostra o dia completo e
+  a semana. O token da API fica no `.env` local (ignorado pelo git), e o `.env.example` mostra o formato.
 - **Natália:** tela Início & Carteira real. A reserva monta a home com os dados dela (`HorarioRefeicao`,
   `Cardapio`). Quando ela entregar um `InicioController`, apague esta pasta e a linha do `root`.
 - **Pedro:** login e logout do estudante, e o login do `/operador/entrar` leva o funcionário para

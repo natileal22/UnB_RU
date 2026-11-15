@@ -117,3 +117,13 @@
 .sg-turnos .sg-turno-atual {
   background: #dce6fa;
 }
+
+/* cardapio completo */
+.selo-neutro {
+  background: #ebe7e6;
+  color: #5c5755;
+}
+
+.sg-dia-hoje {
+  border: 2px solid var(--azul);
+}
