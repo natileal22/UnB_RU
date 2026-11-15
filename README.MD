@@ -70,14 +70,27 @@ O CI do GitHub Actions (`.github/workflows/ci.yml`) roda esses três comandos a 
 
 ## Deploy
 
-O projeto publica no [Render](https://render.com) (plano gratuito) com o banco no [Supabase](https://supabase.com).
-O endereço da aplicação aparece no topo do serviço `unb-ru` do Render, e o `GET /up` responde 200 quando ela está no ar.
-No plano gratuito o serviço hiberna depois de 15 minutos sem acesso, então a primeira requisição demora de 30 a 60 segundos.
+A aplicação está no ar em **https://unb-ru.onrender.com**. Ela roda no [Render](https://render.com) (plano gratuito) com o banco no [Supabase](https://supabase.com), e o `GET /up` é o health check: responde 200 quando ela está no ar.
+No plano gratuito o serviço hiberna depois de 15 minutos sem acesso, então o primeiro acesso depois de um tempo parado leva de 30 a 60 segundos.
+
+Estudantes entram em `/login`, e funcionários e administradores em `/operador/entrar` (o administrador também é funcionário, então a porta de entrada é a mesma).
+
+### Tecnologias
+
+- Ruby 3.3.12 e Rails 8.1, com Puma como servidor.
+- Propshaft para os assets, com importmap.
+- PostgreSQL gerenciado no Supabase, conectado pelo Session Pooler (IPv4, porta 5432, SSL obrigatório). Os testes usam um PostgreSQL local.
+- Hospedagem no Render: web service gratuito, região Oregon, branch `sprint-2`.
+- CI e CD no GitHub Actions: o `ci.yml` roda RSpec, Cucumber e RuboCop, e o `cd.yml` dispara o deploy no Render pelo deploy hook quando o CI passa na `main`.
+- RSpec e Cucumber com Capybara (rack_test) nos testes, e RuboCop no estilo do código.
+- Protótipo das telas no Figma.
+
+### Como o deploy funciona
 
 **Arquivos do deploy**
 
 - `render.yaml`: descreve o serviço web (Ruby, plano gratuito, health check em `/up`), sem nenhum segredo.
-- `bin/render-build.sh`: instala as gems, compila os assets e aplica as migrations no banco. Só roda a seed se `SEED_DEMO` for `true`.
+- `bin/render-build.sh`: instala as gems, compila os assets, aplica as migrations no banco e importa o cardápio. Só roda a seed se `SEED_DEMO` for `true`.
 - `.github/workflows/cd.yml`: o CD. Quando o CI passa na `main`, chama o deploy hook do Render. Também dá para disparar à mão em Actions > CD > Run workflow.
 
 **Variáveis do serviço no Render**
@@ -85,11 +98,14 @@ No plano gratuito o serviço hiberna depois de 15 minutos sem acesso, então a p
 | Variável | Valor |
 |---|---|
 | `RAILS_ENV` | `production` |
+| `RUBY_VERSION` | `3.3.12` |
 | `SECRET_KEY_BASE` | gerada pelo Render |
 | `DATABASE_URL` | string do Session Pooler do Supabase (Connect > Session pooler, porta 5432) |
+| `RU_API_TOKEN` | chave da API do cardápio, preenchida só no painel do Render |
+| `RU_API_URL` | endereço da API do cardápio |
 | `SEED_DEMO` | `false` (use `true` só no primeiro deploy, se quiser dados de exemplo) |
 
-A senha do banco só entra na `DATABASE_URL`, no painel do Render. Ela nunca vai para o Git.
+A senha do banco só entra na `DATABASE_URL`, e a chave do cardápio só na `RU_API_TOKEN`, as duas no painel do Render. Elas nunca vão para o Git.
 
 **Passo a passo**
 
