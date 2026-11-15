@@ -1,69 +1,96 @@
 <% content_for :title, 'Gestão de Restaurantes e Catracas' %>
 <% administrador = current_user.perfil == 'administrador' %>
+<% catracas = @restaurantes.flat_map(&:catracas) %>
 
-<main class="auth-page">
-  <section class="auth-card">
+<main class="tela">
+  <section class="tela-topo">
     <h1>Gestão de Restaurantes e Catracas</h1>
+    <p>Unidades do RU e as catracas de cada uma</p>
+  </section>
 
-    <% if flash[:notice] %>
-      <p id="flash-notice" class="flash flash-notice" role="status"><%= flash[:notice] %></p>
-    <% end %>
-    <% if flash[:alert] %>
-      <p id="flash-alert" class="flash flash-alert" role="alert"><%= flash[:alert] %></p>
-    <% end %>
+  <% if flash[:notice] %>
+    <p id="flash-notice" class="flash flash-notice" role="status"><%= flash[:notice] %></p>
+  <% end %>
+  <% if flash[:alert] %>
+    <p id="flash-alert" class="flash flash-alert" role="alert"><%= flash[:alert] %></p>
+  <% end %>
 
-    <p id="totais">
-      <%= @restaurantes.size %> restaurantes e <%= @restaurantes.sum { |r| r.catracas.size } %> catracas
-    </p>
+  <div class="cartoes">
+    <%= render 'shared/cartao_resumo', titulo: 'Restaurantes', valor: @restaurantes.size,
+                                       rodape: 'unidades cadastradas' %>
+    <%= render 'shared/cartao_resumo', titulo: 'Catracas cadastradas', valor: catracas.size,
+                                       rodape: 'em todas as unidades' %>
+    <%= render 'shared/cartao_resumo', titulo: 'Catracas ativas', valor: catracas.count(&:disponivel?),
+                                       rodape: 'prontas para validar entrada' %>
+  </div>
 
-    <% if administrador %>
+  <% if administrador %>
+    <div class="acoes">
       <%= button_to '+ Cadastrar Restaurante', new_admin_restaurante_path, method: :get, class: 'primary-button' %>
       <%= button_to '+ Associar Nova Catraca', new_admin_catraca_path, method: :get, class: 'primary-button' %>
+    </div>
 
-      <%= render 'admin/restaurantes/formulario', restaurante: @novo_restaurante, form_id: 'new_restaurant',
-                                                  namespace: nil %>
-      <%= render 'admin/catracas/formulario', catraca: @nova_catraca, form_id: 'new_turnstile', namespace: nil %>
-    <% end %>
+    <%= render 'admin/restaurantes/formulario', restaurante: @novo_restaurante, form_id: 'new_restaurant',
+                                                namespace: nil %>
+    <%= render 'admin/catracas/formulario', catraca: @nova_catraca, form_id: 'new_turnstile', namespace: nil %>
+  <% end %>
 
-    <ul id="restaurantes">
-      <% @restaurantes.each do |restaurante| %>
-        <li id="restaurante-<%= restaurante.slug %>">
-          <strong><%= restaurante.name %></strong>
-          <%= restaurante.localizacao %> |
-          <%= restaurante.capacidade %> lugares |
-          <%= restaurante.horario_abertura&.strftime('%H:%M') %> às
-          <%= restaurante.horario_fechamento&.strftime('%H:%M') %>
-          <span id="status-restaurante-<%= restaurante.slug %>"><%= restaurante.status_rotulo %></span>
+  <ul id="restaurantes" class="unidades">
+    <% @restaurantes.each do |restaurante| %>
+      <li id="restaurante-<%= restaurante.slug %>" class="unidade">
+        <div class="unidade-topo">
+          <div>
+            <strong><%= restaurante.name %></strong>
+            <span id="status-restaurante-<%= restaurante.slug %>">
+              <%= render 'shared/selo_status', texto: restaurante.status_rotulo,
+                                               tipo: tipo_do_status(restaurante.status) %>
+            </span>
+            <p class="unidade-dados">
+              <%= restaurante.localizacao %> |
+              <%= restaurante.capacidade %> lugares |
+              <%= restaurante.horario_abertura&.strftime('%H:%M') %> às
+              <%= restaurante.horario_fechamento&.strftime('%H:%M') %>
+            </p>
+          </div>
 
           <% if administrador %>
-            <%= link_to 'Editar Unidade', edit_admin_restaurante_path(restaurante),
-                        id: "editar-restaurante-#{restaurante.slug}" %>
-            <% if restaurante.ativo? %>
-              <%= button_to 'Inativar', inativar_admin_restaurante_path(restaurante), method: :patch,
-                            id: "inativar-restaurante-#{restaurante.slug}" %>
-            <% else %>
-              <%= button_to 'Ativar', ativar_admin_restaurante_path(restaurante), method: :patch,
-                            id: "ativar-restaurante-#{restaurante.slug}" %>
-            <% end %>
-            <%= button_to 'Remover', admin_restaurante_path(restaurante), method: :delete,
-                          id: "remover-restaurante-#{restaurante.slug}",
-                          form: { data: { turbo_confirm: 'Deseja realmente remover o restaurante?' } } %>
-
-            <% if @restaurante_em_edicao == restaurante %>
-              <%= render 'admin/restaurantes/formulario', restaurante: @restaurante_em_edicao,
-                                                          form_id: "editar-form-restaurante-#{restaurante.slug}",
-                                                          namespace: "editar_restaurante_#{restaurante.id}" %>
-            <% end %>
+            <div class="acoes">
+              <%= link_to 'Editar Unidade', edit_admin_restaurante_path(restaurante),
+                          id: "editar-restaurante-#{restaurante.slug}" %>
+              <% if restaurante.ativo? %>
+                <%= button_to 'Inativar', inativar_admin_restaurante_path(restaurante), method: :patch,
+                              id: "inativar-restaurante-#{restaurante.slug}" %>
+              <% else %>
+                <%= button_to 'Ativar', ativar_admin_restaurante_path(restaurante), method: :patch,
+                              id: "ativar-restaurante-#{restaurante.slug}" %>
+              <% end %>
+              <%= button_to 'Remover', admin_restaurante_path(restaurante), method: :delete,
+                            id: "remover-restaurante-#{restaurante.slug}",
+                            form: { data: { turbo_confirm: 'Deseja realmente remover o restaurante?' } } %>
+            </div>
           <% end %>
+        </div>
 
-          <ul>
+        <% if administrador && @restaurante_em_edicao == restaurante %>
+          <%= render 'admin/restaurantes/formulario', restaurante: @restaurante_em_edicao,
+                                                      form_id: "editar-form-restaurante-#{restaurante.slug}",
+                                                      namespace: "editar_restaurante_#{restaurante.id}" %>
+        <% end %>
+
+        <%# aberto de proposito para as catracas ja aparecerem e o resumo so recolher a lista %>
+        <details open>
+          <summary>Ver Catracas (<%= restaurante.catracas.size %>)</summary>
+          <ul class="catracas">
             <% restaurante.catracas.sort_by(&:codigo).each do |catraca| %>
               <li id="catraca-<%= catraca.slug %>">
-                <%= catraca.codigo %> |
-                <span id="status-catraca-<%= catraca.slug %>"><%= catraca.status_rotulo %></span> |
+                <strong><%= catraca.codigo %></strong>
+                <span id="status-catraca-<%= catraca.slug %>">
+                  <%= render 'shared/selo_status', texto: catraca.status_rotulo,
+                                                   tipo: tipo_do_status(catraca.status) %>
+                </span>
                 <%= catraca.responsavel&.nome %>
                 <% if catraca.horario_abertura && catraca.horario_fechamento %>
-                  | <span id="horario-catraca-<%= catraca.slug %>">
+                  <span id="horario-catraca-<%= catraca.slug %>">
                     <%= catraca.horario_abertura.strftime('%H:%M') %> às
                     <%= catraca.horario_fechamento.strftime('%H:%M') %>
                   </span>
@@ -82,8 +109,8 @@
               </li>
             <% end %>
           </ul>
-        </li>
-      <% end %>
-    </ul>
-  </section>
+        </details>
+      </li>
+    <% end %>
+  </ul>
 </main>

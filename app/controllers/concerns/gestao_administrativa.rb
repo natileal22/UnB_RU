@@ -5,7 +5,7 @@ module GestaoAdministrativa
   extend ActiveSupport::Concern
 
   included do
-    layout 'operador'
+    layout 'administracao'
 
     before_action :exigir_login
     # a listagem tambem abre para funcionario e o resto so para administrador

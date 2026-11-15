@@ -32,6 +32,31 @@ RSpec.describe 'Admin::Gestao', type: :request do
     expect(response.body).not_to include('new_restaurant', 'Cadastrar Restaurante', 'Remover', 'Inativar')
   end
 
+  it 'mostra cartões, bloco da unidade e catracas com selo e horário' do
+    entrar_como('administrador')
+    Catraca.create!(restaurant: restaurante, codigo: 'CAT-01', horario_abertura: '11:00', horario_fechamento: '14:00')
+    Catraca.create!(restaurant: restaurante, codigo: 'CAT-02', status: 'inativa')
+    get admin_restaurantes_path
+
+    expect(response.body).to include('Catracas cadastradas', 'Catracas ativas', 'Ver Catracas (2)', '<details open>',
+                                     'selo-ok', 'selo-erro', '11:00 às', 'Editar Unidade')
+  end
+
+  it 'mostra o cabeçalho da administração com Sair e a aba do relatório ao administrador' do
+    entrar_como('administrador')
+    get admin_restaurantes_path
+
+    expect(response.body).to include('Relatório Global', 'Sair')
+  end
+
+  it 'esconde a aba do relatório do funcionário' do
+    entrar_como('funcionario')
+    get admin_restaurantes_path
+
+    expect(response.body).to include('Sair')
+    expect(response.body).not_to include('Relatório Global')
+  end
+
   it 'nega ao funcionário todas as ações mesmo com dados válidos e não altera nada' do
     entrar_como('funcionario')
     vazio = Restaurant.create!(name: 'RU Vazio')

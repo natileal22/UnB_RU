@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "UnB RU" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+  </head>
+
+  <body>
+    <%# cabecalho reusa as classes portal do estudante e so tem abas que existem %>
+    <header class="portal-topo">
+      <strong class="portal-marca">RU UnB</strong>
+      <nav class="portal-menu">
+        <%= link_to "Restaurantes e Catracas", admin_restaurantes_path, class: "portal-ativo" %>
+        <% if current_user.perfil == "administrador" %>
+          <%= link_to "Relatório Global", admin_relatorio_path %>
+        <% end %>
+      </nav>
+      <div class="portal-usuario">
+        <%= current_user.nome %>
+        <%= button_to "Sair", operador_sair_path, method: :delete, class: "link-sair" %>
+      </div>
+    </header>
+
+    <%= yield %>
+  </body>
+</html>
