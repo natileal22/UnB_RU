@@ -1,5 +1,16 @@
 # UnB RU
 
+**Kanban da Sprint 2 (Backlog, Doing, Done e Accepted): https://github.com/users/Kassio-Souza/projects/3**
+
+> ## Aplicação no ar (deploy realizado)
+>
+> **https://unb-ru.onrender.com**
+>
+> - Hospedada no Render (plano gratuito), com banco PostgreSQL no Supabase.
+> - Health check em `/up`.
+> - Carregada com dados e contas de demonstração: veja a seção [Contas de demonstração](#contas-de-demonstração).
+> - O primeiro acesso pode levar de 30 a 60 segundos, porque o plano gratuito hiberna depois de 15 minutos sem acesso.
+
 ---
 
 Sistema de gerenciamento para o Restaurante Universitário da UnB.
@@ -66,8 +77,7 @@ O CI do GitHub Actions (`.github/workflows/ci.yml`) roda esses três comandos a 
 
 ## Deploy
 
-A aplicação está no ar em **https://unb-ru.onrender.com**. Ela roda no [Render](https://render.com) (plano gratuito) com o banco no [Supabase](https://supabase.com), e o `GET /up` é o health check: responde 200 quando ela está no ar.
-No plano gratuito o serviço hiberna depois de 15 minutos sem acesso, então o primeiro acesso depois de um tempo parado leva de 30 a 60 segundos.
+O endereço, o health check e o aviso de hibernação estão no bloco "Aplicação no ar", no topo. O serviço roda no [Render](https://render.com) (plano gratuito) com o banco no [Supabase](https://supabase.com).
 
 Estudantes entram em `/login`, e funcionários e administradores em `/operador/entrar` (o administrador também é funcionário, então a porta de entrada é a mesma).
 
@@ -113,7 +123,7 @@ A senha do banco só entra na `DATABASE_URL`, e a chave do cardápio só na `RU_
 
 ## Contas de demonstração
 
-Para os monitores e a professora testarem, o site https://unb-ru.onrender.com já está com dados de demonstração. As contas e os dados são fictícios e existem só para a avaliação. O primeiro acesso pode levar de 30 a 60 segundos, porque o plano gratuito do Render hiberna.
+Para os monitores e a professora testarem, o site https://unb-ru.onrender.com já está com dados de demonstração. As contas e os dados são fictícios e existem só para a avaliação. Lembre que o primeiro acesso pode levar de 30 a 60 segundos.
 
 | Perfil | Onde entrar | Matrícula | Senha | Observação |
 |---|---|---|---|---|
