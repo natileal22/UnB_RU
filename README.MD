@@ -115,6 +115,38 @@ A senha do banco só entra na `DATABASE_URL`, e a chave do cardápio só na `RU_
    (Settings > Secrets and variables > Actions). Depois disso, cada push na `main` com o CI verde publica sozinho.
 4. O primeiro deploy cria as tabelas pelo `db:migrate` do script de build.
 
+## Contas de demonstração
+
+Para os monitores e a professora testarem, o site https://unb-ru.onrender.com já está com dados de demonstração. As contas e os dados são fictícios e existem só para a avaliação. O primeiro acesso pode levar de 30 a 60 segundos, porque o plano gratuito do Render hiberna.
+
+| Perfil | Onde entrar | Matrícula | Senha | Observação |
+|---|---|---|---|---|
+| Estudante | `/login` | `241012345` | `Aluno@2026` | Ana Souza, saldo R$ 18,00 |
+| Estudante | `/login` | `241012346` | `Aluno@2026` | Bruno Lima, saldo R$ 9,00 |
+| Estudante | `/login` | `241012347` | `Aluno@2026` | Carla Mendes, saldo R$ 0,00: use para ver a recusa por saldo insuficiente |
+| Estudante | `/login` | `241012348` | `Aluno@2026` | Diego Alves, saldo R$ 4,50, o valor exato de uma refeição |
+| Estudante | `/login` | `241012349` | `Aluno@2026` | Elisa Rocha, saldo R$ 50,00 |
+| Funcionário | `/operador/entrar` | `1234567` | `Funcionario@2026` | Maria Fiscal, responsável pelas catracas do RU Darcy Ribeiro |
+| Funcionário | `/operador/entrar` | `2345678` | `Funcionario@2026` | João Operador, responsável pela catraca do RU Gama |
+| Administrador | `/operador/entrar` | `7654321` | `Admin@2026` | Administrador RU (também é funcionário, então a porta de entrada é a mesma) |
+
+Na tela de login, preencha os campos Matrícula e Senha.
+
+**O que cada perfil vê**
+
+- Estudante: início com a carteira, recarga, cardápio e extrato.
+- Funcionário e administrador: ponto de acesso, operação, histórico local e gestão de restaurantes e catracas.
+
+**Dados de exemplo carregados**
+
+- 3 restaurantes, sendo um inativo.
+- 5 catracas, em status variados.
+- 12 acessos, liberados e negados.
+- 6 recargas, em PIX e cartão, com status variados.
+- O cardápio da semana.
+
+As senhas de demonstração ficam no código de propósito e só valem para esta demonstração.
+
 ## Funcionalidades da Sprint 2
 
 ### Cadastro de usuário
