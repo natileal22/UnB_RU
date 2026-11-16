@@ -18,7 +18,7 @@ RSpec.describe 'Navegacao', type: :request do
   it 'mostra Login, Cadastro e Cardápio ao visitante, sem o botão Sair' do
     get cardapio_atual_path
 
-    expect(response.body).to include(login_path, new_user_path, operador_entrar_path, cardapio_hoje_path)
+    expect(response.body).to include('>Início<', login_path, new_user_path, operador_entrar_path, cardapio_hoje_path)
     expect(response.body).not_to include('link-sair')
   end
 
@@ -34,16 +34,18 @@ RSpec.describe 'Navegacao', type: :request do
     entrar_como_operador('funcionario')
     get cardapio_atual_path
 
-    expect(response.body).to include(ponto_acesso_path, operacao_path, operador_historico_index_path, 'link-sair')
+    expect(response.body).to include('>Início<', ponto_acesso_path, operacao_path, operador_historico_index_path,
+                                     'link-sair')
     expect(response.body).not_to include(admin_restaurantes_path)
   end
 
-  it 'mostra Restaurantes, Relatório e Sair ao administrador' do
+  it 'mostra ao administrador o ponto, a operação, a gestão e o relatório, mas não o histórico local' do
     entrar_como_operador('administrador')
     get cardapio_atual_path
 
-    expect(response.body).to include(admin_restaurantes_path, admin_relatorio_path, 'link-sair')
-    expect(response.body).not_to include(operacao_path)
+    expect(response.body).to include('>Início<', ponto_acesso_path, operacao_path, admin_restaurantes_path,
+                                     admin_relatorio_path, 'link-sair')
+    expect(response.body).not_to include(operador_historico_index_path)
   end
 
   it 'coloca a pasta de reserva no fim da busca de views' do

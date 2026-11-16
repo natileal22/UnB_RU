@@ -78,6 +78,7 @@ RSpec.describe 'Cardapio completo', type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include('Cardápio de reserva', 'Strogonoff da reserva')
+      expect(response.body).not_to include('API', 'falhou')
     end
 
     it 'usa o banco quando a rede cai' do
