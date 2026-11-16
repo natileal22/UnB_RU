@@ -47,13 +47,9 @@ bin/rails db:create db:migrate db:seed
 bin/rails server              # http://localhost:3000
 ```
 
-A seed cria dois estudantes (`123456789` e `202012345`) e um funcionário (`1234567`). O administrador não vem na
-seed. Para criar um, abra o `bin/rails console` e rode:
-
-```ruby
-User.create!(name: "Administrador", matricula: "7654321", email: "admin@unb.br",
-             password: "SenhaCorreta123", perfil: "administrador")
-```
+No ambiente local, rodar `SEED_DEMO=true bundle exec rails demo:popular` cria as mesmas contas de demonstração da
+tabela da seção [Contas de demonstração](#contas-de-demonstração), e o administrador já vem nelas, sem precisar do
+console. A seed original (`bin/rails db:seed`) continua existindo.
 
 A página inicial (`/`) tem os acessos de estudante, operador e administrador. Estudantes entram em `/login`, e
 funcionários e administradores em `/operador/entrar`.
@@ -189,28 +185,15 @@ restaurante selecionado.
 
 #### Teste manual da validação e do ponto de acesso
 
-A seed cria os restaurantes, o operador e os estudantes, mas não as catracas nem o saldo.
-Depois de `bin/rails db:seed`, complete pelo console:
+Com `SEED_DEMO=true bundle exec rails demo:popular`, o banco local já tem os restaurantes, as catracas, os
+estudantes com saldo e o funcionário (veja [Contas de demonstração](#contas-de-demonstração)). Rode
+`bin/rails server` e:
 
-```bash
-bin/rails console
-```
-
-```ruby
-darcy = Restaurant.find_by!(name: "RU Darcy Ribeiro")
-Catraca.find_or_create_by!(restaurant: darcy, codigo: "CAT-01")
-User.find_by!(matricula: "123456789").update!(saldo: 10)
-exit
-```
-
-Em seguida, rode `bin/rails server` e:
-
-1. Entre em `http://localhost:3000/operador/entrar` com a matrícula `1234567` e a senha
-   `SenhaCorreta123`.
+1. Entre em `http://localhost:3000/operador/entrar` com a matrícula `1234567` e a senha `Funcionario@2026`.
 2. Abra `http://localhost:3000/ponto-de-acesso`, escolha `RU Darcy Ribeiro` e confirme.
-3. Na tela de operação, clique em `CAT-01` e informe a matrícula `123456789`. A entrada é
-   liberada e o saldo cai para R$ 5,50. Repita com `12345` (formato inválido) ou
-   `999888777` (não cadastrada) para ver as recusas.
+3. Na tela de operação, clique em uma catraca e informe a matrícula `241012345` (Ana Souza, saldo R$ 18,00). A
+   entrada é liberada e o saldo cai R$ 4,50. Repita com `12345` (formato inválido), `999888777` (não cadastrada)
+   ou `241012347` (Carla Mendes, saldo zero) para ver as recusas.
 4. Confira os registros em `http://localhost:3000/admin/relatorio`.
 
 #### Testes automatizados
