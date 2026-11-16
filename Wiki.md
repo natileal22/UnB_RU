@@ -195,6 +195,40 @@ Foi utilizada IA generativa, Claude (Opus 5.5 no chat do claude.ai e o Claude Co
   * RN07: Os registros devem ser preservados para consulta histórica e auditoria, sem alteração ou exclusão pelo relatório.
 ---
 
+## 2.1 Sprint 2: funcionalidades do Kassio implementadas
+
+Todas as quatro foram implementadas a partir dos cenários BDD da Sprint 1, com testes RSpec e Cucumber
+passando na CI. O desenho das telas segue o protótipo do Figma e o spike `etapa2_entregas/SPIKE_VIEWS_RAILS_FIGMA.md`.
+
+| Issue | Funcionalidade | Responsável | Status | Rota | Perfil |
+|---|---|---|---|---|---|
+| #3 | Extrato e Histórico | Kassio Gandara de Souza | Implementada | `GET /extrato` | Estudante |
+| #7 | Histórico Local da Catraca | Kassio Gandara de Souza | Implementada | `GET /operador/historico` | Funcionário |
+| #8 | Gestão de Restaurantes e Catracas | Kassio Gandara de Souza | Implementada | `/admin/restaurantes` | Administrador (o funcionário só consulta) |
+| #12 | Exportação em PDF do Relatório de Operação | Kassio Gandara de Souza | Implementada | `GET /admin/relatorio/exportar` | Administrador |
+
+### Extrato e Histórico (#3)
+* Uma tela só com o extrato de recargas (todas, com o status de cada uma) e o histórico de refeições (só acessos liberados do usuário logado), com filtro de período e três cartões de resumo.
+* Cada estudante vê apenas os próprios dados. Quem não está logado é redirecionado e funcionário e administrador recebem 403.
+* Fora do escopo, por não estarem nos cenários: filtros por tipo de refeição, restaurante e forma de acesso, paginação, recibo e o botão de PDF do extrato (issue #11).
+
+### Histórico Local da Catraca (#7)
+* Lista os acessos das catracas vinculadas ao funcionário, com cartões (passagens e arrecadação), filtro de período e de status, e o motivo da recusa nas linhas bloqueadas.
+* Para isso a catraca ganhou o responsável (`responsavel_id`).
+
+### Gestão de Restaurantes e Catracas (#8)
+* Cadastro, edição, inativação, reativação e remoção de restaurantes, e cadastro, edição e remoção de catracas, com cartões de totais e bloco por unidade.
+* O restaurante guarda localização, capacidade e horário de abertura e fechamento. A catraca pode ter a própria janela de funcionamento, dentro do horário do restaurante.
+* Catraca com acessos registrados não muda de código nem de restaurante, para não perder o histórico.
+* Fora do escopo: o piso da catraca e os corredores FastPass do protótipo.
+
+### Exportação em PDF do Relatório de Operação (#12)
+* Exporta o relatório global do período, com filtro opcional de restaurante e de catraca, em um PDF gerado sem gem.
+* Avisa quando não há registros, quando as datas são inválidas ou a geração falha, e nega o acesso a quem não é administrador.
+
+### Migrations novas e banco compartilhado
+* `responsavel_id` em `catracas`, dados do restaurante (localização, capacidade e horários) e horário de funcionamento da catraca. As colunas são opcionais e só acrescentam à tabela `catracas`, criada pela Isabela, sem alterar o que ela usa.
+
 ## 3. Padrões Adotados pelo Grupo
 * **Padrão de Commits:** Utilização do Conventional Commits, como uso de prefixos  `feat:`, `fix:` para organizar o histórico e depois não se perder.
 * **Política de Branching:** A partir da branch `sprint-1`, cada membro cria sua branch isolada de feature ou fix. Ao finalizar, abre-se um Pull Request de volta para a branch da sprint.

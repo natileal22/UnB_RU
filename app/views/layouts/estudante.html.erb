@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "UnB RU" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+  </head>
+
+  <body>
+    <%# so links que existem hoje %>
+    <header class="portal-topo">
+      <strong class="portal-marca">RU UnB</strong>
+      <nav class="portal-menu">
+        <%= link_to "Início", root_path, class: ("portal-ativo" if current_page?(root_path)) %>
+        <%= link_to "Recarga", nova_recarga_path %>
+        <%= link_to "Cardápio", cardapio_hoje_path %>
+        <%= link_to "Extrato", extrato_path, class: ("portal-ativo" if current_page?(extrato_path)) %>
+      </nav>
+      <div class="portal-usuario">
+        <%= current_user.nome %> · Matrícula <%= current_user.matricula %> ·
+        Saldo <%= valor_br(current_user.saldo) %>
+        <%= button_to "Sair", sair_path, method: :delete, class: "link-sair" %>
+      </div>
+    </header>
+
+    <%= yield %>
+  </body>
+</html>

@@ -23,6 +23,8 @@
   </head>
 
   <body>
+    <%# menu de reserva de app/salvaguarda, some se o arquivo sumir e a pagina pode pedir content_for :sem_menu %>
+    <%= render "shared/navegacao" if lookup_context.exists?("shared/navegacao", [], true) && !content_for?(:sem_menu) %>
     <%= yield %>
   </body>
 </html>

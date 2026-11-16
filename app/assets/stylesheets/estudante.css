@@ -1,0 +1,53 @@
+/* cabecalho do portal do estudante e detalhes da tela de extrato */
+.portal-topo {
+  align-items: center;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;
+}
+
+.portal-marca {
+  color: var(--azul);
+  font-size: 1.25rem;
+}
+
+.portal-menu {
+  display: flex;
+  flex: 1;
+  gap: 1rem;
+}
+
+.portal-menu a {
+  border-radius: 8px;
+  color: var(--cinza-texto);
+  padding: 0.5rem 0.9rem;
+  text-decoration: none;
+}
+
+.portal-menu a.portal-ativo {
+  background: var(--azul);
+  color: #fff;
+}
+
+.portal-usuario {
+  color: var(--cinza-texto);
+  font-size: 0.9rem;
+}
+
+.selo-pendente {
+  background: #fff3c4;
+  color: #7a5b00;
+}
+
+.link-limpar {
+  color: var(--azul);
+  padding-bottom: 0.6rem;
+}
+
+.tela h2 {
+  color: var(--azul);
+  margin: 1.5rem 0 0.75rem;
+}

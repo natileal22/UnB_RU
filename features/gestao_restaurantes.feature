@@ -129,6 +129,19 @@ Funcionalidade: Gestão de Restaurantes
     E o elemento "#status-catraca-ru-darcy-ribeiro--cat-01" deve ter o texto exato "Inativa"
     E o elemento "#status-catraca-ru-darcy-ribeiro--cat-02" deve ter o texto exato "Em Manutenção"
 
+  @feliz @status @cascata
+  Cenário: Ativar restaurante inativo não reativa as catracas inativadas
+    Dado que estou autenticado como "Administrador"
+    E existe o restaurante "RU Darcy Ribeiro" com:
+      | status | Inativo |
+    E existe a catraca "CAT-01" no restaurante "RU Darcy Ribeiro" com:
+      | status | Inativa |
+    E estou na página "Gestão de Restaurantes e Catracas"
+    Quando clico em "#ativar-restaurante-ru-darcy-ribeiro"
+    Então o elemento "#flash-notice" deve ter o texto "Restaurante ativado com sucesso"
+    E o elemento "#status-restaurante-ru-darcy-ribeiro" deve ter o texto exato "Ativo"
+    E o elemento "#status-catraca-ru-darcy-ribeiro--cat-01" deve ter o texto exato "Inativa"
+
   @feliz @remocao
   Cenário: Remover restaurante sem catracas após aceitar a confirmação
     Dado que estou autenticado como "Administrador"
@@ -147,6 +160,19 @@ Funcionalidade: Gestão de Restaurantes
     E estou na página "Gestão de Restaurantes e Catracas"
     Quando clico em "#remover-restaurante-ru-darcy-ribeiro"
     Então o elemento "#flash-alert" deve ter o texto "Não é possível remover um restaurante com catracas vinculadas. Remova as catracas antes ou apenas inative o restaurante"
+    E o restaurante "RU Darcy Ribeiro" deve continuar existindo
+
+  @triste @remocao
+  Cenário: Não remover restaurante cuja catraca tem responsável
+    Dado que estou autenticado como "Administrador"
+    E existe o funcionário "Carlos Mendes"
+    E existe o restaurante "RU Darcy Ribeiro"
+    E existe a catraca "CAT-01" no restaurante "RU Darcy Ribeiro" com:
+      | status      | Inativa       |
+      | responsavel | Carlos Mendes |
+    E estou na página "Gestão de Restaurantes e Catracas"
+    Quando clico em "#remover-restaurante-ru-darcy-ribeiro"
+    Então o elemento "#flash-alert" deve ter o texto "Há catraca com responsável ou registros de acesso"
     E o restaurante "RU Darcy Ribeiro" deve continuar existindo
 
   @triste @autorizacao @rack_test

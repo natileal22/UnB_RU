@@ -1,0 +1,20 @@
+<% content_for :title, "Cardápio da semana" %>
+<%= stylesheet_link_tag "salvaguarda" %>
+
+<main class="tela">
+  <section class="tela-topo">
+    <h1>Cardápio da semana</h1>
+    <p>Os sete dias da semana, com o dia de hoje em destaque</p>
+    <%= render "cardapio_completo/abas", fonte: @fonte %>
+  </section>
+
+  <% @dias.each do |data, refeicoes| %>
+    <section class="cartao <%= "sg-dia-hoje" if data == @hoje %>" id="dia-<%= data.iso8601 %>">
+      <h2><%= CardapioDoDia::DIAS[data.wday] %>, <%= l(data, format: "%d/%m") %></h2>
+      <% refeicoes.each do |refeicao| %>
+        <h3><%= refeicao.horario.nome %></h3>
+        <%= render "cardapio_completo/opcoes", refeicao: refeicao %>
+      <% end %>
+    </section>
+  <% end %>
+</main>

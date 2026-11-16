@@ -1,0 +1,47 @@
+<% content_for :title, "RU UnB Digital" %>
+<%# a porta de entrada tem o proprio cabecalho entao o menu de reserva fica de fora %>
+<% content_for :sem_menu, true %>
+<%= stylesheet_link_tag "salvaguarda" %>
+
+<header class="sg-topo">
+  <strong class="sg-marca">RU UnB Digital</strong>
+  <span class="sg-universidade">UNIVERSIDADE DE BRASÍLIA</span>
+</header>
+
+<main class="sg-porta">
+  <section class="sg-sistemas" aria-label="Acesse o sistema">
+    <h2>Acesse o sistema</h2>
+    <div class="sg-cartoes">
+      <%= link_to "Estudante", "#login-estudante", class: "sg-sistema" %>
+      <%= link_to "Operador (funcionário ou administrador)", operador_entrar_path,
+                  class: "sg-sistema" %>
+      <%= link_to "Cardápio de hoje", cardapio_hoje_path, class: "sg-sistema" %>
+    </div>
+  </section>
+
+  <section id="login-estudante" class="sg-login">
+    <h1>Autenticação do estudante</h1>
+    <%= render "shared/flash" %>
+
+    <%= form_with url: login_path, method: :post do |form| %>
+      <div class="field">
+        <%= form.label :matricula, "Matrícula" %>
+        <%= form.text_field :matricula, inputmode: "numeric", maxlength: 9, autocomplete: "username" %>
+      </div>
+      <div class="field">
+        <%= form.label :password, "Senha" %>
+        <%= form.password_field :password, autocomplete: "current-password" %>
+      </div>
+      <%= form.submit "ENTRAR", class: "primary-button" %>
+    <% end %>
+
+    <p><%= link_to "Aluno, cadastre-se aqui", new_user_path %></p>
+    <p><%= link_to "Acesso operacional", operador_entrar_path %></p>
+    <p class="sg-aviso">Por segurança, encerre a sessão ao terminar de usar o sistema.</p>
+  </section>
+</main>
+
+<footer class="sg-rodape">
+  <p>Restaurante Universitário · Universidade de Brasília</p>
+  <p id="status-aplicacao">Aplicação no ar</p>
+</footer>

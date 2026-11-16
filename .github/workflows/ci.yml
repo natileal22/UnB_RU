@@ -46,4 +46,9 @@ jobs:
           features/recarga_saldo.feature
           features/cadastro-usuario.feature
           features/relatorio_global_acessos.feature
+          features/historico_local_catraca.feature
+          features/gestao_restaurantes.feature
+          features/gestao_catracas.feature
+          features/exportacao_pdf_relatorio_operacao.feature
+          features/extrato_historico.feature
       - run: bundle exec rubocop --fail-level E

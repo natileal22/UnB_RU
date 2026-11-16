@@ -1,0 +1,16 @@
+<%# opcoes e extras de uma refeicao, igual ao cartao Cardapio Oficial do Figma %>
+<% if refeicao.opcoes.empty? %>
+  <p class="cartao-rodape">O cardápio desta refeição ainda não foi disponibilizado</p>
+<% else %>
+  <ul class="cardapio-opcoes">
+    <% refeicao.opcoes.each do |tipo, prato| %>
+      <li>
+        <span class="cardapio-tipo"><%= tipo %></span>
+        <span class="cardapio-item"><%= prato %></span>
+      </li>
+    <% end %>
+  </ul>
+  <% refeicao.extras.each do |nome, texto| %>
+    <p class="cartao-rodape"><strong><%= nome %>:</strong> <%= texto %></p>
+  <% end %>
+<% end %>

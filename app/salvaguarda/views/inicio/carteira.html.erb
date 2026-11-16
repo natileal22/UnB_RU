@@ -1,0 +1,62 @@
+<% content_for :title, "Início e Carteira" %>
+<%= stylesheet_link_tag "salvaguarda" %>
+
+<main class="tela">
+  <section class="tela-topo">
+    <h1>Olá, <%= current_user.nome.split.first %></h1>
+    <p>Matrícula: <strong><%= current_user.matricula %></strong></p>
+  </section>
+
+  <div class="sg-colunas">
+    <div>
+      <section class="cartao" id="carteira">
+        <div class="cartao-titulo">Saldo da carteira estudantil</div>
+        <div class="cartao-valor"><%= valor_br(current_user.saldo) %></div>
+        <p class="cartao-rodape">Tarifa única: <%= valor_br(ValidacaoEntrada::PRECO) %></p>
+        <p>Exatamente <strong><%= @refeicoes_garantidas %> refeições garantidas</strong></p>
+        <%= link_to "Recarregar Saldo", nova_recarga_path, id: "recarregar-saldo", class: "botao-link" %>
+      </section>
+
+      <section class="cartao" id="turno">
+        <% if @refeicao %>
+          <h2>Turno atual: <%= @refeicao.nome %></h2>
+          <p>
+            <%= render "shared/selo_status", texto: "Aberto · #{@refeicao.inicio} às #{@refeicao.fim}", tipo: "ok" %>
+          </p>
+        <% else %>
+          <h2>Nenhuma refeição neste momento</h2>
+          <p>Próxima refeição: <strong><%= @proxima.nome %> às <%= @proxima.inicio %></strong></p>
+        <% end %>
+        <ul class="sg-turnos">
+          <% HorarioRefeicao::REFEICOES.each do |turno| %>
+            <li class="<%= "sg-turno-atual" if turno == @refeicao %>">
+              <strong><%= turno.nome %></strong> <%= turno.inicio %> às <%= turno.fim %>
+            </li>
+          <% end %>
+        </ul>
+      </section>
+    </div>
+
+    <section class="cartao" id="cardapio-atual">
+      <% if @refeicao.nil? %>
+        <h2>Cardápio</h2>
+        <p>Nenhuma refeição está sendo servida neste horário</p>
+      <% else %>
+        <h2>Cardápio oficial: <%= @refeicao.nome %></h2>
+        <% if @cardapio %>
+          <ul class="cardapio-opcoes">
+            <% @cardapio.itens_ordenados.each do |item| %>
+              <li>
+                <span class="cardapio-tipo"><%= item.nome_do_tipo %></span>
+                <span class="cardapio-item"><%= item.item %></span>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p>O cardápio para o <%= @refeicao.nome %> de hoje ainda não foi disponibilizado</p>
+        <% end %>
+      <% end %>
+      <%= link_to "Ver cardápio completo", cardapio_hoje_path, id: "ver-cardapio-completo", class: "botao-link" %>
+    </section>
+  </div>
+</main>
