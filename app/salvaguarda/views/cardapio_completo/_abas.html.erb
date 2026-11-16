@@ -4,5 +4,7 @@
   <%= link_to "Semana", cardapio_semana_path, class: ("portal-ativo" if current_page?(cardapio_semana_path)) %>
 </nav>
 <% if fonte == :reserva %>
-  <p id="aviso-reserva" class="cartao-rodape">Cardápio de reserva: a API do cardápio não respondeu agora.</p>
+  <p id="aviso-reserva" class="cartao-rodape">
+    Cardápio de reserva: mostrando o cardápio da semana cadastrado no sistema.
+  </p>
 <% end %>

@@ -6,6 +6,9 @@
   <section class="tela-topo">
     <h1>Gestão de Restaurantes e Catracas</h1>
     <p>Unidades do RU e as catracas de cada uma</p>
+    <% unless administrador %>
+      <%= link_to "Ir para o Ponto de acesso", ponto_acesso_path, id: "ir-para-ponto", class: "botao-link" %>
+    <% end %>
   </section>
 
   <% if flash[:notice] %>

@@ -22,7 +22,8 @@ RSpec.describe 'Inicio', type: :request do
     expect(response.body).to include('Aplicação no ar', 'RU UnB Digital', 'UNIVERSIDADE DE BRASÍLIA',
                                      operador_entrar_path, new_user_path, cardapio_hoje_path)
     expect(response.body).to match(/<form[^>]+action="#{login_path}"/)
-    expect(response.body).not_to include('portal-topo')
+    expect(response.body).to include('Operador (funcionário ou administrador)')
+    expect(response.body).not_to include('portal-topo', '>Administrador<')
   end
 
   it 'mostra saldo, tarifa, refeições garantidas e o botão de recarga ao estudante' do

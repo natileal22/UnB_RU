@@ -9,20 +9,8 @@
   </head>
 
   <body>
-    <%# cabecalho reusa as classes portal do estudante e so tem abas que existem %>
-    <header class="portal-topo">
-      <strong class="portal-marca">RU UnB</strong>
-      <nav class="portal-menu">
-        <%= link_to "Restaurantes e Catracas", admin_restaurantes_path, class: "portal-ativo" %>
-        <% if current_user.perfil == "administrador" %>
-          <%= link_to "Relatório Global", admin_relatorio_path %>
-        <% end %>
-      </nav>
-      <div class="portal-usuario">
-        <%= current_user.nome %>
-        <%= button_to "Sair", operador_sair_path, method: :delete, class: "link-sair" %>
-      </div>
-    </header>
+    <%# o menu unico por perfil da reserva, o mesmo das outras paginas %>
+    <%= render "shared/navegacao" %>
 
     <%= yield %>
   </body>

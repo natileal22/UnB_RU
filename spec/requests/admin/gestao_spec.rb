@@ -46,14 +46,15 @@ RSpec.describe 'Admin::Gestao', type: :request do
     entrar_como('administrador')
     get admin_restaurantes_path
 
-    expect(response.body).to include('Relatório Global', 'Sair')
+    expect(response.body).to include('Relatório Global', 'Sair', ponto_acesso_path, operacao_path)
+    expect(response.body).not_to include('ir-para-ponto')
   end
 
   it 'esconde a aba do relatório do funcionário' do
     entrar_como('funcionario')
     get admin_restaurantes_path
 
-    expect(response.body).to include('Sair')
+    expect(response.body).to include('Sair', 'id="ir-para-ponto"', ponto_acesso_path)
     expect(response.body).not_to include('Relatório Global')
   end
 

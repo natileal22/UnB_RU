@@ -7,13 +7,13 @@
 <header class="portal-topo">
   <strong class="portal-marca">RU UnB</strong>
   <nav class="portal-menu">
+    <%= link_to "Início", root_path, class: ativo.(root_path) %>
     <% if current_user.nil? %>
       <%= link_to "Login", login_path, class: ativo.(login_path) %>
       <%= link_to "Cadastro", new_user_path, class: ativo.(new_user_path) %>
       <%= link_to "Cardápio", cardapio_hoje_path, class: ativo.(cardapio_hoje_path) %>
       <%= link_to "Acesso operacional", operador_entrar_path, class: ativo.(operador_entrar_path) %>
     <% elsif current_user.perfil == "estudante" %>
-      <%= link_to "Início", root_path, class: ativo.(root_path) %>
       <%= link_to "Cardápio", cardapio_hoje_path, class: ativo.(cardapio_hoje_path) %>
       <%= link_to "Recarga", nova_recarga_path, class: ativo.(nova_recarga_path) %>
       <%= link_to "Extrato", extrato_path, class: ativo.(extrato_path) %>
@@ -22,6 +22,9 @@
       <%= link_to "Operação", operacao_path, class: ativo.(operacao_path) %>
       <%= link_to "Histórico local", operador_historico_index_path, class: ativo.(operador_historico_index_path) %>
     <% else %>
+      <%# o administrador tambem e funcionario, so nao ve o historico local porque la ele recebe 403 %>
+      <%= link_to "Ponto de acesso", ponto_acesso_path, class: ativo.(ponto_acesso_path) %>
+      <%= link_to "Operação", operacao_path, class: ativo.(operacao_path) %>
       <%= link_to "Restaurantes e Catracas", admin_restaurantes_path, class: ativo.(admin_restaurantes_path) %>
       <%= link_to "Relatório Global", admin_relatorio_path, class: ativo.(admin_relatorio_path) %>
     <% end %>
