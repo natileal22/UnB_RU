@@ -10,5 +10,5 @@ bundle exec rails cardapio:importar
 
 # dados de demonstracao so entram quando SEED_DEMO for true
 if [ "$SEED_DEMO" = "true" ]; then
-  bundle exec rails db:seed
+  bundle exec rails demo:popular
 fi
