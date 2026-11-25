@@ -1,0 +1,10 @@
+Grupo 08 - Sprint 3 - UnB RU
+Repositório: https://github.com/natileal22/UnB_RU
+Wiki: https://github.com/natileal22/UnB_RU/wiki
+Aplicação: https://unb-ru.onrender.com
+Integrantes:
+Adriano Lopes - 170097960
+Isabela de Souza Clímaco - 190088931
+Kassio Gandara de Souza - 180140540
+Natália Leal - 221021581
+Pedro de Paula - 231036050
