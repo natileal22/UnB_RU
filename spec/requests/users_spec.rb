@@ -5,6 +5,13 @@ RSpec.describe "User registration", type: :request do
     { user: { name: "Ana Silva", matricula: "123456789", password: "SenhaForte123" } }
   end
 
+  it "shows the registration form" do
+    get new_user_path
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("Cadastro de usuário")
+  end
+
   it "creates a user and redirects to authentication" do
     post users_path, params: valid_params
 

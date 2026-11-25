@@ -5,23 +5,25 @@ RSpec.describe User, type: :model do
     described_class.new(name: 'Ana Silva', matricula: '123456789', password: 'SenhaForte123')
   end
 
-  it { is_expected.to be_valid }
+  it 'é válido' do
+    is_expected.to be_valid
+  end
 
-  it 'rejects a matrícula with the wrong format' do
+  it 'rejeita matrícula com formato incorreto' do
     user.matricula = '123'
 
     expect(user).not_to be_valid
     expect(user.errors[:matricula]).to include('inválida')
   end
 
-  it 'rejects a matrícula made of repeated digits' do
+  it 'rejeita matrícula composta por dígitos repetidos' do
     user.matricula = '999999999'
 
     expect(user).not_to be_valid
     expect(user.errors[:matricula]).to include('inválida')
   end
 
-  it 'requires a unique matrícula' do
+  it 'exige matrícula única' do
     described_class.create!(name: 'Ana Silva', matricula: '123456789', password: 'SenhaForte123')
     duplicate = described_class.new(name: 'Bruno Oliveira', matricula: '123456789', password: 'AcessoRU456')
 
@@ -29,7 +31,7 @@ RSpec.describe User, type: :model do
     expect(duplicate.errors[:matricula]).to include('já cadastrada')
   end
 
-  it 'accepts a 7-digit SIAPE matrícula for funcionario' do
+  it 'aceita matrícula SIAPE de 7 dígitos para funcionário' do
     user = described_class.new(
       nome: 'Carlos Operador',
       matricula: '1234567',
@@ -40,7 +42,7 @@ RSpec.describe User, type: :model do
     expect(user.operador_autorizado?).to be(true)
   end
 
-  it 'rejects a 9-digit matrícula for funcionario' do
+  it 'rejeita matrícula de 9 dígitos para funcionário' do
     user = described_class.new(
       nome: 'Carlos Operador',
       matricula: '123456789',
