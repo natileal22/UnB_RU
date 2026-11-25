@@ -1,4 +1,5 @@
 class PontosAcessoController < ApplicationController
+  layout "operador"
   before_action :exigir_login
   before_action :exigir_perfil_operador
 

@@ -1,0 +1,34 @@
+/* estilos exclusivos das telas de ponto de acesso, operação e terminal de validação */
+
+.ponto-acesso-card {
+  margin-bottom: 1.5rem;
+  max-width: 480px;
+}
+
+.link-secundario {
+  color: var(--azul);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.link-secundario:hover {
+  text-decoration: underline;
+}
+
+.resultado-destaque {
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+}
+
+.terminal-form {
+  margin-bottom: 1.5rem;
+  max-width: 480px;
+}
+
+.botao-pequeno {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.9rem;
+}
