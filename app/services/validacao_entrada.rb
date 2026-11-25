@@ -33,17 +33,7 @@ class ValidacaoEntrada
     motivo = motivo_antes_do_saldo
     return negar(motivo) if motivo
 
-    # Débito e registro na MESMA transação: ou acontecem os dois, ou nenhum.
-    ActiveRecord::Base.transaction do
-      usuario.lock!
-      if usuario.saldo < PRECO
-        negar("SALDO_INSUFICIENTE")
-      else
-        usuario.update!(saldo: usuario.saldo - PRECO)
-        registrar(resultado: "LIBERADO", valor: PRECO)
-        Resultado.new(liberado: true)
-      end
-    end
+    debitar_e_liberar
   end
 
   private
@@ -68,6 +58,20 @@ class ValidacaoEntrada
     return @usuario if defined?(@usuario)
 
     @usuario = User.find_by(matricula: matricula, perfil: "estudante")
+  end
+
+  # Débito e registro na MESMA transação: ou acontecem os dois, ou nenhum.
+  def debitar_e_liberar
+    ActiveRecord::Base.transaction do
+      usuario.lock!
+      usuario.saldo < PRECO ? negar("SALDO_INSUFICIENTE") : liberar
+    end
+  end
+
+  def liberar
+    usuario.update!(saldo: usuario.saldo - PRECO)
+    registrar(resultado: "LIBERADO", valor: PRECO)
+    Resultado.new(liberado: true)
   end
 
   def negar(motivo)
