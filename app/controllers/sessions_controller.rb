@@ -19,9 +19,9 @@ class SessionsController < ApplicationController
   # ==== Efeitos colaterais
   # Em caso de sucesso: chama +reset_session+ e grava +session[:user_id]+.
   def create
-    user = User.find_by(matricula: params[:matricula].to_s.strip)
+    user = usuario_autenticado
 
-    if user&.authenticate(params[:password].to_s)
+    if user
       iniciar_sessao(user)
     else
       flash.now[:alert] = 'Matrícula ou senha inválidas'
@@ -30,6 +30,21 @@ class SessionsController < ApplicationController
   end
 
   private
+
+  # Busca o usuário pela matrícula e verifica a senha.
+  #
+  # ==== Argumentos
+  # Nenhum. Usa +params[:matricula]+ e +params[:password]+.
+  #
+  # ==== Retorno
+  # O objeto +User+ se a matrícula existir e a senha estiver correta; +nil+ caso contrário.
+  #
+  # ==== Efeitos colaterais
+  # Nenhum.
+  def usuario_autenticado
+    user = User.find_by(matricula: params[:matricula].to_s.strip)
+    user&.authenticate(params[:password].to_s) || nil
+  end
 
   # Reinicia a sessão, persiste o usuário e redireciona para o destino correto.
   #
