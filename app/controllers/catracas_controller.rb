@@ -1,5 +1,7 @@
 class CatracasController < ApplicationController
+  layout "operador"
   before_action :carregar_catraca
+  before_action :carregar_ultimas_validacoes
 
   def show
   end
@@ -18,5 +20,9 @@ class CatracasController < ApplicationController
 
   def carregar_catraca
     @catraca = Catraca.find(params[:id])
+  end
+
+  def carregar_ultimas_validacoes
+    @ultimas_validacoes = @catraca.acessos.recent_first.limit(10)
   end
 end

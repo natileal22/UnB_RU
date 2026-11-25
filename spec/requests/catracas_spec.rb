@@ -30,4 +30,13 @@ RSpec.describe "Catraca", type: :request do
 
     expect(response).to have_http_status(:not_found)
   end
+
+  it "exibe a tabela de últimas validações após uma entrada" do
+    post entrada_catraca_path(catraca), params: { matricula: "241012345" }
+    get catraca_path(catraca)
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("241012345")
+    expect(Access.count).to eq(1)
+  end
 end

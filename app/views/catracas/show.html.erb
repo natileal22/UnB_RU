@@ -1,16 +1,20 @@
-<% content_for :title, "Catraca #{@catraca.codigo}" %>
+<% content_for :title, "Terminal — #{@catraca.codigo}" %>
+<%= stylesheet_link_tag "telas", "operacao_catraca" %>
 
-<main class="auth-page">
-  <section class="auth-card">
-    <h1>Catraca <%= @catraca.codigo %></h1>
-    <p class="auth-intro"><%= @catraca.restaurant.name %></p>
+<main class="tela">
+  <section class="tela-topo">
+    <p><%= @catraca.restaurant.name %></p>
+    <h1>Terminal — Catraca <%= @catraca.codigo %></h1>
+    <%= link_to "Voltar para a operação", operacao_path, class: "link-secundario" %>
+  </section>
 
-    <% if @resultado&.liberado? %>
-      <p class="flash flash-notice" role="status"><%= @resultado.mensagem %></p>
-    <% elsif @resultado %>
-      <p class="flash flash-alert" role="alert"><%= @resultado.mensagem %></p>
-    <% end %>
+  <% if @resultado&.liberado? %>
+    <p class="flash flash-notice resultado-destaque" role="status"><%= @resultado.mensagem %></p>
+  <% elsif @resultado %>
+    <p class="flash flash-alert resultado-destaque" role="alert"><%= @resultado.mensagem %></p>
+  <% end %>
 
+  <div class="cartao terminal-form">
     <%= form_with url: entrada_catraca_path(@catraca), method: :post do |form| %>
       <div class="field">
         <%= form.label :matricula, "Matrícula" %>
@@ -18,5 +22,33 @@
       </div>
       <%= form.submit "Validar entrada", class: "primary-button" %>
     <% end %>
-  </section>
+  </div>
+
+  <% if @ultimas_validacoes.any? %>
+    <table class="tabela">
+      <thead>
+        <tr>
+          <th>Horário</th>
+          <th>Matrícula</th>
+          <th>Resultado</th>
+          <th>Motivo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @ultimas_validacoes.each do |acesso| %>
+          <% negado = acesso.resultado != "LIBERADO" %>
+          <tr class="<%= "linha-recusada" if negado %>">
+            <td><%= l(acesso.occurred_at, format: "%d/%m/%Y %H:%M") %></td>
+            <td><%= acesso.matricula.presence || "—" %></td>
+            <td>
+              <%= render "shared/selo_status",
+                         texto: acesso.resultado.capitalize,
+                         tipo: negado ? "erro" : "ok" %>
+            </td>
+            <td><%= acesso.motivo_negacao&.humanize || "—" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
 </main>
