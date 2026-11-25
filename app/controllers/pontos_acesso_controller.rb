@@ -7,19 +7,21 @@ class PontosAcessoController < ApplicationController
   end
 
   def create
-    restaurante = Restaurant.find_by(id: params[:restaurant_id])
+    return recusar("Selecione um restaurante para continuar") if params[:restaurant_id].blank?
 
-    if params[:restaurant_id].blank?
-      recusar("Selecione um restaurante para continuar")
-    elsif restaurante.nil? || !restaurante.ativo?
-      recusar("Restaurante indisponível para operação")
-    else
-      session[:restaurant_id] = restaurante.id
-      redirect_to operacao_path, notice: "Ponto de acesso configurado"
-    end
+    restaurante = restaurante_operacional(params[:restaurant_id])
+    return recusar("Restaurante indisponível para operação") unless restaurante
+
+    session[:restaurant_id] = restaurante.id
+    redirect_to operacao_path, notice: "Ponto de acesso configurado"
   end
 
   private
+
+  def restaurante_operacional(id)
+    r = Restaurant.find_by(id: id)
+    r if r&.ativo?
+  end
 
   def recusar(mensagem)
     @restaurantes = Restaurant.ativos.order(:name)
