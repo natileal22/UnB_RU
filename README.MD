@@ -74,6 +74,13 @@ bundle exec rubocop --fail-level E
 ```
 
 O CI do GitHub Actions (`.github/workflows/ci.yml`) roda esses três comandos a cada push.
+O RSpec gera o relatório de cobertura em `coverage/`, com grupos separados para controllers e models.
+Para as análises da Sprint 3, rode:
+
+```bash
+bundle exec rubycritic --no-browser --format console app
+bundle exec rdoc --output tmp/rdoc app
+```
 
 ## Deploy
 

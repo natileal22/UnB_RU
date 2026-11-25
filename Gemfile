@@ -40,6 +40,9 @@ group :development, :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "rubocop-rails"
+  gem "simplecov", require: false
+  gem "rdoc"
+  gem "rubycritic", "~> 5.0"
 
   # Lê o .env local (credenciais do Supabase); o .env real nunca entra no Git
   gem "dotenv-rails"

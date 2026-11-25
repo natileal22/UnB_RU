@@ -14,6 +14,7 @@
 
 # Assets compilados
 /public/assets
+/coverage
 
 # Variáveis de ambiente e chaves
 /config/*.key
