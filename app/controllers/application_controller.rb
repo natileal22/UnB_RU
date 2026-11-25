@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Controller base da aplicação. Define helpers de sessão e filtros compartilhados.
 #
 # Os métodos +exigir_login+ e +exigir_perfil_operador+ protegem as rotas

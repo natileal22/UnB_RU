@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 # Controller do terminal de validação de entrada (issue #6).
 #
 # Exibe a tela da catraca e processa a tentativa de entrada do estudante.
 # Não exige login de operador: o terminal é acessado diretamente pelo código da catraca.
 class CatracasController < ApplicationController
-  layout "operador"
+  layout 'operador'
   before_action :carregar_catraca
   before_action :carregar_ultimas_validacoes
 
@@ -17,8 +19,7 @@ class CatracasController < ApplicationController
   #
   # ==== Efeitos colaterais
   # Nenhum.
-  def show
-  end
+  def show; end
 
   # Processa a tentativa de entrada: valida a matrícula e debita o saldo se liberada.
   #

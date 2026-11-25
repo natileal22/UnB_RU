@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 # Controller de autenticação do estudante (login no portal do estudante).
 #
 # O login do operador usa Operador::SessoesController.
 class SessionsController < ApplicationController
-  def new
-  end
+  def new; end
 
   # Autentica o usuário com matrícula e senha e inicia a sessão.
   #
@@ -23,7 +24,7 @@ class SessionsController < ApplicationController
     if user&.authenticate(params[:password].to_s)
       iniciar_sessao(user)
     else
-      flash.now[:alert] = "Matrícula ou senha inválidas"
+      flash.now[:alert] = 'Matrícula ou senha inválidas'
       render :new, status: :unprocessable_entity
     end
   end

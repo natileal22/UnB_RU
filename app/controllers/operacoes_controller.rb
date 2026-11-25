@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 # Controller da tela de Operação (issue #5).
 #
 # Exibe o painel do restaurante em operação com as catracas disponíveis.
 # Redireciona para o ponto de acesso quando nenhum restaurante está selecionado na sessão.
 class OperacoesController < ApplicationController
-  layout "operador"
+  layout 'operador'
   before_action :exigir_login
   before_action :exigir_perfil_operador
 
@@ -23,6 +25,6 @@ class OperacoesController < ApplicationController
     @restaurante = Restaurant.ativos.find_by(id: session[:restaurant_id])
     return if @restaurante
 
-    redirect_to ponto_acesso_path, alert: "Selecione um restaurante para continuar"
+    redirect_to ponto_acesso_path, alert: 'Selecione um restaurante para continuar'
   end
 end

@@ -1,21 +1,23 @@
+# frozen_string_literal: true
+
 # Serviço que encapsula a regra de negócio da Validação de Entrada (issue #6).
 #
 # Ordem das checagens: formato -> catraca -> restaurante da sessão -> cadastro -> saldo.
 # Toda tentativa gera um registro em +accesses+, liberada ou negada.
 class ValidacaoEntrada
   # Preço fixo cobrado por refeição.
-  PRECO = BigDecimal("4.50")
+  PRECO = BigDecimal('4.50')
 
   # Expressão regular que valida os 9 dígitos da matrícula de estudante.
   FORMATO_MATRICULA = /\A\d{9}\z/
 
   # Mensagens de negação indexadas pelo motivo, usadas por +Resultado#mensagem+.
   MENSAGENS = {
-    "FORMATO_INVALIDO" => "Matrícula com formato inválido",
-    "CATRACA_INDISPONIVEL" => "Catraca indisponível",
-    "CATRACA_FORA_DO_RESTAURANTE" => "Catraca não pertence ao restaurante selecionado",
-    "NAO_CADASTRADO" => "Usuário não cadastrado no sistema",
-    "SALDO_INSUFICIENTE" => "Saldo insuficiente para a refeição"
+    'FORMATO_INVALIDO' => 'Matrícula com formato inválido',
+    'CATRACA_INDISPONIVEL' => 'Catraca indisponível',
+    'CATRACA_FORA_DO_RESTAURANTE' => 'Catraca não pertence ao restaurante selecionado',
+    'NAO_CADASTRADO' => 'Usuário não cadastrado no sistema',
+    'SALDO_INSUFICIENTE' => 'Saldo insuficiente para a refeição'
   }.freeze
 
   # Struct de retorno do serviço que carrega o resultado de uma tentativa de entrada.
@@ -45,7 +47,7 @@ class ValidacaoEntrada
     # ==== Efeitos colaterais
     # Nenhum.
     def mensagem
-      liberado ? "Entrada liberada" : MENSAGENS.fetch(motivo)
+      liberado ? 'Entrada liberada' : MENSAGENS.fetch(motivo)
     end
   end
 
@@ -102,10 +104,10 @@ class ValidacaoEntrada
   # ==== Efeitos colaterais
   # Nenhum.
   def motivo_antes_do_saldo
-    return "FORMATO_INVALIDO" unless matricula.match?(FORMATO_MATRICULA)
-    return "CATRACA_INDISPONIVEL" unless catraca.disponivel? && catraca.restaurant.ativo?
-    return "CATRACA_FORA_DO_RESTAURANTE" if fora_do_restaurante_selecionado?
-    return "NAO_CADASTRADO" if usuario.nil?
+    return 'FORMATO_INVALIDO' unless matricula.match?(FORMATO_MATRICULA)
+    return 'CATRACA_INDISPONIVEL' unless catraca.disponivel? && catraca.restaurant.ativo?
+    return 'CATRACA_FORA_DO_RESTAURANTE' if fora_do_restaurante_selecionado?
+    return 'NAO_CADASTRADO' if usuario.nil?
 
     nil
   end
@@ -138,7 +140,7 @@ class ValidacaoEntrada
   def usuario
     return @usuario if defined?(@usuario)
 
-    @usuario = User.find_by(matricula: matricula, perfil: "estudante")
+    @usuario = User.find_by(matricula: matricula, perfil: 'estudante')
   end
 
   # Executa o débito e o registro de liberação dentro de uma transação atômica.
@@ -155,7 +157,7 @@ class ValidacaoEntrada
   def debitar_e_liberar
     ActiveRecord::Base.transaction do
       usuario.lock!
-      usuario.saldo < PRECO ? negar("SALDO_INSUFICIENTE") : liberar
+      usuario.saldo < PRECO ? negar('SALDO_INSUFICIENTE') : liberar
     end
   end
 
@@ -171,7 +173,7 @@ class ValidacaoEntrada
   # Atualiza o saldo do usuário e grava um registro LIBERADO em +accesses+.
   def liberar
     usuario.update!(saldo: usuario.saldo - PRECO)
-    registrar(resultado: "LIBERADO", valor: PRECO)
+    registrar(resultado: 'LIBERADO', valor: PRECO)
     Resultado.new(liberado: true)
   end
 
@@ -186,7 +188,7 @@ class ValidacaoEntrada
   # ==== Efeitos colaterais
   # Grava um registro NEGADO em +accesses+ com +valor_cobrado: 0+.
   def negar(motivo)
-    registrar(resultado: "NEGADO", motivo: motivo, valor: 0)
+    registrar(resultado: 'NEGADO', motivo: motivo, valor: 0)
     Resultado.new(liberado: false, motivo: motivo)
   end
 

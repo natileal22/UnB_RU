@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 # Controller da Configuração do Ponto de Acesso (issue #5).
 #
 # Permite ao operador (funcionário ou administrador) selecionar o restaurante
 # que será operado na sessão atual antes de usar o terminal de validação.
 class PontosAcessoController < ApplicationController
-  layout "operador"
+  layout 'operador'
   before_action :exigir_login
   before_action :exigir_perfil_operador
 
@@ -34,13 +36,13 @@ class PontosAcessoController < ApplicationController
   # ==== Efeitos colaterais
   # Em caso de sucesso, grava +session[:restaurant_id]+ com o id do restaurante selecionado.
   def create
-    return recusar("Selecione um restaurante para continuar") if params[:restaurant_id].blank?
+    return recusar('Selecione um restaurante para continuar') if params[:restaurant_id].blank?
 
     restaurante = restaurante_operacional(params[:restaurant_id])
-    return recusar("Restaurante indisponível para operação") unless restaurante
+    return recusar('Restaurante indisponível para operação') unless restaurante
 
     session[:restaurant_id] = restaurante.id
-    redirect_to operacao_path, notice: "Ponto de acesso configurado"
+    redirect_to operacao_path, notice: 'Ponto de acesso configurado'
   end
 
   private

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Model que registra cada tentativa de entrada em uma catraca (issue #6).
 #
 # Toda validação — liberada ou negada — gera um +Access+.
@@ -15,7 +17,7 @@ class Access < ApplicationRecord
 
   validates :catraca, :resultado, :occurred_at, presence: true
   # Matrícula em branco é registrada como tentativa com formato inválido.
-  validates :matricula, presence: true, unless: -> { motivo_negacao == "FORMATO_INVALIDO" }
+  validates :matricula, presence: true, unless: -> { motivo_negacao == 'FORMATO_INVALIDO' }
   validates :resultado, inclusion: { in: RESULTS }
   validates :motivo_negacao, inclusion: { in: MOTIVOS }, allow_nil: true
 
