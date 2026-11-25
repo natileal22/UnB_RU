@@ -1,16 +1,40 @@
-<% content_for :title, "Operação" %>
+<% content_for :title, "Operação — #{@restaurante.name}" %>
+<%= stylesheet_link_tag "telas", "operacao_catraca" %>
 
-<main class="auth-page">
-  <section class="auth-card">
-    <p>Operando no restaurante</p>
+<main class="tela">
+  <section class="tela-topo">
+    <p>Restaurante em operação</p>
     <h1 id="restaurante-em-operacao"><%= @restaurante.name %></h1>
-    <%= render "shared/flash" %>
-
-    <h2>Catracas</h2>
-    <ul>
-      <% @restaurante.catracas.order(:codigo).each do |catraca| %>
-        <li><%= link_to catraca.codigo, catraca_path(catraca) %></li>
-      <% end %>
-    </ul>
+    <%= link_to "Trocar restaurante", ponto_acesso_path, class: "link-secundario" %>
   </section>
+
+  <%= render "shared/flash" %>
+
+  <div class="cartoes">
+    <%= render "shared/cartao_resumo",
+               titulo: "Total de catracas",
+               valor: @restaurante.catracas.count %>
+    <%= render "shared/cartao_resumo",
+               titulo: "Catracas ativas",
+               valor: @restaurante.catracas.where(status: "ativa").count %>
+  </div>
+
+  <table class="tabela">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @restaurante.catracas.order(:codigo).each do |catraca| %>
+        <tr>
+          <td><%= catraca.codigo %></td>
+          <td><%= catraca.status_rotulo %></td>
+          <td><%= link_to "Abrir terminal", catraca_path(catraca), class: "primary-button botao-pequeno" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </main>

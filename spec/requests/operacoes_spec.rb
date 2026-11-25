@@ -41,6 +41,14 @@ RSpec.describe "Operação", type: :request do
       expect(response.body).to include("RU Central")
     end
 
+    it "exibe link para trocar o restaurante" do
+      post ponto_acesso_path, params: { restaurant_id: restaurante.id }
+
+      get operacao_path
+
+      expect(response.body).to include("Trocar restaurante")
+    end
+
     it "redireciona para o ponto de acesso quando não há restaurant_id na sessão" do
       get operacao_path
 
