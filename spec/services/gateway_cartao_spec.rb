@@ -5,23 +5,31 @@ RSpec.describe GatewayCartao do
 
   describe '.dados_validos?' do
     it 'aceita dados completos' do
-      expect(described_class.dados_validos?(**dados)).to be true
+      expect(described_class.dados_validos?(dados)).to be true
     end
 
     it 'recusa número com menos de 16 dígitos' do
-      expect(described_class.dados_validos?(**dados, numero: '4111')).to be false
+      expect(described_class.dados_validos?(dados.merge(numero: '4111'))).to be false
     end
 
     it 'recusa nome em branco' do
-      expect(described_class.dados_validos?(**dados, nome: ' ')).to be false
+      expect(described_class.dados_validos?(dados.merge(nome: ' '))).to be false
     end
 
     it 'recusa validade fora do formato MM/AA' do
-      expect(described_class.dados_validos?(**dados, validade: '13/30')).to be false
+      expect(described_class.dados_validos?(dados.merge(validade: '13/30'))).to be false
+    end
+
+    it 'recusa dados sem número do cartão' do
+      expect(described_class.dados_validos?(dados.merge(numero: nil))).to be false
+    end
+
+    it 'aceita número digitado com espaços' do
+      expect(described_class.dados_validos?(dados.merge(numero: '4111 1111 1111 1111'))).to be true
     end
 
     it 'recusa CVV com tamanho errado' do
-      expect(described_class.dados_validos?(**dados, cvv: '12')).to be false
+      expect(described_class.dados_validos?(dados.merge(cvv: '12'))).to be false
     end
   end
 

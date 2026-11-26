@@ -13,6 +13,28 @@ RSpec.describe 'Recargas', type: :request do
     expect(response).to redirect_to(login_path)
   end
 
+  describe 'funcionário logado (RN07: só o estudante faz recarga)' do
+    let!(:funcionario) do
+      User.create!(name: 'Maria Fiscal', matricula: '9000002', password: 'SenhaForte123', perfil: 'funcionario')
+    end
+
+    before { post operador_entrar_path, params: { matricula: funcionario.matricula, senha: 'SenhaForte123' } }
+
+    it 'não abre a tela de recarga' do
+      get nova_recarga_path
+      expect(response).to have_http_status(:forbidden)
+      expect(response.body).to include('esta página é exclusiva do estudante')
+    end
+
+    it 'não cria recarga nem muda o saldo' do
+      expect do
+        post recargas_path, params: { recarga: { valor: '20', metodo: 'pix' } }
+      end.not_to change(Recarga, :count)
+      expect(response).to have_http_status(:forbidden)
+      expect(funcionario.reload.saldo).to eq(0)
+    end
+  end
+
   it 'mostra a página de recarga com o saldo atual' do
     entrar
     get nova_recarga_path

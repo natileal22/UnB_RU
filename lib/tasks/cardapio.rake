@@ -1,6 +1,17 @@
+# frozen_string_literal: true
+
 # Importa o cardapio.json (cardápio semanal do RU) para a semana atual.
 # Uso: bin/rails cardapio:importar
 namespace :cardapio do
+  # Importa o +cardapio.json+ da raiz do projeto para os dias da semana atual.
+  #
+  # Argumentos:: nenhum. Lê o arquivo +cardapio.json+ e usa a data de hoje para
+  #   achar a segunda-feira da semana.
+  # Retorno:: nenhum; imprime no terminal quantas refeições existem no banco.
+  # Efeitos colaterais::
+  #   Altera o banco: cria o Cardapio de cada refeição da semana (se ainda não
+  #   existir) e troca os itens dele pelos do arquivo. Pode rodar de novo sem
+  #   duplicar cardápios. Lança erro se o arquivo não existir ou não for JSON válido.
   desc 'Importa o cardapio.json para os dias da semana atual'
   task importar: :environment do
     dias = %w[segunda-feira terca-feira quarta-feira quinta-feira sexta-feira sabado domingo]
