@@ -84,7 +84,7 @@ class Catraca < ApplicationRecord
   # retorna: nada, registra o erro em responsavel quando invalido
   # efeito: acrescenta erro ao registro
   def responsavel_operador
-    return if responsavel.nil? || responsavel.operador_autorizado?
+    return unless responsavel && !responsavel.operador_autorizado?
 
     errors.add(:responsavel, 'Responsável deve ser funcionário ou administrador')
   end
@@ -145,7 +145,8 @@ class Catraca < ApplicationRecord
   # retorna: o horario (Time) valido, ou nil quando vazio ou invalido
   # efeito: acrescenta erro ao registro quando o texto nao e uma hora
   def checar_horario(campo, nome)
-    return public_send(campo) if public_send(campo) || !preenchido?(campo)
+    horario = public_send(campo)
+    return horario if horario || !preenchido?(campo)
 
     errors.add(campo, "Horário de #{nome} da catraca é inválido")
     nil

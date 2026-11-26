@@ -120,8 +120,8 @@ RSpec.describe CardapioApi::Cliente do
   end
 
   describe 'constantes do cardápio' do
-    it 'deriva os campos do café dos campos do almoço e do jantar' do
-      expect(described_class::CAMPOS_CAFE).to eq(
+    it 'traz os campos de complemento do café, diferentes dos pratos do almoço e do jantar' do
+      expect(described_class::REFEICOES['cafe'][:campos]).to eq(
         padrao: 'complemento_padrao', ovolactovegetariano: 'complemento_ovolactovegetariano',
         vegetariano_estrito: 'complemento_vegetariano_estrito'
       )

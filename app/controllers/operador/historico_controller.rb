@@ -3,6 +3,8 @@
 module Operador
   # historico local da catraca so para funcionario
   class HistoricoController < ApplicationController
+    include ConsultaPorPeriodo
+
     layout 'operador'
 
     before_action :exigir_login
@@ -13,11 +15,7 @@ module Operador
     # retorna: renderiza index e, com periodo invalido, responde 422 com a mensagem
     # efeito: so le o banco
     def index
-      @resultado = HistoricoLocal.new(usuario: current_user, **filtro).call
-      return if @resultado.valido?
-
-      flash.now[:alert] = @resultado.mensagem
-      render :index, status: :unprocessable_content
+      consultar(HistoricoLocal)
     end
 
     private

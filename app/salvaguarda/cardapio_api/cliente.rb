@@ -13,16 +13,23 @@ module CardapioApi
     # falhas de rede, de status e de leitura que viram ErroApi, assim quem chama trata um erro so
     FALHAS = [SocketError, SystemCallError, Timeout::Error, OpenSSL::SSL::SSLError, Net::HTTPExceptions,
               JSON::ParserError].freeze
-    # refeicao do sistema para a chave que a api usa
-    MAPA_REFEICOES = { 'cafe' => 'cafe_da_manha', 'almoco' => 'almoco', 'jantar' => 'jantar' }.freeze
-    # em cada refeicao, o tipo de opcao do sistema e o campo da api com o prato dela
-    CAMPOS_PRINCIPAIS = {
+
+    principais = {
       padrao: 'prato_principal_padrao',
       ovolactovegetariano: 'prato_principal_ovolactovegetariano',
       vegetariano_estrito: 'prato_principal_vegetariano_estrito'
+    }
+    cafe = {
+      padrao: 'complemento_padrao',
+      ovolactovegetariano: 'complemento_ovolactovegetariano',
+      vegetariano_estrito: 'complemento_vegetariano_estrito'
+    }
+    # por refeicao do sistema, a chave que a api usa e o campo do prato de cada tipo de opcao
+    REFEICOES = {
+      'cafe' => { chave: 'cafe_da_manha', campos: cafe },
+      'almoco' => { chave: 'almoco', campos: principais },
+      'jantar' => { chave: 'jantar', campos: principais }
     }.freeze
-    CAMPOS_CAFE = CAMPOS_PRINCIPAIS.transform_values { |campo| campo.sub('prato_principal', 'complemento') }.freeze
-    CAMPOS = { 'cafe' => CAMPOS_CAFE, 'almoco' => CAMPOS_PRINCIPAIS, 'jantar' => CAMPOS_PRINCIPAIS }.freeze
 
     class << self
       # busca a semana vigente do cardapio na api
@@ -41,8 +48,8 @@ module CardapioApi
       # efeito: abre uma conexao https com tempo limite de 10 s para conectar e 20 s para ler
       def buscar(caminho)
         JSON.parse(ler(uri_de(caminho), chave_de_acesso))
-      rescue *FALHAS => e
-        raise ErroApi, e.message
+      rescue *FALHAS => falha # rubocop:disable Naming/RescuedExceptionsVariableName -- nome claro
+        raise ErroApi, falha.message
       end
 
       # a conversa com o servidor, que so devolve o corpo quando o status e de sucesso

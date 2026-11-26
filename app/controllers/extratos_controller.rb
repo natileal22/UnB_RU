@@ -2,6 +2,8 @@
 
 # extrato de recargas e historico de refeicoes do estudante logado
 class ExtratosController < ApplicationController
+  include ConsultaPorPeriodo
+
   layout 'estudante'
 
   before_action :exigir_login_do_estudante
@@ -12,11 +14,7 @@ class ExtratosController < ApplicationController
   # retorna: renderiza index e, com periodo invalido, responde 422 com a mensagem
   # efeito: so le o banco
   def index
-    @resultado = ExtratoHistorico.new(usuario: current_user, **filtro).call
-    return if @resultado.valido?
-
-    flash.now[:alert] = @resultado.erro
-    render :index, status: :unprocessable_content
+    consultar(ExtratoHistorico)
   end
 
   private
