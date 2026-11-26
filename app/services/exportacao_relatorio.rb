@@ -6,14 +6,32 @@ class ExportacaoRelatorio
   MSG_FILTRO_SEM_REGISTROS = 'Nenhum registro encontrado para os filtros informados'
   MSG_FALHA = 'Não foi possível gerar o PDF. Tente novamente'
 
+  # resultado da exportacao, com o pdf e o nome do arquivo ou com o erro e o status da resposta
   Resultado = Struct.new(:pdf, :arquivo, :erro, :status, keyword_init: true) do
+    # resultado de erro, sem pdf
+    # args: erro (String) com a mensagem e status (Symbol) da resposta, 422 por padrao
+    # retorna: Resultado com o erro e o status
+    # efeito: nenhum
+    def self.recusado(erro, status = :unprocessable_content)
+      new(erro: erro, status: status)
+    end
+
     # diz se a exportacao deu certo
     # args: nenhum
     # retorna: true quando nao ha erro
     # efeito: nenhum
     def sucesso?
-      erro.nil?
+      erro.blank?
     end
+  end
+
+  # uma linha da tabela com os dados do acesso
+  # args: acesso (Access)
+  # retorna: texto com data, restaurante, catraca, matricula e resultado
+  # efeito: nenhum
+  def self.linha(acesso)
+    [I18n.l(acesso.occurred_at, format: '%d/%m/%Y %H:%M'), acesso.restaurant.name, acesso.catraca,
+     acesso.matricula, acesso.resultado].join(' | ')
   end
 
   # prepara a exportacao com o periodo e os filtros do relatorio
@@ -31,10 +49,10 @@ class ExportacaoRelatorio
   #          ou erro e status 500 quando a geracao falha
   # efeito: le o banco e registra no log quando a geracao falha, nao grava nada
   def call
-    return recusar(@periodo.erro) unless @periodo.valido?
+    return Resultado.recusado(@periodo.erro) unless @periodo.valido?
 
     acessos = buscar
-    return recusar(motivo_sem_registros) if acessos.empty?
+    return Resultado.recusado(motivo_sem_registros) if acessos.empty?
 
     gerar(acessos)
   end
@@ -65,9 +83,9 @@ class ExportacaoRelatorio
   # efeito: registra a falha no log
   def gerar(acessos)
     Resultado.new(pdf: GeradorPdf.gerar(linhas: linhas(acessos)), arquivo: nome_do_arquivo)
-  rescue StandardError => e
-    Rails.logger.error("falha ao gerar o pdf do relatorio: #{e.class} #{e.message}")
-    recusar(MSG_FALHA, :internal_server_error)
+  rescue StandardError => erro # rubocop:disable Naming/RescuedExceptionsVariableName -- nome claro
+    Rails.logger.error("falha ao gerar o pdf do relatorio: #{erro.class} #{erro.message}")
+    Resultado.recusado(MSG_FALHA, :internal_server_error)
   end
 
   # a catraca entra no nome so quando filtrada e sem caractere que nao seja letra numero hifen ou sublinhado
@@ -85,7 +103,7 @@ class ExportacaoRelatorio
   # retorna: lista de linhas de texto
   # efeito: nenhum
   def linhas(acessos)
-    cabecalho(acessos) + acessos.map { |acesso| linha(acesso) }
+    cabecalho(acessos) + acessos.map { |acesso| self.class.linha(acesso) }
   end
 
   # titulo, periodo, filtros, totais e cabecalho da tabela
@@ -93,11 +111,12 @@ class ExportacaoRelatorio
   # retorna: lista de linhas de texto
   # efeito: nenhum
   def cabecalho(acessos)
+    total = acessos.size
     liberados = acessos.count { |acesso| acesso.resultado == 'LIBERADO' }
     ['Relatório Global de Operação',
      "Período: #{@periodo.inicio.strftime('%d/%m/%Y')} a #{@periodo.fim.strftime('%d/%m/%Y')}",
      *filtros_aplicados(acessos),
-     "Total de acessos: #{acessos.size} | Liberados: #{liberados} | Negados: #{acessos.size - liberados}",
+     "Total de acessos: #{total} | Liberados: #{liberados} | Negados: #{total - liberados}",
      '',
      'Data e hora | Restaurante | Catraca | Matrícula | Resultado']
   end
@@ -107,24 +126,8 @@ class ExportacaoRelatorio
   # retorna: lista de linhas, vazia quando nao ha filtro
   # efeito: nenhum
   def filtros_aplicados(acessos)
+    catraca = @filtros[:catraca]
     [("Restaurante: #{acessos.first.restaurant.name}" if @filtros[:restaurant_id]),
-     ("Catraca: #{@filtros[:catraca]}" if @filtros[:catraca])].compact
-  end
-
-  # uma linha da tabela com os dados do acesso
-  # args: acesso (Access)
-  # retorna: texto com data, restaurante, catraca, matricula e resultado
-  # efeito: nenhum
-  def linha(acesso)
-    [I18n.l(acesso.occurred_at, format: '%d/%m/%Y %H:%M'), acesso.restaurant.name, acesso.catraca,
-     acesso.matricula, acesso.resultado].join(' | ')
-  end
-
-  # resultado de erro, sem pdf
-  # args: erro (String) com a mensagem e status (Symbol) da resposta, 422 por padrao
-  # retorna: Resultado com o erro e o status
-  # efeito: nenhum
-  def recusar(erro, status = :unprocessable_content)
-    Resultado.new(erro: erro, status: status)
+     ("Catraca: #{catraca}" if catraca)].compact
   end
 end
