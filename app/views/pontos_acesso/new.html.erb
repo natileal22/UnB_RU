@@ -1,21 +1,37 @@
-<% content_for :title, "Ponto de acesso" %>
+<% content_for :title, "Configuração do Ponto de Acesso" %>
+<%= stylesheet_link_tag "telas", "operacao_catraca" %>
 
-<main class="auth-page">
-  <section class="auth-card">
-    <h1>Selecione o restaurante</h1>
-    <%= render "shared/flash" %>
+<main class="tela">
+  <section class="tela-topo">
+    <h1>Configuração do Ponto de Acesso</h1>
+    <p>Selecione o restaurante que será operado nesta sessão.</p>
+  </section>
 
-    <% if @restaurantes.empty? %>
-      <p>Nenhum restaurante disponível</p>
-    <% else %>
-      <%= form_with url: ponto_acesso_path, method: :post do |form| %>
+  <%= render "shared/flash" %>
+
+  <% if @restaurantes.empty? %>
+    <p class="flash flash-alert">Nenhum restaurante disponível</p>
+  <% else %>
+    <%= form_with url: ponto_acesso_path, method: :post, class: "ponto-acesso-form" do |form| %>
+      <div class="cartao ponto-acesso-card">
         <div class="field">
           <%= form.label :restaurant_id, "Restaurante" %>
           <%= form.select :restaurant_id, @restaurantes.map { |r| [r.name, r.id] },
                           include_blank: "Selecione um restaurante" %>
         </div>
         <%= form.submit "Confirmar", class: "primary-button" %>
-      <% end %>
+      </div>
     <% end %>
-  </section>
+
+    <div class="cartoes">
+      <% @restaurantes.each do |r| %>
+        <div class="cartao">
+          <div class="cartao-titulo"><%= r.name %></div>
+          <% if r.localizacao.present? %>
+            <div class="cartao-valor"><%= r.localizacao %></div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
 </main>

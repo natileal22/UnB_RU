@@ -1,3 +1,9 @@
+# frozen_string_literal: true
+
+# Controller base da aplicação. Define helpers de sessão e filtros compartilhados.
+#
+# Os métodos +exigir_login+ e +exigir_perfil_operador+ protegem as rotas
+# da Configuração do Ponto de Acesso (issue #5).
 class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
@@ -20,12 +26,32 @@ class ApplicationController < ActionController::Base
     redirect_to operador_entrar_path, alert: 'Acesso restrito a funcionários.'
   end
 
-  # Configuração do ponto de acesso (issue #5): sem login vai para a autenticação do operador.
+  # Exige que o usuário esteja autenticado; redireciona para o login do operador caso contrário.
+  #
+  # ==== Argumentos
+  # Nenhum.
+  #
+  # ==== Retorno
+  # Nenhum quando o usuário está logado. Redireciona para +operador_entrar_path+ com
+  # flash +:alert+ "Faça login para continuar" quando não há sessão.
+  #
+  # ==== Efeitos colaterais
+  # Pode redirecionar a requisição, encerrando o processamento do controller.
   def exigir_login
     redirect_to operador_entrar_path, alert: 'Faça login para continuar' unless current_user
   end
 
-  # Configuração do ponto de acesso (issue #5): logado, mas sem perfil de operador, vê a mensagem de acesso negado.
+  # Exige que o usuário autenticado seja operador; renderiza a tela de acesso negado caso contrário.
+  #
+  # ==== Argumentos
+  # Nenhum.
+  #
+  # ==== Retorno
+  # Nenhum quando o usuário é operador autorizado. Renderiza +shared/acesso_negado+
+  # com status 403 quando o perfil não é "funcionario" nem "administrador".
+  #
+  # ==== Efeitos colaterais
+  # Pode renderizar +shared/acesso_negado+ com status 403, encerrando o processamento.
   def exigir_perfil_operador
     return if current_user&.operador_autorizado?
 

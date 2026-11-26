@@ -20,7 +20,7 @@ RSpec.describe "Configuração do ponto de acesso", type: :request do
     expect(response).to redirect_to(operador_entrar_path)
   end
 
-  it "nega acesso a alunos" do
+  it "nega acesso a alunos com status 403" do
     entrar_como("estudante")
     get ponto_acesso_path
 
