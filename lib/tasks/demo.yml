@@ -1,0 +1,89 @@
+# dados de demonstracao lidos pela tarefa demo:popular
+# matricula e horario entre aspas para continuarem texto, e o momento e um par de dias atras e hora
+base:
+  aluno: &aluno { perfil: estudante, password: "Aluno@2026" }
+  funcionario: &funcionario { perfil: funcionario, password: "Funcionario@2026", saldo: 0 }
+  darcy: &darcy { restaurant: RU Darcy Ribeiro }
+  gama: &gama { restaurant: RU Gama }
+  liberado: &liberado { resultado: LIBERADO, valor_cobrado: 4.5 }
+  saldo: &saldo { resultado: NEGADO, motivo_negacao: SALDO_INSUFICIENTE }
+  indisponivel: &indisponivel { resultado: NEGADO, motivo_negacao: CATRACA_INDISPONIVEL }
+
+usuarios:
+  - { <<: *aluno, nome: Ana Souza, matricula: "241012345", email: ana.souza@exemplo.unb.br, saldo: 18 }
+  - { <<: *aluno, nome: Bruno Lima, matricula: "241012346", email: bruno.lima@exemplo.unb.br, saldo: 9 }
+  - { <<: *aluno, nome: Carla Mendes, matricula: "241012347", email: carla.mendes@exemplo.unb.br, saldo: 0 }
+  - { <<: *aluno, nome: Diego Alves, matricula: "241012348", email: diego.alves@exemplo.unb.br, saldo: 4.5 }
+  - { <<: *aluno, nome: Elisa Rocha, matricula: "241012349", email: elisa.rocha@exemplo.unb.br, saldo: 50 }
+  - { <<: *funcionario, nome: Maria Fiscal, matricula: "1234567", email: maria.fiscal@exemplo.unb.br }
+  - { <<: *funcionario, nome: João Operador, matricula: "2345678", email: joao.operador@exemplo.unb.br }
+  - nome: Administrador RU
+    matricula: "7654321"
+    email: administrador.ru@exemplo.unb.br
+    perfil: administrador
+    password: "Admin@2026"
+    saldo: 0
+
+restaurantes:
+  - name: RU Darcy Ribeiro
+    status: ativo
+    localizacao: Campus Darcy Ribeiro
+    capacidade: 800
+    horario_abertura: "11:00"
+    horario_fechamento: "15:00"
+  - name: RU Gama
+    status: ativo
+    localizacao: Campus Gama
+    capacidade: 300
+    horario_abertura: "11:30"
+    horario_fechamento: "14:30"
+  - name: RU Planaltina
+    status: inativo
+    localizacao: Campus Planaltina
+    capacidade: 200
+    horario_abertura: "11:30"
+    horario_fechamento: "14:00"
+
+# o restaurante vem pelo nome e o responsavel pela matricula do funcionario
+catracas:
+  - restaurant: RU Darcy Ribeiro
+    codigo: CAT-01
+    status: ativa
+    responsavel: "1234567"
+    horario_abertura: "11:00"
+    horario_fechamento: "15:00"
+  - { restaurant: RU Darcy Ribeiro, codigo: CAT-02, status: ativa, responsavel: "1234567" }
+  - { restaurant: RU Darcy Ribeiro, codigo: CAT-03, status: em_manutencao }
+  - { restaurant: RU Gama, codigo: CAT-01, status: ativa, responsavel: "2345678" }
+  - { restaurant: RU Planaltina, codigo: CAT-01, status: inativa }
+
+# cada combinacao de estudante, lugar, resultado e motivo aparece uma vez, o user liga ao estudante
+acessos:
+  - { <<: [*darcy, *liberado], matricula: "241012345", user: "241012345", catraca: CAT-01, occurred_at: [0, "11:45"] }
+  - { <<: [*darcy, *liberado], matricula: "241012346", user: "241012346", catraca: CAT-01, occurred_at: [1, "12:10"] }
+  - { <<: [*darcy, *liberado], matricula: "241012349", user: "241012349", catraca: CAT-01, occurred_at: [1, "13:00"] }
+  - { <<: [*darcy, *liberado], matricula: "241012348", user: "241012348", catraca: CAT-01, occurred_at: [3, "11:20"] }
+  - { <<: [*darcy, *saldo], matricula: "241012347", user: "241012347", catraca: CAT-01, occurred_at: [0, "12:05"] }
+  - { <<: [*darcy, *liberado], matricula: "241012345", user: "241012345", catraca: CAT-02, occurred_at: [2, "12:30"] }
+  - { <<: [*darcy, *liberado], matricula: "241012346", user: "241012346", catraca: CAT-02, occurred_at: [4, "11:55"] }
+  - { <<: [*darcy, *saldo], matricula: "241012347", user: "241012347", catraca: CAT-02, occurred_at: [2, "13:15"] }
+  - { <<: [*darcy, *indisponivel], matricula: "241012348", user: "241012348", catraca: CAT-03,
+      occurred_at: [1, "12:40"] }
+  - { <<: [*gama, *liberado], matricula: "241012349", user: "241012349", catraca: CAT-01, occurred_at: [0, "12:20"] }
+  - { <<: [*gama, *liberado], matricula: "241012345", user: "241012345", catraca: CAT-01, occurred_at: [3, "12:50"] }
+  - restaurant: RU Planaltina
+    matricula: "241012346"
+    user: "241012346"
+    catraca: CAT-01
+    resultado: NEGADO
+    motivo_negacao: CATRACA_INDISPONIVEL
+    occurred_at: [5, "11:40"]
+
+# cada combinacao de estudante, valor, metodo e status aparece uma vez, so as recargas pix tem codigo
+recargas:
+  - { user: "241012345", valor: 30, metodo: pix, status: aprovada, created_at: [6], codigo_pix: PIX-UNBRU-DEMO0000 }
+  - { user: "241012345", valor: 20, metodo: cartao_credito, status: aprovada, created_at: [2] }
+  - { user: "241012346", valor: 10, metodo: pix, status: pendente, created_at: [1], codigo_pix: PIX-UNBRU-DEMO0002 }
+  - { user: "241012347", valor: 15, metodo: cartao_credito, status: recusada, created_at: [3] }
+  - { user: "241012348", valor: 5, metodo: pix, status: aprovada, created_at: [4], codigo_pix: PIX-UNBRU-DEMO0004 }
+  - { user: "241012349", valor: 50, metodo: pix, status: aprovada, created_at: [5], codigo_pix: PIX-UNBRU-DEMO0005 }
