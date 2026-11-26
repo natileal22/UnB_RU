@@ -6,17 +6,17 @@ Este arquivo mostra cada refatoração com **o antes, o depois e o porquê**. Os
 
 ## 1. Resumo
 
-| Métrica (nos 24 arquivos que mexi) | Antes | Depois |
+| Métrica (nos 25 arquivos que mexi) | Antes | Depois |
 |---|---:|---:|
 | Métodos com flog ≥ 20 (critério do PDF: < 20) | 6 | **0** |
 | Métodos com flog ≥ 15 (perto do limite) | 15 | **0** |
 | Maior flog de um método | 27,4 | **14,3** |
 | Flog médio por método | 7,3 | **6,2** |
-| Flog total dos arquivos | 1062,9 | **813,2** (-23%) |
+| Flog total dos arquivos | 1062,9 | **812,7** (-24%) |
 | Arquivos com nota C no RubyCritic (projeto todo) | 3 | **0** |
-| Nota geral do RubyCritic (projeto todo) | 91,1 | **92,7** |
+| Nota geral do RubyCritic (projeto todo) | 91,1 | **93,4** |
 | Exemplos do RSpec | 268 | **313** (0 falhas) |
-| Cobertura geral do SimpleCov | 89,5% | **96,5%** |
+| Cobertura geral do SimpleCov | 89,5% | **96,6%** |
 | Cenários do Cucumber passando | 159 de 162 | **159 de 162** (os 3 restantes são da #11, de outro integrante) |
 
 ## 2. O que foi refatorado, o antes, o depois e o porquê
@@ -41,7 +41,7 @@ Este arquivo mostra cada refatoração com **o antes, o depois e o porquê**. Os
 | `CardapioApi::Cliente::importar_dia` | 14,8 | removido |
 | **Arquivo todo (flog total)** | **195,4** | **54,2** |
 
-Nota do RubyCritic: C → B. Cheiros: 13 → 2.
+Nota do RubyCritic: C → B. Cheiros: 13 → 0.
 
 ### 2.2 `GeradorPdf`, `ExportacaoRelatorio` e `PeriodoFiltro` (exportação em PDF, #12)
 
@@ -51,12 +51,12 @@ Nota do RubyCritic: C → B. Cheiros: 13 → 2.
 
 | Método | Flog antes | Flog depois |
 |---|---:|---:|
-| `GeradorPdf#montar` | 19,8 | **13,1** |
+| `GeradorPdf#montar` | 19,8 | **12,4** |
 | `ExportacaoRelatorio#gerar` | 16,0 | **11,4** |
-| `ExportacaoRelatorio#cabecalho` | 9,7 | **12,1** |
+| `ExportacaoRelatorio#cabecalho` | 9,7 | **11,0** |
 | `ExportacaoRelatorio#initialize` | 7,2 | **11,8** |
 
-**O que não melhorou, e por quê:** o flog total de `exportacao_relatorio.rb` foi de 93,0 para 95,7 e o de `gerador_pdf.rb` ficou em 67,1. O ganho aqui foi nos **métodos grandes** (nenhum passa de 13,1) e nos cheiros (`exportacao_relatorio.rb`: 11 → 7). Os arquivos ganharam alguns métodos pequenos novos (`linhas`, `numerar`), que somam um pouco.
+**O que não melhorou, e por quê:** o flog total de `exportacao_relatorio.rb` foi de 93,0 para 95,2 e o de `gerador_pdf.rb` ficou em 72,9. O ganho aqui foi nos **métodos grandes** (nenhum passa de 12,4) e nos cheiros (`exportacao_relatorio.rb`: 11 → 0). Os arquivos ganharam alguns métodos pequenos novos (`linhas`, `numerar`), que somam um pouco.
 
 ### 2.3 `CardapioDoDia` e `InicioController` (salvaguarda)
 
@@ -67,8 +67,8 @@ Nota do RubyCritic: C → B. Cheiros: 13 → 2.
 | Método | Flog antes | Flog depois |
 |---|---:|---:|
 | `CardapioDoDia#semana` | 19,4 | **11,3** |
-| `CardapioDoDia#da_api` | 14,4 | **12,3** |
-| `InicioController#mostrar_carteira` | 15,3 | **12,5** |
+| `CardapioDoDia#da_api` | 14,4 | removido |
+| `InicioController#mostrar_carteira` | 15,3 | **11,3** |
 
 ### 2.4 `Admin::RestaurantesController`, `Admin::CatracasController` e `GestaoAdministrativa` (gestão, #8)
 
@@ -95,7 +95,13 @@ O concern engordou porque recebeu o código que estava duplicado, mas a soma dos
 
 Não é uma refatoração de complexidade, e sim de **acoplamento**. Os layouts `estudante` e `administracao` (meus) chamavam rotas e um menu que só existem na `salvaguarda`. Num teste sem a pasta, **119 de 162 cenários do Cucumber falhavam**. Agora o layout do estudante usa rotas dos colegas (`cardapio_atual_path` e `operador_sair_path`) e o do administrador protege a chamada do menu, como o layout principal já fazia. Sem a `salvaguarda`, os 159 cenários implementados passam, e restam só os 3 `undefined` da #11, que é do Pedro.
 
-### 2.7 O que ficou só com documentação
+### 2.7 `ExtratosController`, `Operador::HistoricoController` e o concern `ConsultaPorPeriodo` (segunda rodada)
+
+**Antes:** o RubyCritic apontava `DuplicateCode` nos dois controllers (nota B nos dois): o fluxo de ler o período da tela, filtrar e mostrar o resultado era o mesmo trecho escrito duas vezes, um para o extrato do estudante (#3) e outro para o histórico local da catraca (#7).
+
+**Depois:** o trecho comum foi para o concern `ConsultaPorPeriodo`, usado pelos dois. Cada controller ficou só com o que é dele. Os dois subiram de nota B para **A** (custo 2,96 → 0,58 e 2,81 → 0,44), sem cheiros. Foi nessa rodada que a nota geral do projeto foi de 92,73 para 93,40. Na mesma rodada, `ExportacaoRelatorio`, `GeradorPdf`, `CardapioDoDia`, `CardapioApi::Cliente` e `Catraca` ficaram sem os cheiros de chamada repetida e de método que não usa estado, mas continuam com nota B, porque o custo deles vem do tamanho total do arquivo e não de um método isolado.
+
+### 2.8 O que ficou só com documentação
 
 Os métodos abaixo de 15 de flog (por exemplo `HistoricoLocal#call` 14,3, `ExportacoesHelper#datas_do_relatorio` 13,9 e `Catraca#historico_preservado` 12,9) **não foram alterados** além do RDoc. Eles já cumprem o critério, e mexer neles só aumentaria o risco de quebrar os cenários do Cucumber, que não podem mudar.
 
@@ -106,6 +112,7 @@ Os métodos abaixo de 15 de flog (por exemplo `HistoricoLocal#call` 14,3, `Expor
 | `controllers/admin/catracas_controller.rb` | 86,2% | 100,0% |
 | `controllers/admin/exportacoes_controller.rb` | 100,0% | 100,0% |
 | `controllers/admin/restaurantes_controller.rb` | 86,5% | 100,0% |
+| `controllers/concerns/consulta_por_periodo.rb` | — | 100,0% |
 | `controllers/concerns/gestao_administrativa.rb` | 100,0% | 100,0% |
 | `controllers/extratos_controller.rb` | 100,0% | 100,0% |
 | `controllers/operador/historico_controller.rb` | 100,0% | 100,0% |
