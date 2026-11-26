@@ -34,7 +34,7 @@ class InicioController < ApplicationController
   def mostrar_carteira
     @refeicao = HorarioRefeicao.atual
     @proxima = HorarioRefeicao.proxima
-    @cardapio = CardapioDoDia.new.da_reserva(@refeicao, Time.zone.today) if @refeicao
+    @cardapio = CardapioDoDia::Refeicao.da_reserva(@refeicao, Time.zone.today) if @refeicao
     @refeicoes_garantidas = current_user.saldo.div(ValidacaoEntrada::PRECO)
     render :carteira, layout: 'estudante'
   end
