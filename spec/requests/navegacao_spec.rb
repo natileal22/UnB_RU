@@ -48,6 +48,35 @@ RSpec.describe 'Navegacao', type: :request do
     expect(response.body).not_to include(operador_historico_index_path)
   end
 
+  it 'mostra a barra do operador no histórico local com a página ativa e o botão Sair' do
+    entrar_como_operador('funcionario')
+    get operador_historico_index_path
+
+    expect(response.body).to include('Ponto de acesso', 'Operação', 'Histórico local', 'portal-ativo', 'link-sair')
+    expect(response.body).to include(ponto_acesso_path, operacao_path)
+  end
+
+  it 'mostra o menu do administrador nas telas da gestão' do
+    entrar_como_operador('administrador')
+    get admin_restaurantes_path
+    expect(response.body).to include('Relatório Global', 'link-sair', ponto_acesso_path, operacao_path)
+  end
+
+  it 'esconde a aba do relatório do funcionário na gestão' do
+    entrar_como_operador('funcionario')
+    get admin_restaurantes_path
+
+    expect(response.body).to include('link-sair')
+    expect(response.body).not_to include('Relatório Global')
+  end
+
+  it 'mostra o menu da administração também na página de erro da exportação' do
+    entrar_como_operador('administrador')
+    get admin_exportar_relatorio_path
+
+    expect(response.body).to include('portal-topo', 'Relatório Global')
+  end
+
   it 'coloca a pasta de reserva no fim da busca de views' do
     expect(ApplicationController.view_paths.map(&:to_s)).to include(a_string_ending_with('app/salvaguarda/views'))
   end

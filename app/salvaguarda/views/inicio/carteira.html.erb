@@ -43,18 +43,7 @@
         <p>Nenhuma refeição está sendo servida neste horário</p>
       <% else %>
         <h2>Cardápio oficial: <%= @refeicao.nome %></h2>
-        <% if @cardapio %>
-          <ul class="cardapio-opcoes">
-            <% @cardapio.itens_ordenados.each do |item| %>
-              <li>
-                <span class="cardapio-tipo"><%= item.nome_do_tipo %></span>
-                <span class="cardapio-item"><%= item.item %></span>
-              </li>
-            <% end %>
-          </ul>
-        <% else %>
-          <p>O cardápio para o <%= @refeicao.nome %> de hoje ainda não foi disponibilizado</p>
-        <% end %>
+        <%= render "cardapio_completo/opcoes", refeicao: @cardapio %>
       <% end %>
       <%= link_to "Ver cardápio completo", cardapio_hoje_path, id: "ver-cardapio-completo", class: "botao-link" %>
     </section>

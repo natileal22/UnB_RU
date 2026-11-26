@@ -9,8 +9,8 @@
   </head>
 
   <body>
-    <%# o menu unico por perfil da reserva, o mesmo das outras paginas %>
-    <%= render "shared/navegacao" %>
+    <%# o menu unico por perfil da reserva, so aparece se a pasta app/salvaguarda existir %>
+    <%= render "shared/navegacao" if lookup_context.exists?("shared/navegacao", [], true) %>
 
     <%= yield %>
   </body>

@@ -3,15 +3,23 @@
 # reserva da pagina inicial enquanto a tela Inicio e Carteira da Natalia nao chega
 class InicioController < ApplicationController
   # cada perfil cai na tela que ja existe e so o visitante e o estudante veem a home
+  DESTINOS = { 'funcionario' => :ponto_acesso_path, 'administrador' => :admin_restaurantes_path }.freeze
+
+  # pagina inicial de cada perfil
+  # args: nenhum, o perfil vem da sessao
+  # retorna: funcionario e administrador sao redirecionados, o estudante ve a carteira e o visitante a porta de entrada
+  # efeito: redireciona ou renderiza, nao grava nada
   def show
-    case current_user&.perfil
-    when 'funcionario' then redirect_to ponto_acesso_path
-    when 'administrador' then redirect_to admin_restaurantes_path
-    when 'estudante' then mostrar_carteira
-    end
+    destino = DESTINOS[current_user&.perfil]
+    return redirect_to public_send(destino) if destino
+
+    mostrar_carteira if current_user
   end
 
   # o sair do operador leva ao login do operador entao o estudante tem o dele
+  # args: nenhum
+  # retorna: redireciona para a pagina inicial
+  # efeito: apaga a sessao do usuario
   def sair
     session.delete(:user_id)
     redirect_to root_path
@@ -19,12 +27,15 @@ class InicioController < ApplicationController
 
   private
 
-  # mesmos dados do cardapio da refeicao atual que o CardapiosController usa
+  # monta a carteira do estudante com o turno e o cardapio da refeicao atual
+  # args: nenhum
+  # retorna: renderiza carteira no layout do estudante
+  # efeito: so le o banco, o cardapio vem da reserva e nao da api
   def mostrar_carteira
     @refeicao = HorarioRefeicao.atual
     @proxima = HorarioRefeicao.proxima
-    @cardapio = Cardapio.includes(:itens).find_by(data: Time.zone.today, refeicao: @refeicao.chave) if @refeicao
-    @refeicoes_garantidas = (current_user.saldo / ValidacaoEntrada::PRECO).floor
+    @cardapio = CardapioDoDia::Refeicao.da_reserva(@refeicao, Time.zone.today) if @refeicao
+    @refeicoes_garantidas = current_user.saldo.div(ValidacaoEntrada::PRECO)
     render :carteira, layout: 'estudante'
   end
 end

@@ -35,13 +35,6 @@ RSpec.describe 'Operador::Historico', type: :request do
   context 'como funcionário' do
     before { entrar_como('funcionario') }
 
-    it 'mostra a barra do operador com os links, a página ativa e o botão Sair' do
-      get operador_historico_index_path
-
-      expect(response.body).to include('Ponto de acesso', 'Operação', 'Histórico local', 'portal-ativo', 'Sair')
-      expect(response.body).to include(ponto_acesso_path, operacao_path)
-    end
-
     it 'avisa quando não há catraca vinculada' do
       get operador_historico_index_path
 

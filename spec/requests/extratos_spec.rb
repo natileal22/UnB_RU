@@ -59,7 +59,7 @@ RSpec.describe 'Extratos', type: :request do
     it 'mostra no cabeçalho do estudante os links Recarga e Cardápio e o botão Sair' do
       get extrato_path
 
-      expect(response.body).to include(nova_recarga_path, cardapio_hoje_path, 'Cardápio', 'Sair')
+      expect(response.body).to include(nova_recarga_path, cardapio_atual_path, 'Cardápio', 'Sair')
     end
 
     it 'mostra cabeçalho do estudante, cartões, selos e o link de limpar filtros' do

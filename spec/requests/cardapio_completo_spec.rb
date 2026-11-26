@@ -82,7 +82,9 @@ RSpec.describe 'Cardapio completo', type: :request do
     end
 
     it 'usa o banco quando a rede cai' do
-      allow(CardapioApi::Cliente).to receive(:semana_vigente).and_raise(SocketError)
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with('RU_API_TOKEN').and_return('chave-de-teste')
+      allow(Net::HTTP).to receive(:start).and_raise(SocketError)
       get cardapio_hoje_path
 
       expect(response.body).to include('Cardápio de reserva', 'Strogonoff da reserva')
