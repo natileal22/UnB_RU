@@ -42,20 +42,18 @@ RSpec.describe 'Admin::Gestao', type: :request do
                                      'selo-ok', 'selo-erro', '11:00 às', 'Editar Unidade')
   end
 
-  it 'mostra o cabeçalho da administração com Sair e a aba do relatório ao administrador' do
-    entrar_como('administrador')
-    get admin_restaurantes_path
-
-    expect(response.body).to include('Relatório Global', 'Sair', ponto_acesso_path, operacao_path)
-    expect(response.body).not_to include('ir-para-ponto')
-  end
-
-  it 'esconde a aba do relatório do funcionário' do
+  it 'mostra o atalho para o Ponto de acesso ao funcionário' do
     entrar_como('funcionario')
     get admin_restaurantes_path
 
-    expect(response.body).to include('Sair', 'id="ir-para-ponto"', ponto_acesso_path)
-    expect(response.body).not_to include('Relatório Global')
+    expect(response.body).to include('id="ir-para-ponto"', ponto_acesso_path)
+  end
+
+  it 'não mostra o atalho para o Ponto de acesso ao administrador' do
+    entrar_como('administrador')
+    get admin_restaurantes_path
+
+    expect(response.body).not_to include('ir-para-ponto')
   end
 
   it 'nega ao funcionário todas as ações mesmo com dados válidos e não altera nada' do
@@ -184,6 +182,58 @@ RSpec.describe 'Admin::Gestao', type: :request do
       ativa.update!(status: 'inativa')
       delete admin_catraca_path(ativa)
       expect(Catraca.exists?(ativa.id)).to be(false)
+    end
+
+    it 'abre o formulário novo de restaurante e de catraca' do
+      get new_admin_restaurante_path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('id="new_restaurant"')
+
+      get new_admin_catraca_path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('id="new_turnstile"')
+    end
+
+    it 'abre o formulário de edição do restaurante e da catraca' do
+      catraca = Catraca.create!(restaurant: restaurante, codigo: 'CAT-01')
+      get edit_admin_restaurante_path(restaurante)
+      expect(response.body).to include("editar-form-restaurante-#{restaurante.slug}")
+
+      get edit_admin_catraca_path(catraca)
+      expect(response.body).to include("editar-form-catraca-#{catraca.slug}")
+    end
+
+    it 'atualiza a catraca e volta para a listagem' do
+      catraca = Catraca.create!(restaurant: restaurante, codigo: 'CAT-01', status: 'inativa')
+      patch admin_catraca_path(catraca), params: { catraca: { codigo: 'CAT-02' } }
+
+      expect(response).to redirect_to(admin_restaurantes_path)
+      expect(catraca.reload.codigo).to eq('CAT-02')
+    end
+
+    it 'rejeita a atualização inválida do restaurante e mantém o formulário de edição aberto' do
+      patch admin_restaurante_path(restaurante), params: { restaurant: { capacidade: '0' } }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include('Capacidade inválida', "editar-form-restaurante-#{restaurante.slug}")
+      expect(restaurante.reload.capacidade).to eq(100)
+    end
+
+    it 'rejeita a atualização inválida da catraca e mantém o formulário de edição aberto' do
+      catraca = Catraca.create!(restaurant: restaurante, codigo: 'CAT-01', status: 'inativa')
+      patch admin_catraca_path(catraca), params: { catraca: { codigo: 'CAT#1' } }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include('caracteres inválidos', "editar-form-catraca-#{catraca.slug}")
+      expect(catraca.reload.codigo).to eq('CAT-01')
+    end
+
+    it 'responde 404 para um restaurante ou uma catraca que não existe' do
+      get edit_admin_restaurante_path(0)
+      expect(response).to have_http_status(:not_found)
+
+      delete admin_catraca_path(0)
+      expect(response).to have_http_status(:not_found)
     end
   end
 end

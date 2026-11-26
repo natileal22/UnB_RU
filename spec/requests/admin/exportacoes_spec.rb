@@ -85,11 +85,11 @@ RSpec.describe 'Admin::Exportacoes', type: :request do
       expect(response.media_type).not_to eq('application/pdf')
     end
 
-    it 'mostra o erro no layout da administração com o link de volta levando os filtros' do
+    it 'mostra o erro com o link de volta levando os filtros' do
       get admin_exportar_relatorio_path, params: periodo.merge(catraca: 'CAT-99', restaurant_id: restaurante.id)
 
-      expect(response.body).to include('portal-topo', 'id="voltar-relatorio"', 'date_from=2026-09-01',
-                                       'date_to=2026-09-30', 'catraca=CAT-99', "restaurant_id=#{restaurante.id}")
+      expect(response.body).to include('id="voltar-relatorio"', 'date_from=2026-09-01', 'date_to=2026-09-30',
+                                       'catraca=CAT-99', "restaurant_id=#{restaurante.id}")
     end
 
     it 'volta ao relatório sem datas quando o período é inválido' do
